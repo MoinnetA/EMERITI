@@ -79,7 +79,7 @@ function App() {
     checkInputs();
     const actionValue = action.value.trim();
     var element = document.createElement('a');
-    element.setAttribute('href', 'data:text/plain;charset-utf-8,' + encodeURIComponent(finalGesture));
+    element.setAttribute('href', 'data:application/json;charset-utf-8,' + encodeURIComponent(finalGesture));
     element.setAttribute('download', actionValue);
 
     element.style.display = 'none';

@@ -3,7 +3,8 @@ import GestureHandler from "quantumleapjs";
 import TV0 from './images/TV.jpg';
 import TV1 from './images/TV1.jpg';
 import House from './images/house.png';
-import PointIndex from './images/point_forward.png';
+import lightSDB0 from './images/lampe.jpg';
+import lightSDB1 from './images/lampe0.jpg';
 let tabFinal=[];
 let stroke_id=0;
 let finalGesture =""
@@ -127,6 +128,17 @@ function App() {
     }
   }
 
+  
+  const swapLightSDB = (e) => {
+    let image = document.getElementById('lightSDB');
+    if (image.src.includes(lightSDB0)){
+      image.src = lightSDB1;
+    }
+    else{
+      image.src = lightSDB0
+    }
+  }
+
   return (
     <div className="App">
       <div className="container">
@@ -149,6 +161,7 @@ function App() {
         <div class="home">
           <img className="house"style={{maxWidth:'100%'}} src={House}/>
           <img className="house television" src={TV0} id="television"/>
+          <img className="house lightSDB" src={lightSDB0} id="lightSDB"/>
         </div>
       </div>
       <div className="box">
@@ -159,6 +172,7 @@ function App() {
           <button onClick={clear}>Clear</button>
           <button onClick={download}>Download</button>
           <button onClick={swapTV}>swapTV</button>
+          <button onClick={swapLightSDB}>swapLightSDB</button>
       </div>
     </div>
   );

@@ -9,6 +9,8 @@ let stroke_id=0;
 let finalGesture =""
 
 function App() {
+  //let tabFinal=[];
+  //let stroke_id=0;
   const action = document.getElementById('action');
   const canvasRef = useRef(null);
   const ctx = useRef(null);
@@ -18,6 +20,7 @@ function App() {
     x: 0,
     y: 0
   });
+  //this.gestureHandler = new GestureHandler();
 
   useEffect(() => {
     if (canvasRef.current) {
@@ -81,7 +84,7 @@ function App() {
     checkInputs();
     const actionValue = action.value.trim();
     var element = document.createElement('a');
-    element.setAttribute('href', 'data:application/json;charset-utf-8,' + encodeURIComponent(finalGesture));
+    element.setAttribute('href', 'data:text/plain;charset-utf-8,' + encodeURIComponent(finalGesture));
     element.setAttribute('download', actionValue);
 
     element.style.display = 'none';
@@ -146,9 +149,8 @@ function App() {
           </div>
           <br />
 
-        <div>
-          <img className="box2" style={{maxWidth:'100%'}} src={RightSwipe} id="hand"/>
-          <img className="box2" style={{maxWidth:'100%'}} src={LeftSwipe} id="hand"/>
+        <div className="box">
+          <img style={{maxWidth:'100%'}} src={LeftSwipe} id="hand"/>
         </div>
       </div>
       <div className="box">

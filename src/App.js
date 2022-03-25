@@ -1,9 +1,10 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import GestureHandler from "quantumleapjs";
-import LeftSwipe from './images/flat_left.png';
-import RightSwipe from './images/flat_right.png';
-import ThumbUp from './images/thumb_up.png';
-import PointIndex from './images/point_forward.png';
+import TV0 from './images/TV.jpg';
+import TV1 from './images/TV1.jpg';
+import House from './images/house.png';
+import lightSDB0 from './images/lampe.jpg';
+import lightSDB1 from './images/lampe0.jpg';
 let tabFinal=[];
 let stroke_id=0;
 let finalGesture =""
@@ -117,13 +118,24 @@ function App() {
     draw(e.pageX, e.pageY)
   }
 
-  const swapImage = (e) => {
-    let image = document.getElementById('hand');
-    if (image.src.includes(LeftSwipe)){
-      image.src = RightSwipe;
+  const swapTV = (e) => {
+    let image = document.getElementById('television');
+    if (image.src.includes(TV0)){
+      image.src = TV1;
     }
     else{
-      image.src = LeftSwipe
+      image.src = TV0
+    }
+  }
+
+  
+  const swapLightSDB = (e) => {
+    let image = document.getElementById('lightSDB');
+    if (image.src.includes(lightSDB0)){
+      image.src = lightSDB1;
+    }
+    else{
+      image.src = lightSDB0
     }
   }
 
@@ -146,9 +158,10 @@ function App() {
           </div>
           <br />
 
-        <div>
-          <img className="box2" style={{maxWidth:'100%'}} src={RightSwipe} id="hand"/>
-          <img className="box2" style={{maxWidth:'100%'}} src={LeftSwipe} id="hand"/>
+        <div class="home">
+          <img className="house"style={{maxWidth:'100%'}} src={House}/>
+          <img className="house television" src={TV0} id="television"/>
+          <img className="house lightSDB" src={lightSDB0} id="lightSDB"/>
         </div>
       </div>
       <div className="box">
@@ -158,7 +171,8 @@ function App() {
           <button onClick={submit_canvas}>Submit</button>
           <button onClick={clear}>Clear</button>
           <button onClick={download}>Download</button>
-          <button onClick={swapImage}>SwapImage</button>
+          <button onClick={swapTV}>swapTV</button>
+          <button onClick={swapLightSDB}>swapLightSDB</button>
       </div>
     </div>
   );

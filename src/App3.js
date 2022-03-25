@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, {createRef, useCallback, useEffect, useRef, useState} from 'react';
 import GestureHandler from "quantumleapjs";
 import LeftSwipe from './images/flat_left.png';
 import RightSwipe from './images/flat_right.png';
@@ -8,8 +8,6 @@ let tabFinal=[];
 let stroke_id=0;
 let finalGesture =""
 
-
-const action = document.getElementById('action');
 
 class App extends React.Component {
   constructor(props) {
@@ -21,16 +19,26 @@ class App extends React.Component {
       displayTime: 0,
       connected: false,
       mouseDown : false,
-      lastPosition:{x:0, y:0},
-      canvas:document.getElementById("myCanvas"),
-      ctx:null
+      lastPosition:{x:0, y:0}
     };
+    this.canvasRef = createRef(null);
+    this.ctx = createRef(null);
     // Bind
     this.onGesture = this.onGesture.bind(this);
     this.onLeftSwipe = this.onLeftSwipe.bind(this);
     this.onRightSwipe = this.onRightSwipe.bind(this);
     this.onThumb = this.onThumb.bind(this);
     this.onPoint = this.onPoint.bind(this);
+    this.draw = this.draw.bind(this);
+    this.submit_canvas = this.submit_canvas.bind(this);
+    this.checkInputs = this.checkInputs.bind(this);
+    this.download = this.download.bind(this);
+    this.clear = this.clear.bind(this);
+    this.onMouseDown = this.onMouseDown.bind(this);
+    this.onMouseUp = this.onMouseUp.bind(this);
+    this.onMouseMove = this.onMouseMove.bind(this);
+    this.swapImage = this.swapImage.bind(this);
+
     // Timer
     this.timer = null;
     // STEP 2
@@ -39,26 +47,27 @@ class App extends React.Component {
   }
 
   componentDidMount() {
+    if (this.canvasRef.current) {
+      this.ctx.current = this.canvasRef.current.getContext('2d');
+    }
+    this.action = document.getElementById('action');
     // STEPS 6 and 7
-    this.gestureHandler.registerGestures("dynamic", ["swipe left", "swipe right"]);
+    this.gestureHandler.registerGestures("dynamic", ["a", "b", "c", "A", "B", "C"]);
 
     // STEPS 9 and 10
-    this.gestureHandler.registerGestures("static", ["point index", "thumb"]);
+    //this.gestureHandler.registerGestures("static", ["point index", "thumb"]);
 
     // STEPS 5, 7, 8, 10, 11
     this.gestureHandler.addListener('gesture', (event) => {
       switch (event.gesture.name) {
-        case "swipe left":
-          this.onLeftSwipe();
+        case "A":
+          console.log("IT'S A");
           break;
-        case "swipe right":
-          this.onRightSwipe();
+        case "B":
+          console.log("IT'S B");
           break;
-        case "point index":
-          this.onPoint();
-          break;
-        case "thumb":
-          this.onThumb();
+        case "C":
+          console.log("IT'S C");
           break;
         default:
           console.log("Unsupported gesture");
@@ -144,20 +153,20 @@ class App extends React.Component {
 
   draw(x, y){
     if (this.state.mouseDown) {
-      this.state.ctx.current.beginPath();
-      this.state.ctx.current.strokeStyle = "black";
-      this.state.ctx.current.lineWidth = 7;
-      this.state.ctx.current.lineJoin = 'round';
+      this.ctx.current.beginPath();
+      this.ctx.current.strokeStyle = "black";
+      this.ctx.current.lineWidth = 7;
+      this.ctx.current.lineJoin = 'round';
       var objectCoord ={
         "x": x,
         "y": y,
         "t": Date.now(),
       };
       tabFinal[stroke_id].push(objectCoord);
-      this.state.ctx.current.moveTo(this.state.lastPosition.x, this.state.lastPosition.y);
-      this.state.ctx.current.lineTo(x, y);
-      this.state.ctx.current.closePath();
-      this.state.ctx.current.stroke();
+      this.ctx.current.moveTo(this.state.lastPosition.x, this.state.lastPosition.y);
+      this.ctx.current.lineTo(x, y);
+      this.ctx.current.closePath();
+      this.ctx.current.stroke();
 
       this.state.lastPosition={x, y}
     }
@@ -169,31 +178,32 @@ class App extends React.Component {
   }
 
   checkInputs(){
-    const actionValue = action.value.trim();
+    const actionValue = this.action.value.trim();
     if(actionValue === ''){
-        console.log(action, 'Action cannot be blank');
+        console.log(this.action, 'Action cannot be blank');
     }
     else {
       console.table(tabFinal);
       var dataGesture = {
         "name": actionValue,
         "subjet": "1",
-        "paths": [{"label": "point", "strokes": []}]
+        "paths": {"point_lmc":{"label": "point_lmc", "strokes": []}}
       };
       tabFinal.forEach((stroke, strokeId) => {
-        dataGesture.paths[0].strokes.push({"id": strokeId, "points": stroke})
+        dataGesture.paths["point_lmc"].strokes.push({"id": strokeId, "points": stroke})
       })
       var dataString = JSON.stringify(dataGesture);
       console.log(dataString);
       tabFinal = [];
       this.clear()
       finalGesture = dataString;
+      this.gestureHandler.sendGestures(dataGesture);
     }
   }
 
   download(){
     this.checkInputs();
-    const actionValue = action.value.trim();
+    const actionValue = this.action.value.trim();
     var element = document.createElement('a');
     element.setAttribute('href', 'data:text/plain;charset-utf-8,' + encodeURIComponent(finalGesture));
     element.setAttribute('download', actionValue);
@@ -207,7 +217,7 @@ class App extends React.Component {
   }
 
   clear(){
-    this.state.ctx.current.clearRect(0, 0, this.state.ctx.current.canvas.width, this.state.ctx.current.canvas.height)
+    this.ctx.current.clearRect(0, 0, this.ctx.current.canvas.width, this.ctx.current.canvas.height)
     stroke_id = 0;
     tabFinal=[]
   }
@@ -241,13 +251,11 @@ class App extends React.Component {
     }
   }
   render() {
-    const { classes } = this.props;
-    const { image, name, type, connected } = this.state;
     return (
       <div onload = "loaded();" className="App">
         <div className="container">
           <div className="box">
-            <canvas id="myCanvas">
+            <canvas id="myCanvas" ref={this.canvasRef}
                 style={{
                   border: "1px solid #000"
                 }}
@@ -256,7 +264,7 @@ class App extends React.Component {
                 onMouseDown={this.onMouseDown}
                 onMouseUp={this.onMouseUp}
                 onMouseLeave={this.onMouseUp}
-                onMouseMove={this.onMouseMove}
+                onMouseMove={this.onMouseMove}>
             </canvas>
             </div>
             <br />

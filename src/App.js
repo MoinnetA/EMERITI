@@ -64,7 +64,7 @@ function App() {
       var dataGesture = {
         "name": actionValue,
         "subjet": "1",
-        "paths": [{"label": "point", "strokes": []}]
+        "paths": [{"label": "point_canvas", "strokes": []}]
       };
       tabFinal.forEach((stroke, strokeId) => {
         dataGesture.paths[0].strokes.push({"id": strokeId, "points": stroke})

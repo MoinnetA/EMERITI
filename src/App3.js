@@ -1,12 +1,10 @@
-import React, {createRef, useCallback, useEffect, useRef, useState} from 'react';
+import React, {createRef} from 'react';
 import GestureHandler from "quantumleapjs";
 import LeftSwipe from './images/flat_left.png';
 import RightSwipe from './images/flat_right.png';
-import ThumbUp from './images/thumb_up.png';
-import PointIndex from './images/point_forward.png';
 let tabFinal=[];
 let stroke_id=0;
-let finalGesture =""
+//let finalGesture =""
 
 
 class App extends React.Component {
@@ -25,13 +23,10 @@ class App extends React.Component {
     this.ctx = createRef(null);
     // Bind
     this.onGesture = this.onGesture.bind(this);
-    this.onLeftSwipe = this.onLeftSwipe.bind(this);
-    this.onRightSwipe = this.onRightSwipe.bind(this);
-    this.onThumb = this.onThumb.bind(this);
-    this.onPoint = this.onPoint.bind(this);
     this.draw = this.draw.bind(this);
-    this.submit_canvas = this.submit_canvas.bind(this);
+    this.recognize_canvas = this.recognize_canvas.bind(this);
     this.checkInputs = this.checkInputs.bind(this);
+    this.checkInputsDownload = this.checkInputsDownload.bind(this);
     this.download = this.download.bind(this);
     this.clear = this.clear.bind(this);
     this.onMouseDown = this.onMouseDown.bind(this);
@@ -65,6 +60,7 @@ class App extends React.Component {
           break;
         case "B":
           console.log("IT'S B");
+          this.swapImage()
           break;
         case "C":
           console.log("IT'S C");
@@ -122,35 +118,6 @@ class App extends React.Component {
     });
   }
 
-  onLeftSwipe() {
-    this.setState({
-      image: LeftSwipe,
-      displayTime: 10,
-    });
-  }
-
-  onRightSwipe() {
-    this.setState({
-      image: RightSwipe,
-      displayTime: 10,
-    });
-  }
-
-  onThumb() {
-    this.setState({
-      image: ThumbUp,
-      displayTime: 10,
-    });
-  }
-
-  onPoint() {
-    this.setState({
-      image: PointIndex,
-      displayTime: 10,
-    });
-  }
-  //this.gestureHandler = new GestureHandler();
-
   draw(x, y){
     if (this.state.mouseDown) {
       this.ctx.current.beginPath();
@@ -168,44 +135,61 @@ class App extends React.Component {
       this.ctx.current.closePath();
       this.ctx.current.stroke();
 
-      this.state.lastPosition={x, y}
+      //this.state.lastPosition={x, y}
+      this.setState({
+        lastPosition:{x, y}
+      });
     }
   }
 
-  submit_canvas(){
+  recognize_canvas(){
     this.checkInputs();
     stroke_id=0;
   }
 
   checkInputs(){
+    var dataGesture = {
+      "name": "",
+      "subjet": "1",
+      "paths": {"point_lmc":{"label": "point_lmc", "strokes": []}}
+    };
+    tabFinal.forEach((stroke, strokeId) => {
+      dataGesture.paths["point_lmc"].strokes.push({"id": strokeId, "points": stroke})
+    })
+    var dataString = JSON.stringify(dataGesture);
+    console.log(dataString);
+    tabFinal = [];
+    this.clear()
+    this.gestureHandler.sendGestures(dataGesture);
+  }
+
+  checkInputsDownload(){
     const actionValue = this.action.value.trim();
     if(actionValue === ''){
         console.log(this.action, 'Action cannot be blank');
     }
     else {
-      console.table(tabFinal);
-      var dataGesture = {
-        "name": actionValue,
-        "subjet": "1",
-        "paths": {"point_lmc":{"label": "point_lmc", "strokes": []}}
+      var dataGestureDownload = {
+          "name":actionValue,
+          "subjet":"1",
+          "paths":[{"label":"point", "strokes":[]}]
       };
-      tabFinal.forEach((stroke, strokeId) => {
-        dataGesture.paths["point_lmc"].strokes.push({"id": strokeId, "points": stroke})
-      })
-      var dataString = JSON.stringify(dataGesture);
-      console.log(dataString);
+
+      tabFinal.forEach((stroke, strokeId) => {dataGestureDownload.paths[0].strokes.push({"id": strokeId, "points": stroke})})
+      var dataStringDownload = JSON.stringify(dataGestureDownload);
+      console.log("dataStringDownload:", dataStringDownload);
       tabFinal = [];
       this.clear()
-      finalGesture = dataString;
-      this.gestureHandler.sendGestures(dataGesture);
+      return dataStringDownload;
     }
   }
 
   download(){
-    this.checkInputs();
+    var dataStringDownload = this.checkInputsDownload();
     const actionValue = this.action.value.trim();
+    console.log("actionValue:", actionValue)
     var element = document.createElement('a');
-    element.setAttribute('href', 'data:text/plain;charset-utf-8,' + encodeURIComponent(finalGesture));
+    element.setAttribute('href', 'data:text/plain;charset-utf-8,' + encodeURIComponent(dataStringDownload));
     element.setAttribute('download', actionValue);
 
     element.style.display = 'none';
@@ -214,6 +198,21 @@ class App extends React.Component {
     element.click();
 
     document.body.removeChild(element);
+
+    this.gestureHandler.addNewGesture(dataStringDownload, actionValue);
+
+    // var path = "C:" + File.separator + "hello" + File.separator + "hi.txt";
+    // // Use relative path for Unix systems
+    // var f = new File(path);
+    //
+    // f.getParentFile().mkdirs();
+    // f.createNewFile();
+
+    // var file = new File([finalGesture], 'sample.txt', {
+    //   lastModified: new Date(0), // optional - default = now
+    //   type: "overide/mimetype" // optional - default = ''
+    // });
+
   }
 
   clear(){
@@ -223,18 +222,19 @@ class App extends React.Component {
   }
 
   onMouseDown(e){
-    this.state.lastPosition = {
-      x: e.pageX,
-      y: e.pageY
-    }
-    this.state.mouseDown = true
+    this.setState({
+      lastPosition:{x:e.pageX, y:e.pageY},
+      mouseDown:true
+    });
     tabFinal[stroke_id]=[]
     this.draw(e.pageX, e.pageY)
   }
 
   onMouseUp(e){
     stroke_id++
-    this.state.mouseDown = false
+    this.setState({
+      mouseDown:false
+    });
   }
 
   onMouseMove(e){
@@ -270,14 +270,14 @@ class App extends React.Component {
             <br />
 
           <div className="box">
-            <img style={{maxWidth:'100%'}} src={LeftSwipe} id="hand"/>
+            <img style={{maxWidth:'100%'}} src={LeftSwipe} alt="" id="hand"/>
           </div>
         </div>
         <div className="box">
           <form>
             <input type="text" placeholder="New Action" id="action"/>
           </form>
-            <button onClick={this.submit_canvas}>Submit</button>
+            <button onClick={this.recognize_canvas}>Recognize</button>
             <button onClick={this.clear}>Clear</button>
             <button onClick={this.download}>Download</button>
             <button onClick={this.swapImage}>SwapImage</button>

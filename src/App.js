@@ -3,6 +3,15 @@ import GestureHandler from "quantumleapjs";
 import TV from './images/TV.png';
 import House from './images/house.png';
 import lampeSDB from './images/lampeSDB.png';
+import lampeSAM from './images/lampeSAM.png';
+import lampeSalon from './images/lampeSalon.png';
+import lampeCave from './images/lampeCave.png';
+import machineALaver from './images/machineALaver.png';
+import microOnde from './images/microOnde.png';
+import ordi from './images/ordi.png';
+
+
+
 let tabFinal=[];
 let stroke_id=0;
 let checkList = []
@@ -273,10 +282,16 @@ class App extends React.Component {
             </canvas>
             </div>
             <br />
-            <div class="box2">
+            <div className="box2">
               <img className="overlay" style={{maxWidth:'100%'}} src={House}/>
               <img className="overlay" src={TV} id="TELEVISION"/>
               <img className="overlay" src={lampeSDB} id="LAMPE"/>
+              <img className="overlay" src={lampeSAM} id="LAMPESAM"/>
+              <img className="overlay" src={lampeSalon} id="LAMPESALON"/>
+              <img className="overlay" src={lampeCave} id="LAMPECAVE"/>
+              <img className="overlay" src={ordi} id="ORDI"/>
+              <img className="overlay" src={machineALaver} id="MACHINEALAVER"/>
+              <img className="overlay" src={microOnde} id="MICROONDE"/>
             </div>
 
         </div>

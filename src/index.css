@@ -36,9 +36,8 @@ code {
 .house{
   position: relative;
   margin: 10px;
-  background-image: url("images/house.png");
 }
 
-.television{
+.overlay{
   position:absolute;
 }

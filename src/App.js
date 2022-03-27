@@ -2,6 +2,7 @@ import React, {createRef} from 'react';
 import GestureHandler from "quantumleapjs";
 import TV from './images/TV.png';
 import House from './images/house.png';
+import lampeSDB from './images/lampeSDB.png';
 let tabFinal=[];
 let stroke_id=0;
 let checkList = []
@@ -33,7 +34,6 @@ class App extends React.Component {
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
     this.onMouseMove = this.onMouseMove.bind(this);
-    this.swapTV = this.swapTV.bind(this);
     this.handleCheck = this.handleCheck.bind(this);
 
     // Timer
@@ -49,6 +49,7 @@ class App extends React.Component {
     }
     this.action = document.getElementById('action');
     // STEPS 6 and 7
+    this.state.checked=checkList
     this.gestureHandler.registerGestures("dynamic", this.state.checked.concat(["information"]));
 
     // STEPS 5, 7, 8, 10, 11
@@ -63,6 +64,18 @@ class App extends React.Component {
         }
         else{
           console.log("NOW, IT'S %s", event.gesture.name)
+          try {
+            let image = document.getElementById(event.gesture.name);
+            if (image.style.opacity === "0"){
+              image.style.opacity = "1";
+            }
+            else{
+              image.style.opacity = "0";
+            }
+            
+          } catch (error) {
+            console.log(error)
+          }
         }
       }
       else{
@@ -229,28 +242,6 @@ class App extends React.Component {
     this.draw(e.pageX, e.pageY)
   }
 
-  swapTV(e) {
-    let image = document.getElementById('television');
-    console.log(image.style.opacity )
-    if (image.style.opacity === "0"){
-      image.style.opacity = "1";
-    }
-    else{
-      image.style.opacity = "0";
-    }
-  }
-
-  
-  /* const swapLightSDB = (e) => {
-    let image = document.getElementById('lightSDB');
-    if (image.src.includes(lightSDB0)){
-      image.src = lightSDB1;
-    }
-    else{
-      image.src = lightSDB0
-    }
-  } */
-
   handleCheck(e){
     var updatedList = [...this.state.checked];
     if (e.target.checked) {
@@ -283,8 +274,9 @@ class App extends React.Component {
             </div>
             <br />
             <div class="box2">
-              <img className="television" style={{maxWidth:'100%'}} src={House}/>
-              <img className="television" src={TV} id="television"/>
+              <img className="overlay" style={{maxWidth:'100%'}} src={House}/>
+              <img className="overlay" src={TV} id="TELEVISION"/>
+              <img className="overlay" src={lampeSDB} id="LAMPE"/>
             </div>
 
         </div>
@@ -295,7 +287,6 @@ class App extends React.Component {
             <button onClick={this.recognize_canvas}>Recognize</button>
             <button onClick={this.clear}>Clear</button>
             <button onClick={this.download}>Download</button>
-            <button onClick={this.swapTV}>swapTV</button>
         </div>
         <div className="checkList">
           <div className="title">Your CheckList:</div>

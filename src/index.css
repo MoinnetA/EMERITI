@@ -28,37 +28,17 @@ code {
 .box2{
   width: 650px;
   height:40%;
-  margin: 0px;
+  margin: 10px;
   box-sizing: border-box;
   font-size: 30px;
-  position: absolute;
-}
-
-.home{
-  width: 100%;
-  height:100%;
 }
 
 .house{
-  position:absolute;
-  width: 50%;
-  height:50%;
+  position: relative;
   margin: 10px;
   background-image: url("images/house.png");
 }
 
 .television{
-  width: 4.5%;
-  height:4.5%;
-  top: 283px;
-  right: 540px;
-  background-color: darkolivegreen;
-}
-
-.lightSDB{
-  width: 3%;
-  height:4.5%;
-  top: 80px;
-  right: 690px;
-  background-color: darkolivegreen;
+  position:absolute;
 }

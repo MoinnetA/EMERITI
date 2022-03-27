@@ -1,10 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import GestureHandler from "quantumleapjs";
-import TV0 from './images/TV.jpg';
-import TV1 from './images/TV1.jpg';
+import TV from './images/TV.png';
 import House from './images/house.png';
-import lightSDB0 from './images/lampe.jpg';
-import lightSDB1 from './images/lampe0.jpg';
 let tabFinal=[];
 let stroke_id=0;
 let finalGesture =""
@@ -120,16 +117,17 @@ function App() {
 
   const swapTV = (e) => {
     let image = document.getElementById('television');
-    if (image.src.includes(TV0)){
-      image.src = TV1;
+    console.log(image.style.opacity )
+    if (image.style.opacity == "0"){
+      image.style.opacity = "1";
     }
     else{
-      image.src = TV0
+      image.style.opacity = "0";
     }
   }
 
   
-  const swapLightSDB = (e) => {
+  /* const swapLightSDB = (e) => {
     let image = document.getElementById('lightSDB');
     if (image.src.includes(lightSDB0)){
       image.src = lightSDB1;
@@ -137,7 +135,7 @@ function App() {
     else{
       image.src = lightSDB0
     }
-  }
+  } */
 
   return (
     <div className="App">
@@ -158,10 +156,9 @@ function App() {
           </div>
           <br />
 
-        <div class="home">
-          <img className="house"style={{maxWidth:'100%'}} src={House}/>
-          <img className="house television" src={TV0} id="television"/>
-          <img className="house lightSDB" src={lightSDB0} id="lightSDB"/>
+        <div class="box2">
+          <img className="television"       style={{maxWidth:'100%'}} src={House}/>
+          <img className="television" src={TV} id="television"/>
         </div>
       </div>
       <div className="box">
@@ -172,7 +169,6 @@ function App() {
           <button onClick={clear}>Clear</button>
           <button onClick={download}>Download</button>
           <button onClick={swapTV}>swapTV</button>
-          <button onClick={swapLightSDB}>swapLightSDB</button>
       </div>
     </div>
   );

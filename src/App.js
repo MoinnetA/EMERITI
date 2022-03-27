@@ -2,10 +2,18 @@ import React, {createRef} from 'react';
 import GestureHandler from "quantumleapjs";
 import TV from './images/TV.png';
 import House from './images/house.png';
-import lampeSDB from './images/lampeSDB.png';
+import LampeCave from './images/lampeCave.png';
+import LampeSalon from './images/lampeSalon.png';
+import LampeSDB from './images/lampeSDB.png';
+import LampeSAM from './images/grandeLampe.png';
+import Ordinateur from './images/ordi.png';
+import Micro_ondes from './images/microOnde.png';
+import Machine_a_laver from './images/laver.png';
+
 let tabFinal=[];
 let stroke_id=0;
 let checkList = []
+let checkListAssign = {}
 
 
 class App extends React.Component {
@@ -19,7 +27,8 @@ class App extends React.Component {
       connected: false,
       mouseDown: false,
       lastPosition: {x:0, y:0},
-      checked: []
+      checked: [],
+      action:""
     };
     this.canvasRef = createRef(null);
     this.ctx = createRef(null);
@@ -35,6 +44,7 @@ class App extends React.Component {
     this.onMouseUp = this.onMouseUp.bind(this);
     this.onMouseMove = this.onMouseMove.bind(this);
     this.handleCheck = this.handleCheck.bind(this);
+    this.getSelectValue = this.getSelectValue.bind(this);
 
     // Timer
     this.timer = null;
@@ -49,7 +59,9 @@ class App extends React.Component {
     }
     this.action = document.getElementById('action');
     // STEPS 6 and 7
-    this.state.checked=checkList
+    this.setState({
+      checked:checkList
+    })
     this.gestureHandler.registerGestures("dynamic", this.state.checked.concat(["information"]));
 
     // STEPS 5, 7, 8, 10, 11
@@ -65,12 +77,15 @@ class App extends React.Component {
         else{
           console.log("NOW, IT'S %s", event.gesture.name)
           try {
-            let image = document.getElementById(event.gesture.name);
-            if (image.style.opacity === "0"){
-              image.style.opacity = "1";
-            }
-            else{
-              image.style.opacity = "0";
+            console.log("checkListAssign:", checkListAssign)
+            if(checkListAssign.hasOwnProperty(event.gesture.name)) {
+              console.log("if passed")
+              let image = document.getElementById(checkListAssign[event.gesture.name]);
+              if (image.style.opacity === "0") {
+                image.style.opacity = "1";
+              } else {
+                image.style.opacity = "0";
+              }
             }
             
           } catch (error) {
@@ -201,18 +216,8 @@ class App extends React.Component {
     if(!checkList.includes(actionValue.toUpperCase())){
       checkList.push(actionValue.toUpperCase());
     }
-
-    // var path = "C:" + File.separator + "hello" + File.separator + "hi.txt";
-    // // Use relative path for Unix systems
-    // var f = new File(path);
-    //
-    // f.getParentFile().mkdirs();
-    // f.createNewFile();
-
-    // var file = new File([finalGesture], 'sample.txt', {
-    //   lastModified: new Date(0), // optional - default = now
-    //   type: "overide/mimetype" // optional - default = ''
-    // });
+    checkListAssign[actionValue.toUpperCase()] = this.state.action;
+    console.log("checkListAssign:", checkListAssign);
 
   }
 
@@ -255,9 +260,17 @@ class App extends React.Component {
     this.gestureHandler.registerGestures("dynamic", this.state.checked.concat(["information"]));
   }
 
+  getSelectValue(){
+    var selectedValue = document.getElementById("list").value;
+    this.setState({
+      action: selectedValue
+    })
+    console.log("selectedValue:", selectedValue)
+  }
+
   render() {
     return (
-      <div onload = "loaded();" className="App">
+      <div className="App">
         <div className="container">
           <div className="box">
             <canvas id="myCanvas" ref={this.canvasRef}
@@ -273,16 +286,34 @@ class App extends React.Component {
             </canvas>
             </div>
             <br />
-            <div class="box2">
-              <img className="overlay" style={{maxWidth:'100%'}} src={House}/>
-              <img className="overlay" src={TV} id="TELEVISION"/>
-              <img className="overlay" src={lampeSDB} id="LAMPE"/>
+            <div className="box2">
+              <img className="overlay" style={{maxWidth:'100%'}} src={House} alt={"HOUSE"}/>
+              <img className="overlay" src={TV} id="TV" alt={"TV"}/>
+              <img className="overlay" src={LampeCave} id="LampeCave" alt={"LampeCave"}/>
+              <img className="overlay" src={LampeSalon} id="LampeSalon" alt={"LampeSalon"}/>
+              <img className="overlay" src={LampeSDB} id="LampeSDB" alt={"LampeSDB"}/>
+              <img className="overlay" src={LampeSAM} id="LampeSAM" alt={"LampeSAM"}/>
+              <img className="overlay" src={Ordinateur} id="Ordinateur" alt={"Ordinateur"}/>
+              <img className="overlay" src={Micro_ondes} id="Micro_ondes" alt={"Micro_ondes"}/>
+              <img className="overlay" src={Machine_a_laver} id="Machine_a_laver" alt={"Machine_a_laver"}/>
             </div>
 
         </div>
         <div className="box">
           <form>
             <input type="text" placeholder="New Action" id="action"/>
+            <select id={"list"} onChange={this.getSelectValue}>
+              <optgroup label="Appareils connectés">
+                <option value={"TV"}>TV</option>
+                <option value={"LampeCave"}>Lampe Cave</option>
+                <option value={"LampeSalon"}>Lampe Salon</option>
+                <option value={"LampeSDB"}>Lampe Salle de bain</option>
+                <option value={"Ordinateur"}>Ordinateur</option>
+                <option value={"Micro_ondes"}>Micro-ondes</option>
+                <option value={"Machine_a_laver"}>Machine à laver</option>
+                <option value={"LampeSAM"}>Lampe Salle à manger</option>
+              </optgroup>
+            </select>
           </form>
             <button onClick={this.recognize_canvas}>Recognize</button>
             <button onClick={this.clear}>Clear</button>
@@ -302,8 +333,6 @@ class App extends React.Component {
         <div>
           {`Items checked are: ${this.state.checked}`}
         </div>
-
-        
       </div>
      
     </div>

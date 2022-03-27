@@ -1,4 +1,4 @@
-import React, {createRef} from 'react';
+import React, {createRef,useEffect} from 'react';
 import GestureHandler from "quantumleapjs";
 import TV from './images/TV.png';
 import House from './images/house.png';
@@ -15,6 +15,7 @@ import ordi from './images/ordi.png';
 let tabFinal=[];
 let stroke_id=0;
 let checkList = []
+let gestureList = []
 
 
 class App extends React.Component {
@@ -28,10 +29,12 @@ class App extends React.Component {
       connected: false,
       mouseDown: false,
       lastPosition: {x:0, y:0},
-      checked: []
+      checked: [],
+      count:2
     };
     this.canvasRef = createRef(null);
     this.ctx = createRef(null);
+    this.intervalRef = createRef(null);
     // Bind
     this.onGesture = this.onGesture.bind(this);
     this.draw = this.draw.bind(this);
@@ -44,15 +47,24 @@ class App extends React.Component {
     this.onMouseUp = this.onMouseUp.bind(this);
     this.onMouseMove = this.onMouseMove.bind(this);
     this.handleCheck = this.handleCheck.bind(this);
+    this.fmt = this.fmt.bind(this);
 
     // Timer
     this.timer = null;
+    this.timer0 = null;
     // STEP 2
     this.gestureHandler = new GestureHandler();
+    this.updateCount =this.updateCount.bind(this);
 
   }
 
   componentDidMount() {
+    this.timer0= setInterval(() =>{
+      let {count}=this.state;
+      this.setState({
+        count:count-1
+      })
+    },1000)
     if (this.canvasRef.current) {
       this.ctx.current = this.canvasRef.current.getContext('2d');
     }
@@ -232,12 +244,21 @@ class App extends React.Component {
   }
 
   onMouseDown(e){
+    console.log(gestureList)
+    if(this.state.count===0){
+      gestureList.push(tabFinal)
+      this.clear()
+    }
+    console.log(gestureList)
     this.setState({
       lastPosition:{x:e.pageX, y:e.pageY},
-      mouseDown:true
+      mouseDown:true,
+      count:2
     });
+    this.updateCount()
     tabFinal[stroke_id]=[]
     this.draw(e.pageX, e.pageY)
+    
   }
 
   onMouseUp(e){
@@ -264,7 +285,25 @@ class App extends React.Component {
     this.gestureHandler.registerGestures("dynamic", this.state.checked.concat(["information"]));
   }
 
+  updateCount(){
+    this.timer0= setInterval(() =>{
+      this.state.count=this.state.count--;
+    },1000)
+  } 
+
+  
+  componentDidUpdate(prevProps,prevState,snapshot){
+    if(prevState.count !== this.state.count && this.state.count ===0){
+      clearInterval(this.timer0)
+    }
+  }
+
+
+  fmt(s){
+    return (s-(s%=60))/60+(9<s?':':':0')+s}
+
   render() {
+    let {count}=this.state;
     return (
       <div onload = "loaded();" className="App">
         <div className="container">
@@ -280,6 +319,8 @@ class App extends React.Component {
                 onMouseLeave={this.onMouseUp}
                 onMouseMove={this.onMouseMove}>
             </canvas>
+            <> {this.fmt(count)}
+            </>
             </div>
             <br />
             <div className="box2">

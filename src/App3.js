@@ -4,7 +4,8 @@ import LeftSwipe from './images/flat_left.png';
 import RightSwipe from './images/flat_right.png';
 let tabFinal=[];
 let stroke_id=0;
-//let finalGesture =""
+let checkList = ["A", "B", "C", "D"]
+
 
 
 class App extends React.Component {
@@ -16,8 +17,9 @@ class App extends React.Component {
       image: '',
       displayTime: 0,
       connected: false,
-      mouseDown : false,
-      lastPosition:{x:0, y:0}
+      mouseDown: false,
+      lastPosition: {x:0, y:0},
+      checked: []
     };
     this.canvasRef = createRef(null);
     this.ctx = createRef(null);
@@ -33,6 +35,7 @@ class App extends React.Component {
     this.onMouseUp = this.onMouseUp.bind(this);
     this.onMouseMove = this.onMouseMove.bind(this);
     this.swapImage = this.swapImage.bind(this);
+    this.handleCheck = this.handleCheck.bind(this);
 
     // Timer
     this.timer = null;
@@ -47,28 +50,29 @@ class App extends React.Component {
     }
     this.action = document.getElementById('action');
     // STEPS 6 and 7
-    this.gestureHandler.registerGestures("dynamic", ["a", "b", "c", "A", "B", "C"]);
+    console.log("test:", this.state.checked.concat(["information"]))
+    this.gestureHandler.registerGestures("dynamic", this.state.checked.concat(["information"]));
 
     // STEPS 9 and 10
     //this.gestureHandler.registerGestures("static", ["point index", "thumb"]);
 
     // STEPS 5, 7, 8, 10, 11
     this.gestureHandler.addListener('gesture', (event) => {
-      switch (event.gesture.name) {
-        case "A":
-          console.log("IT'S A");
-          break;
-        case "B":
-          console.log("IT'S B");
-          this.swapImage()
-          break;
-        case "C":
-          console.log("IT'S C");
-          break;
-        default:
-          console.log("Unsupported gesture");
+      if(checkList.includes(event.gesture.name) || (event.gesture.name === "information")){
+        if(event.gesture.name === "information"){
+          for(const [key, value] of event.gesture.data.allDirectory.entries()) {
+            if (!checkList.includes(value)) {
+              checkList.push(value);
+            }
+          }
+        }
+        else{
+          console.log("NOW, IT'S %s", event.gesture.name)
+        }
       }
-
+      else{
+        console.log("Unsupported gesture");
+      }
       this.onGesture(event.gesture.type, event.gesture.name);
     });
 
@@ -143,6 +147,8 @@ class App extends React.Component {
   }
 
   recognize_canvas(){
+    this.gestureHandler.registerGestures("dynamic", this.state.checked.concat(["information"]));
+    console.log("recognize:", this.state.checked.concat(["information"]))
     this.checkInputs();
     stroke_id=0;
   }
@@ -177,7 +183,6 @@ class App extends React.Component {
 
       tabFinal.forEach((stroke, strokeId) => {dataGestureDownload.paths[0].strokes.push({"id": strokeId, "points": stroke})})
       var dataStringDownload = JSON.stringify(dataGestureDownload);
-      console.log("dataStringDownload:", dataStringDownload);
       tabFinal = [];
       this.clear()
       return dataStringDownload;
@@ -187,19 +192,10 @@ class App extends React.Component {
   download(){
     var dataStringDownload = this.checkInputsDownload();
     const actionValue = this.action.value.trim();
-    console.log("actionValue:", actionValue)
-    var element = document.createElement('a');
-    element.setAttribute('href', 'data:text/plain;charset-utf-8,' + encodeURIComponent(dataStringDownload));
-    element.setAttribute('download', actionValue);
-
-    element.style.display = 'none';
-    document.body.appendChild(element);
-
-    element.click();
-
-    document.body.removeChild(element);
-
-    this.gestureHandler.addNewGesture(dataStringDownload, actionValue);
+    this.gestureHandler.addNewGesture(dataStringDownload, actionValue.toLowerCase());
+    if(!checkList.includes(actionValue.toUpperCase())){
+      checkList.push(actionValue.toUpperCase());
+    }
 
     // var path = "C:" + File.separator + "hello" + File.separator + "hi.txt";
     // // Use relative path for Unix systems
@@ -250,6 +246,21 @@ class App extends React.Component {
       image.src = LeftSwipe
     }
   }
+
+  handleCheck(e){
+    var updatedList = [...this.state.checked];
+    if (e.target.checked) {
+      updatedList = [...this.state.checked, e.target.value];
+    } else {
+      updatedList.splice(this.state.checked.indexOf(e.target.value), 1);
+    }
+    this.setState({
+      checked:updatedList
+    });
+    this.gestureHandler.registerGestures("dynamic", this.state.checked);
+    console.log(this.state.checked)
+  }
+
   render() {
     return (
       <div onload = "loaded();" className="App">
@@ -281,6 +292,20 @@ class App extends React.Component {
             <button onClick={this.clear}>Clear</button>
             <button onClick={this.download}>Download</button>
             <button onClick={this.swapImage}>SwapImage</button>
+        </div>
+        <div className="checkList">
+          <div className="title">Your CheckList:</div>
+          <div className="list-container">
+            {checkList.map((item, index) => (
+               <div key={index}>
+                 <input value={item} type="checkbox" onChange={this.handleCheck} />
+                 <span>{item}</span>
+               </div>
+            ))}
+          </div>
+        </div>
+        <div>
+          {`Items checked are: ${this.state.checked}`}
         </div>
       </div>
     );

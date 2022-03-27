@@ -15,14 +15,15 @@ code {
 .container{
   width: 100%;
   display: flex;
+  justify-content: space-between;
 }
 
 .box{
   width: 650px;
   height:40%;
-  margin: 0px;
+  margin: 10px;
   box-sizing: border-box;
-  font-size: 30px;
+  font-size: 11px;
 }
 
 .box2{
@@ -30,7 +31,29 @@ code {
   height:40%;
   margin: 10px;
   box-sizing: border-box;
-  font-size: 30px;
+  font-size: 11px;
+}
+
+.button{
+  display: inline-flex;
+  margin: 5px;
+  height: fit-content;
+  border-radius: 5px;
+  font-family: 'Quicksand', sans-serif;
+}
+
+.styled-table {
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 0.9em;
+    font-family: sans-serif;
+    min-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.checkList{
+  display: inline-flex;
+  margin: 5px;
 }
 
 .house{

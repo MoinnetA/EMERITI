@@ -31,7 +31,6 @@ code {
   box-sizing: border-box;
   font-size: 12px;
 }
-
 .box2{
   width: 650px;
   height:40%;
@@ -100,8 +99,18 @@ code {
 
 .overlay{
   position:absolute;
+  width: 58%;
+  height: 58%;
 }
 
+.list{
+  position:relative;
+  width: 650px;
+  height:40%;
+  margin: 10px;
+  box-sizing: border-box;
+  font-size: 12px;
+}
 
 /****************************************************************************************************************/
 
@@ -267,7 +276,6 @@ select::-ms-expand {
 
 
 table{
- position: absolute;
  z-index: 2;
  width: 600px;
  border-collapse: collapse;

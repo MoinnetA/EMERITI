@@ -9,6 +9,7 @@ import LampeSAM from './images/lampeSAM.png';
 import Ordinateur from './images/ordi.png';
 import Micro_ondes from './images/microOnde.png';
 import Machine_a_laver from './images/machineALaver.png';
+import { MultiSelect } from "react-multi-select-component";
 
 let tabFinal=[];
 let stroke_id=0;
@@ -18,7 +19,50 @@ let gestureList = []
 let recognizedActionList = []
 let recognizedDeviceList = []
 let deviceList = ["TV", "LampeCave", "LampeSalon", "LampeSDB", "LampeSAM", "Ordinateur", "Micro_ondes", "Machine_a_laver"]
-let actionList = ["Allumer", "Eteindre", "Tout_Allumer", "Tout_Eteindre"]
+const actionList = ["Allumer", "Eteindre", "Tout_Allumer", "Tout_Eteindre"]
+
+let ActionsList =[
+  { label: 'Turn on', value: 1 },
+  { label: 'Turn Off', value: 2 },
+  { label: 'Increase', value: 3 },
+  { label: 'Dicrease', value: 4 },
+  { label: 'Pause', value: 5 },
+  { label: 'Play', value: 6 },
+  { label: 'Mute', value: 7 },
+  { label: 'Next', value: 8 },
+]
+let DevicesList =[
+  { label: 'Television', value: 1 },
+  { label: 'Computer', value: 2 },
+  { label: 'Micro-waves', value: 3 },
+  { label: 'Washing machine', value: 4 },
+  { label: 'Radio', value: 5 },
+  { label: 'Air Conditionner', value: 6 },
+  { label: 'Fan', value: 7 },
+]
+
+let EnvironmentList =[
+  { label: 'Children bedroom', value: 1 },
+  { label: 'Bathroom', value: 2 },
+  { label: 'Parent\'s bedrrom', value: 3 },
+  { label: 'Kitchen', value: 4 },
+  { label: 'Dining room', value: 5 },
+  { label: 'Living room', value: 6 },
+  { label: 'Office', value: 7 },
+  { label: 'Laundry room', value: 7 },
+]
+
+
+let ParametersList =[
+  { label: 'Volume', value: 1 },
+  { label: 'Brightness', value: 2 },
+  { label: 'Speed', value: 3 },
+  { label: 'Channel', value: 4 },
+  { label: 'Time', value: 5 },
+  { label: 'Program', value: 6 }
+]
+
+
 
 
 class App extends React.Component {
@@ -36,7 +80,11 @@ class App extends React.Component {
       action:"",
       count:2,
       pause:true,
-      turn_on:"1"
+      turn_on:"1",
+      actions:[],
+      devices:[],
+      environment:[],
+      parameters:[]
     };
     this.canvasRef = createRef(null);
     this.ctx = createRef(null);
@@ -60,6 +108,7 @@ class App extends React.Component {
     this.updateCheckListAssign = this.updateCheckListAssign.bind(this);
     this.clearDataSet = this.clearDataSet.bind(this);
     this.macroCommand = this.macroCommand.bind(this);
+    this.ModifyActionsList = this.ModifyActionsList.bind(this);
 
     // Timer
     this.timer = null;
@@ -486,8 +535,30 @@ class App extends React.Component {
     this.gestureHandler.clearDataset()
   }
 
+  ModifyActionsList(event){
+    this.setState({
+     actions:event
+    })
+  }
+  ModifyDevicesList(event){
+    this.setState({
+     actions:event
+    })
+  }
+  ModifyEnvironmentList(event){
+    this.setState({
+     actions:event
+    })
+  }
+  ModifyParametersList(event){
+    this.setState({
+     actions:event
+    })
+  }
+
   render() {
     return (
+      
       <div className="App">
         <div className="container">
           <div className="box">
@@ -505,7 +576,7 @@ class App extends React.Component {
           </div>
           <br />
           <div className="box">
-            <h1 className={"h1"}>QuantumLeap Drawing</h1>
+            <h1 className={"h1"}>Smart home</h1>
             <img className="overlay" style={{maxWidth:'100%'}} src={House} alt={"HOUSE"}/>
             <img className="overlay" style={{opacity:"0"}} src={TV} id="TV" alt={"TV"}/>
             <img className="overlay" style={{opacity:"0"}} src={LampeCave} id="LampeCave" alt={"LampeCave"}/>
@@ -527,8 +598,40 @@ class App extends React.Component {
                 <span className="placeholder">Name of the gesture</span>
               </label>
             </div>
+            <div className={"list"}>
+
+            <MultiSelect options={ActionsList}
+              value={this.state.actions}
+              onChange={this.ModifyActionsList}
+              labelledBy="Action"
+              isCreatable={true}/>
+            </div>
+
+            <div className={"list"}>
+            <MultiSelect options={DevicesList}
+              value={this.state.devices}
+              onChange={this.ModifyDevicesList}
+              labelledBy="Device"
+              isCreatable={true}/>
+            </div>
+            <div className={"list"}>
+            <MultiSelect options={EnvironmentList}
+              value={this.state.environment}
+              onChange={this.ModifyEnvironmentList}
+              labelledBy="Environment"
+              isCreatable={true}/>
+            </div>
+            <div className={"list"}>
+              <MultiSelect options={ParametersList}
+                value={this.state.parameters}
+                onChange={this.ModifyParametersList}
+                labelledBy="Environment"
+                isCreatable={true}/>
+            </div>
+
             <div className={"box"}>
               <div className="select">
+
                 <select className={"format"} id={"list"} onChange={this.getSelectValue}>
                   <option selected disabled>Choose an action</option>
                   <optgroup label="Actions">
@@ -557,34 +660,26 @@ class App extends React.Component {
           <button className={"button"} onClick={this.clearEverything}>Clear Everything</button>
           <button className={"button"} onClick={this.clearDataSet}>Clear Dataset</button>
           <button className={"button"} onClick={this.macroCommand}>Macro-Command</button>
-        </div>
-        <div className="box2">
+          
+
+          <div >
+          
           <table className={"content-table"} id={"target"}>
-             <tr>
-             <th>Nom du geste</th>
-             <th>Action</th>
-             </tr>
+            <tr>
+            <th>Name of gesture</th>
+            <th>Actions</th>
+            <th>Devices</th>
+            <th>Environments</th>
+            <th>Parameters</th>
+            </tr>
           </table>
+          </div>
         </div>
-        {/*<div className="box2">*/}
-        {/*  <div className="checkList">*/}
-        {/*    <div className="title">Your CheckList:</div>*/}
-        {/*    <div className="list-container">*/}
-        {/*      {checkList.map((item, index) => (*/}
-        {/*         <div key={index}>*/}
-        {/*           <input value={item} type="checkbox" onChange={this.handleCheck} />*/}
-        {/*           <span>{item}</span>*/}
-        {/*         </div>*/}
-        {/*      ))}*/}
-        {/*    </div>*/}
-        {/*    <br />*/}
-        {/*    <div>*/}
-        {/*      {`Items checked are: ${this.state.checked}`}*/}
-        {/*    </div>*/}
-        {/*  </div>*/}
-        {/*</div>*/}
       </div>
+      
     </div>
+    
+    
   );
   }
 }

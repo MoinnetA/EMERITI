@@ -19,9 +19,9 @@ code {
 }
 
 .h1{
-    text-align: center;
+    text-align: left;
     font-family: 'Open Sans', sans-serif;
-    font-size: 25px;
+    font-size: 50px;
 }
 
 .box{
@@ -30,6 +30,7 @@ code {
   margin: 10px;
   box-sizing: border-box;
   font-size: 12px;
+  
 }
 .box2{
   width: 650px;
@@ -83,7 +84,6 @@ code {
 }
 
 .timer{
-    margin-top: 450px;
   font-size: 50px;
 }
 

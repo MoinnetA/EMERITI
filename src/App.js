@@ -93,8 +93,8 @@ class App extends React.Component {
     this.onGesture = this.onGesture.bind(this);
     this.draw = this.draw.bind(this);
     this.recognize_canvas = this.recognize_canvas.bind(this);
-    this.checkInputsDownload = this.checkInputsDownload.bind(this);
-    this.download = this.download.bind(this);
+    this.checkInputsRecord = this.checkInputsRecord.bind(this);
+    this.record = this.record.bind(this);
     this.clear = this.clear.bind(this);
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
@@ -355,30 +355,30 @@ class App extends React.Component {
   }
 
 
-  checkInputsDownload(){
+  checkInputsRecord(){
     const actionValue = this.action.value.trim();
     if(actionValue === ''){
         console.log(this.action, 'Action cannot be blank');
     }
     else {
-      var dataGestureDownload = {
+      var dataGestureRecord = {
           "name":actionValue,
           "subjet":"1",
           "paths":[{"label":"point", "strokes":[]}]
       };
 
-      tabFinal.forEach((stroke, strokeId) => {dataGestureDownload.paths[0].strokes.push({"id": strokeId, "points": stroke})})
-      var dataStringDownload = JSON.stringify(dataGestureDownload);
+      tabFinal.forEach((stroke, strokeId) => {dataGestureRecord.paths[0].strokes.push({"id": strokeId, "points": stroke})})
+      var dataStringRecord = JSON.stringify(dataGestureRecord);
       tabFinal = [];
       this.clear()
-      return dataStringDownload;
+      return dataStringRecord;
     }
   }
 
-  download(){
-    var dataStringDownload = this.checkInputsDownload();
+  record(){
+    var dataStringRecord = this.checkInputsRecord();
     const actionValue = this.action.value.trim();
-    this.gestureHandler.addNewGesture(dataStringDownload, actionValue.toLowerCase());
+    this.gestureHandler.addNewGesture(dataStringRecord, actionValue.toLowerCase());
     if(!checkList.includes(actionValue.toUpperCase())){
        checkList.push(actionValue.toUpperCase());
     }
@@ -401,9 +401,9 @@ class App extends React.Component {
   }
 
   macroCommand(){
-    var dataStringDownload = this.checkInputsDownload();
+    var dataStringRecord = this.checkInputsRecord();
     const actionValue = this.action.value.trim();
-    this.gestureHandler.addNewGesture(dataStringDownload, actionValue.toLowerCase());
+    this.gestureHandler.addNewGesture(dataStringRecord, actionValue.toLowerCase());
     if(!checkList.includes(actionValue.toUpperCase())){
        checkList.push(actionValue.toUpperCase());
     }
@@ -586,11 +586,12 @@ class App extends React.Component {
             <img className="overlay" style={{opacity:"0"}} src={Ordinateur} id="Ordinateur" alt={"Ordinateur"}/>
             <img className="overlay" style={{opacity:"0"}} src={Micro_ondes} id="Micro_ondes" alt={"Micro_ondes"}/>
             <img className="overlay" style={{opacity:"0"}} src={Machine_a_laver} id="Machine_a_laver" alt={"Machine_a_laver"}/>
-            <div className={"timer"}> {this.fmt(this.state.count)}</div>
+            
           </div>
       </div>
       <div className="container">
         <div className="box2">
+              <div className={"time before next gesture"}>Timer : {this.fmt(this.state.count)}</div>
           <form className={"container"}>
             <div className={"box"}>
               <label className="custom-field one">
@@ -628,6 +629,7 @@ class App extends React.Component {
                 labelledBy="Environment"
                 isCreatable={true}/>
             </div>
+          <button className={"button"} onClick={this.record}>Record</button>
 
             <div className={"box"}>
               <div className="select">
@@ -656,14 +658,13 @@ class App extends React.Component {
           </form>
           <button className={"button"} onClick={this.recognize_canvas}>Recognize</button>
           <button className={"button"} onClick={this.clear}>Clear</button>
-          <button className={"button"} onClick={this.download}>Download</button>
-          <button className={"button"} onClick={this.clearEverything}>Clear Everything</button>
-          <button className={"button"} onClick={this.clearDataSet}>Clear Dataset</button>
           <button className={"button"} onClick={this.macroCommand}>Macro-Command</button>
           
 
           <div >
-          
+          <h1>Table of gestures</h1>
+          {/* <button className={"button"} onClick={this.clearEverything}>Clear Everything</button> */}
+          <button className={"button"} onClick={this.clearDataSet}>Clear Dataset</button>
           <table className={"content-table"} id={"target"}>
             <tr>
             <th>Name of gesture</th>

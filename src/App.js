@@ -15,6 +15,10 @@ let stroke_id=0;
 let checkList = []
 let checkListAssign = {}
 let gestureList = []
+let recognizedActionList = []
+let recognizedDeviceList = []
+let deviceList = ["TV", "LampeCave", "LampeSalon", "LampeSDB", "LampeSAM", "Ordinateur", "Micro_ondes", "Machine_a_laver"]
+let actionList = ["Allumer", "Eteindre", "Tout_Allumer", "Tout_Eteindre"]
 
 
 class App extends React.Component {
@@ -31,7 +35,8 @@ class App extends React.Component {
       checked: [],
       action:"",
       count:2,
-      pause:true
+      pause:true,
+      turn_on:"1"
     };
     this.canvasRef = createRef(null);
     this.ctx = createRef(null);
@@ -40,7 +45,6 @@ class App extends React.Component {
     this.onGesture = this.onGesture.bind(this);
     this.draw = this.draw.bind(this);
     this.recognize_canvas = this.recognize_canvas.bind(this);
-    this.checkInputs = this.checkInputs.bind(this);
     this.checkInputsDownload = this.checkInputsDownload.bind(this);
     this.download = this.download.bind(this);
     this.clear = this.clear.bind(this);
@@ -54,6 +58,8 @@ class App extends React.Component {
     this.getData = this.getData.bind(this);
     this.setData = this.setData.bind(this);
     this.updateCheckListAssign = this.updateCheckListAssign.bind(this);
+    this.clearDataSet = this.clearDataSet.bind(this);
+    this.macroCommand = this.macroCommand.bind(this);
 
     // Timer
     this.timer = null;
@@ -65,14 +71,30 @@ class App extends React.Component {
 
   setData(){
     console.log("checkListAssign for setData:", checkListAssign)
-    localStorage.setItem('myData', JSON.stringify(checkListAssign));
+    localStorage.setItem('checkListAssign', JSON.stringify(checkListAssign));
+    localStorage.setItem('checkList', JSON.stringify(checkList));
   }
 
   getData(){
-    let data = localStorage.getItem('myData');
-    data = JSON.parse(data);
-    checkListAssign = data
+    let checkListAssignData = localStorage.getItem('checkListAssign');
+    checkListAssignData = JSON.parse(checkListAssignData);
+    if(checkListAssignData === null){
+      checkListAssign = {}
+    }
+    else{
+      checkListAssign = checkListAssignData
+    }
+
+    let checkListData = localStorage.getItem('checkList');
+    checkListData = JSON.parse(checkListData);
+    if(checkListData === null){
+      checkList = []
+    }
+    else{
+      checkList = checkListData
+    }
     console.log("checkListAssign for getData:", checkListAssign)
+    console.log("checkList for getData:", checkList)
   }
 
   componentDidMount() {
@@ -93,37 +115,101 @@ class App extends React.Component {
     this.setState({
       checked:checkList
     })
-    this.gestureHandler.registerGestures("dynamic", this.state.checked.concat(["information"]));
+    this.gestureHandler.registerGestures("dynamic", this.state.checked);
 
     // STEPS 5, 7, 8, 10, 11
     this.gestureHandler.addListener('gesture', (event) => {
-      if(checkList.includes(event.gesture.name) || (event.gesture.name === "information")){
-        if(event.gesture.name === "information"){
-          for(const [key, value] of event.gesture.data.allDirectory.entries()) {
-            if (!checkList.includes(value)) {
-              checkList.push(value);
+      if (checkList.includes(event.gesture.name)) {
+        console.log("NOW, IT'S %s", event.gesture.name)
+        try {
+          if (checkListAssign.hasOwnProperty(event.gesture.name)) {
+            if (deviceList.includes(checkListAssign[event.gesture.name])) {
+              recognizedDeviceList.push(checkListAssign[event.gesture.name])
+            } else if (actionList.includes(checkListAssign[event.gesture.name])) {
+              recognizedActionList.push(checkListAssign[event.gesture.name])
+            } else {
+              console.log("error gesture recognize");
+            }
+            console.log("recognizedDeviceList:", recognizedDeviceList)
+            console.log("recognizedActionList:", recognizedActionList)
+          }
+        } catch (error) {
+          console.log(error)
+        }
+        if(recognizedActionList.length!==0) {
+          for (let i = 0; i < recognizedActionList.length; i++) {
+            console.log("action:", recognizedActionList[i])
+            if (recognizedActionList[i] === "Allumer") {
+              this.setState({
+                turn_on: "1"
+              })
+              for (const device of recognizedDeviceList) {
+                try {
+                  console.log("device:", device)
+                  let image = document.getElementById(device);
+                  image.style.opacity = this.state.turn_on;
+                } catch (error) {
+                  console.log(error)
+                }
+              }
+            }
+            else if (recognizedActionList[i] === "Eteindre") {
+              this.setState({
+                turn_on: "0"
+              })
+              for (const device of recognizedDeviceList) {
+                try {
+                  console.log("device:", device)
+                  let image = document.getElementById(device);
+                  image.style.opacity = this.state.turn_on;
+                } catch (error) {
+                  console.log(error)
+                }
+              }
+            }
+            else if (recognizedActionList[i] === "Tout_Allumer") {
+              for (const device of deviceList) {
+                try {
+                  console.log("device:", device)
+                  let image = document.getElementById(device);
+                  image.style.opacity = "1";
+                } catch (error) {
+                  console.log(error)
+                }
+              }
+            }
+            else if (recognizedActionList[i] === "Tout_Eteindre") {
+              for (const device of deviceList) {
+                try {
+                  console.log("device:", device)
+                  let image = document.getElementById(device);
+                  image.style.opacity = "0";
+                } catch (error) {
+                  console.log(error)
+                }
+              }
+            }
+            else {
+              console.log("No action")
             }
           }
         }
         else{
-          console.log("NOW, IT'S %s", event.gesture.name)
+          var lastGesture = recognizedDeviceList[recognizedDeviceList.length-1];
           try {
-            //console.log("checkListAssign:", checkListAssign)
-            if(checkListAssign.hasOwnProperty(event.gesture.name)) {
-              let image = document.getElementById(checkListAssign[event.gesture.name]);
-              if (image.style.opacity === "0") {
-                image.style.opacity = "1";
-              } else {
-                image.style.opacity = "0";
-              }
+            console.log("device with no action:", lastGesture)
+            let image = document.getElementById(lastGesture);
+            if(image.style.opacity === "1"){
+              image.style.opacity = "0"
             }
-            
+            else{
+              image.style.opacity ="1"
+            }
           } catch (error) {
             console.log(error)
           }
         }
-      }
-      else{
+      } else {
         console.log("Unsupported gesture");
       }
       this.onGesture(event.gesture.type, event.gesture.name);
@@ -198,12 +284,7 @@ class App extends React.Component {
   }
 
   recognize_canvas(){
-    this.gestureHandler.registerGestures("dynamic", this.state.checked.concat(["information"]));
-    this.checkInputs();
-    stroke_id=0;
-  }
-
-  checkInputs(){
+    this.gestureHandler.registerGestures("dynamic", this.state.checked);
     if(tabFinal.length!==0) {
       gestureList.push(tabFinal)
       this.clear()
@@ -219,10 +300,11 @@ class App extends React.Component {
       })
       this.gestureHandler.sendGestures(dataGesture);
     }
-    tabFinal = [];
     gestureList = []
     this.clear()
+    stroke_id=0;
   }
+
 
   checkInputsDownload(){
     const actionValue = this.action.value.trim();
@@ -249,18 +331,57 @@ class App extends React.Component {
     const actionValue = this.action.value.trim();
     this.gestureHandler.addNewGesture(dataStringDownload, actionValue.toLowerCase());
     if(!checkList.includes(actionValue.toUpperCase())){
-      checkList.push(actionValue.toUpperCase());
+       checkList.push(actionValue.toUpperCase());
+    }
+    if(!checkListAssign.hasOwnProperty(actionValue.toUpperCase())) {
+      console.log("It's in")
+      const table = document.getElementById("target")
+      const item = {nameGesture: actionValue.toUpperCase(), actionGesture: this.state.action}
+      let row = table.insertRow();
+      let nameGesture = row.insertCell(0);
+      nameGesture.innerHTML = item.nameGesture;
+      let actionGesture = row.insertCell(1);
+      actionGesture.innerHTML = item.actionGesture;
     }
     checkListAssign[actionValue.toUpperCase()] = this.state.action;
+    if(!checkList.includes(actionValue.toUpperCase()))
+      checkList.push(actionValue.toUpperCase())
+    console.log("checkListAssign:", checkListAssign)
+    console.log("checkList:", checkList)
     this.setData()
-    this.updateCheckListAssign()
+  }
 
+  macroCommand(){
+    var dataStringDownload = this.checkInputsDownload();
+    const actionValue = this.action.value.trim();
+    this.gestureHandler.addNewGesture(dataStringDownload, actionValue.toLowerCase());
+    if(!checkList.includes(actionValue.toUpperCase())){
+       checkList.push(actionValue.toUpperCase());
+    }
+    if(!checkListAssign.hasOwnProperty(actionValue.toUpperCase())) {
+      console.log("It's in")
+      const table = document.getElementById("target")
+      const item = {nameGesture: actionValue.toUpperCase(), actionGesture: this.state.action}
+      let row = table.insertRow();
+      let nameGesture = row.insertCell(0);
+      nameGesture.innerHTML = item.nameGesture;
+      let actionGesture = row.insertCell(1);
+      actionGesture.innerHTML = item.actionGesture;
+    }
+    checkListAssign[actionValue.toUpperCase()] = this.state.action;
+    if(!checkList.includes(actionValue.toUpperCase()))
+      checkList.push(actionValue.toUpperCase())
+    console.log("checkListAssign:", checkListAssign)
+    console.log("checkList:", checkList)
+    this.setData()
   }
 
   clear(){
     this.ctx.current.clearRect(0, 0, this.ctx.current.canvas.width, this.ctx.current.canvas.height)
     stroke_id = 0;
     tabFinal=[]
+    recognizedActionList = []
+    recognizedDeviceList = []
     this.setState({
       count:2
     })
@@ -270,7 +391,9 @@ class App extends React.Component {
     this.clear()
     gestureList = []
     checkListAssign = {}
+    checkList = []
     this.setData()
+    this.updateCheckListAssign()
   }
 
   onMouseDown(e){
@@ -312,25 +435,55 @@ class App extends React.Component {
     this.setState({
       checked:updatedList
     });
-    this.gestureHandler.registerGestures("dynamic", this.state.checked.concat(["information"]));
+    this.gestureHandler.registerGestures("dynamic", this.state.checked);
   }
 
   getSelectValue(){
     var selectedValue = document.getElementById("list").value;
+    console.log("selectedValue:", selectedValue)
     this.setState({
+
       action: selectedValue
     })
-    console.log("selectedValue:", selectedValue)
   }
 
   fmt(s){
-    return (s-(s%=60))/60+(9<s?':':':0')+s}
+    return s
+  }
 
   updateCheckListAssign(){
-    document.getElementById("target").innerHTML="<thead><tr><th>Name Gesture</th><th>Action</th></tr></thead>"
+    const table = document.getElementById("target")
     for(const i in checkListAssign){
-      document.getElementById("target").innerHTML+="<tbody><tr><td>"+i+"</td><td>"+checkListAssign[i]+"</td></tr></tbody>";
+      const item = { nameGesture: i, actionGesture: checkListAssign[i] }
+      let row = table.insertRow();
+      let nameGesture = row.insertCell(0);
+      nameGesture.innerHTML = item.nameGesture;
+      let actionGesture = row.insertCell(1);
+      actionGesture.innerHTML = item.actionGesture;
     }
+  }
+
+
+  // updateCheckListAssign(){
+  //   document.getElementById("target").innerHTML="<tr>\n" +
+  //       " <th>#</th>\n" +
+  //       " <th>Nom du geste</th>\n" +
+  //       " <th>Action</th>\n" +
+  //       " </tr>"
+  //   var iter = 1
+  //   for(const i in checkListAssign){
+  //     document.getElementById("target").innerHTML+="<tr>\n" +
+  //       " <td>"+iter+"</td>\n" +
+  //       " <td>"+i+"</td>\n" +
+  //       " <td>"+checkListAssign[i]+"</td>\n" +
+  //       " </tr>"
+  //     iter+=1;
+  //   }
+  // }
+
+  clearDataSet(){
+    this.clearEverything()
+    this.gestureHandler.clearDataset()
   }
 
   render() {
@@ -349,63 +502,87 @@ class App extends React.Component {
               onMouseLeave={this.onMouseUp}
               onMouseMove={this.onMouseMove}>
             </canvas>
-            <> {this.fmt(this.state.count)}
-            </>
           </div>
           <br />
           <div className="box">
+            <h1 className={"h1"}>QuantumLeap Drawing</h1>
             <img className="overlay" style={{maxWidth:'100%'}} src={House} alt={"HOUSE"}/>
-            <img className="overlay" src={TV} id="TV" alt={"TV"}/>
-            <img className="overlay" src={LampeCave} id="LampeCave" alt={"LampeCave"}/>
-            <img className="overlay" src={LampeSalon} id="LampeSalon" alt={"LampeSalon"}/>
-            <img className="overlay" src={LampeSDB} id="LampeSDB" alt={"LampeSDB"}/>
-            <img className="overlay" src={LampeSAM} id="LampeSAM" alt={"LampeSAM"}/>
-            <img className="overlay" src={Ordinateur} id="Ordinateur" alt={"Ordinateur"}/>
-            <img className="overlay" src={Micro_ondes} id="Micro_ondes" alt={"Micro_ondes"}/>
-            <img className="overlay" src={Machine_a_laver} id="Machine_a_laver" alt={"Machine_a_laver"}/>
+            <img className="overlay" style={{opacity:"0"}} src={TV} id="TV" alt={"TV"}/>
+            <img className="overlay" style={{opacity:"0"}} src={LampeCave} id="LampeCave" alt={"LampeCave"}/>
+            <img className="overlay" style={{opacity:"0"}} src={LampeSalon} id="LampeSalon" alt={"LampeSalon"}/>
+            <img className="overlay" style={{opacity:"0"}} src={LampeSDB} id="LampeSDB" alt={"LampeSDB"}/>
+            <img className="overlay" style={{opacity:"0"}} src={LampeSAM} id="LampeSAM" alt={"LampeSAM"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Ordinateur} id="Ordinateur" alt={"Ordinateur"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Micro_ondes} id="Micro_ondes" alt={"Micro_ondes"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Machine_a_laver} id="Machine_a_laver" alt={"Machine_a_laver"}/>
+            <div className={"timer"}> {this.fmt(this.state.count)}</div>
           </div>
-
       </div>
       <div className="container">
         <div className="box2">
-          <form>
-            <input className={"button"} type="text" placeholder="New Action" id="action"/>
-            <select className={"button"} id={"list"} onChange={this.getSelectValue}>
-              <optgroup label="Appareils connectés">
-                <option value={"TV"}>TV</option>
-                <option value={"LampeCave"}>Lampe Cave</option>
-                <option value={"LampeSalon"}>Lampe Salon</option>
-                <option value={"LampeSDB"}>Lampe Salle de bain</option>
-                <option value={"Ordinateur"}>Ordinateur</option>
-                <option value={"Micro_ondes"}>Micro-ondes</option>
-                <option value={"Machine_a_laver"}>Machine à laver</option>
-                <option value={"LampeSAM"}>Lampe Salle à manger</option>
-              </optgroup>
-            </select>
+          <form className={"container"}>
+            <div className={"box"}>
+              <label className="custom-field one">
+                <input className={"textArea"} type="text" placeholder=" " id="action"/>
+                <span className="placeholder">Name of the gesture</span>
+              </label>
+            </div>
+            <div className={"box"}>
+              <div className="select">
+                <select className={"format"} id={"list"} onChange={this.getSelectValue}>
+                  <option selected disabled>Choose an action</option>
+                  <optgroup label="Actions">
+                    <option value={"Allumer"}>Allumer</option>
+                    <option value={"Eteindre"}>Eteindre</option>
+                    <option value={"Tout_Allumer"}>Tout Allumer</option>
+                    <option value={"Tout_Eteindre"}>Tout Eteindre</option>
+                  </optgroup>
+                  <optgroup label="Appareils connectés">
+                    <option value={"TV"}>TV</option>
+                    <option value={"LampeCave"}>Lampe Cave</option>
+                    <option value={"LampeSalon"}>Lampe Salon</option>
+                    <option value={"LampeSDB"}>Lampe Salle de bain</option>
+                    <option value={"Ordinateur"}>Ordinateur</option>
+                    <option value={"Micro_ondes"}>Micro-ondes</option>
+                    <option value={"Machine_a_laver"}>Machine à laver</option>
+                    <option value={"LampeSAM"}>Lampe Salle à manger</option>
+                  </optgroup>
+                </select>
+              </div>
+            </div>
           </form>
           <button className={"button"} onClick={this.recognize_canvas}>Recognize</button>
           <button className={"button"} onClick={this.clear}>Clear</button>
           <button className={"button"} onClick={this.download}>Download</button>
           <button className={"button"} onClick={this.clearEverything}>Clear Everything</button>
-          <table className={"styled-table"} id={"target"} border={"1"}></table>
+          <button className={"button"} onClick={this.clearDataSet}>Clear Dataset</button>
+          <button className={"button"} onClick={this.macroCommand}>Macro-Command</button>
         </div>
         <div className="box2">
-          <div className="checkList">
-            <div className="title">Your CheckList:</div>
-            <div className="list-container">
-              {checkList.map((item, index) => (
-                 <div key={index}>
-                   <input value={item} type="checkbox" onChange={this.handleCheck} />
-                   <span>{item}</span>
-                 </div>
-              ))}
-            </div>
-            <br />
-            <div>
-              {`Items checked are: ${this.state.checked}`}
-            </div>
-          </div>
+          <table className={"content-table"} id={"target"}>
+             <tr>
+             <th>Nom du geste</th>
+             <th>Action</th>
+             </tr>
+          </table>
         </div>
+        {/*<div className="box2">*/}
+        {/*  <div className="checkList">*/}
+        {/*    <div className="title">Your CheckList:</div>*/}
+        {/*    <div className="list-container">*/}
+        {/*      {checkList.map((item, index) => (*/}
+        {/*         <div key={index}>*/}
+        {/*           <input value={item} type="checkbox" onChange={this.handleCheck} />*/}
+        {/*           <span>{item}</span>*/}
+        {/*         </div>*/}
+        {/*      ))}*/}
+        {/*    </div>*/}
+        {/*    <br />*/}
+        {/*    <div>*/}
+        {/*      {`Items checked are: ${this.state.checked}`}*/}
+        {/*    </div>*/}
+        {/*  </div>*/}
+        {/*</div>*/}
       </div>
     </div>
   );

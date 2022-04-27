@@ -109,6 +109,9 @@ class App extends React.Component {
     this.clearDataSet = this.clearDataSet.bind(this);
     this.macroCommand = this.macroCommand.bind(this);
     this.ModifyActionsList = this.ModifyActionsList.bind(this);
+    this.ModifyDevicesList = this.ModifyDevicesList.bind(this);
+    this.ModifyEnvironmentList = this.ModifyEnvironmentList.bind(this);
+    this.ModifyParametersList = this.ModifyParametersList.bind(this);
 
     // Timer
     this.timer = null;
@@ -542,17 +545,17 @@ class App extends React.Component {
   }
   ModifyDevicesList(event){
     this.setState({
-     actions:event
+     devices:event
     })
   }
   ModifyEnvironmentList(event){
     this.setState({
-     actions:event
+     environment:event
     })
   }
   ModifyParametersList(event){
     this.setState({
-     actions:event
+     parameters:event
     })
   }
 

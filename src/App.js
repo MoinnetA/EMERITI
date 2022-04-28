@@ -382,20 +382,73 @@ class App extends React.Component {
     var dataStringRecord = this.checkInputsRecord();
     const actionValue = this.action.value.trim();
     this.gestureHandler.addNewGesture(dataStringRecord, actionValue.toLowerCase());
+
+    let a=""
+    let d=""
+    let e=""
+    let p=""
+    
+    if(!this.state.actions[0]){
+      a = "-"
+    }
+    else{
+      for(let i = 0; i<this.state.actions.length-1; i++){
+        a = a.concat(this.state.actions[i].label+", ")
+      }
+      a = a.concat(this.state.actions[this.state.actions.length-1].label)
+    }
+
+    if(!this.state.devices[0]){
+      d = "-"
+    }
+    else{      
+      for(let i = 0; i<this.state.devices.length-1; i++){
+        d = d.concat(this.state.devices[i].label+", ")
+      }
+      d = d.concat(this.state.devices[this.state.devices.length-1].label)
+    }
+    
+    if(!this.state.environment[0]){
+      e = "-"
+    }
+    else{
+      for(let i = 0; i<this.state.environment.length-1; i++){
+        e = e.concat(this.state.environment[i].label+", ")
+      }
+      e = e.concat(this.state.environment[this.state.environment.length-1].label)
+    }
+    
+    if(!this.state.parameters[0]){
+      p = "-"
+    }
+    else{
+      for(let i = 0; i<this.state.parameters.length-1; i++){
+        p = p.concat(this.state.parameters[i].label+", ")
+      }
+      p = p.concat(this.state.parameters[this.state.parameters.length-1].label)
+    }
+
     if(!checkList.includes(actionValue.toUpperCase())){
        checkList.push(actionValue.toUpperCase());
     }
     if(!checkListAssign.hasOwnProperty(actionValue.toUpperCase())) {
       console.log("It's in")
       const table = document.getElementById("target")
-      const item = {nameGesture: actionValue.toUpperCase(), actionGesture: this.state.action}
+      const item = {nameGesture: actionValue.toUpperCase(), actionGesture: a,devicesGesture: d,EnvironmentGesture: e,ParametersGesture: p}
       let row = table.insertRow();
       let nameGesture = row.insertCell(0);
       nameGesture.innerHTML = item.nameGesture;
       let actionGesture = row.insertCell(1);
       actionGesture.innerHTML = item.actionGesture;
+      let devicesGesture = row.insertCell(2);
+      devicesGesture.innerHTML = item.devicesGesture;
+      let EnvironmentGesture = row.insertCell(3);
+      EnvironmentGesture.innerHTML = item.EnvironmentGesture;
+      let ParametersGesture = row.insertCell(4);
+      ParametersGesture.innerHTML = item.ParametersGesture;
     }
-    checkListAssign[actionValue.toUpperCase()] = this.state.action;
+    console.log(a,d,e,p)
+    checkListAssign[actionValue.toUpperCase()] = [a,d,e,p];
     if(!checkList.includes(actionValue.toUpperCase()))
       checkList.push(actionValue.toUpperCase())
     console.log("checkListAssign:", checkListAssign)
@@ -494,7 +547,6 @@ class App extends React.Component {
     var selectedValue = document.getElementById("list").value;
     console.log("selectedValue:", selectedValue)
     this.setState({
-
       action: selectedValue
     })
   }
@@ -511,7 +563,13 @@ class App extends React.Component {
       let nameGesture = row.insertCell(0);
       nameGesture.innerHTML = item.nameGesture;
       let actionGesture = row.insertCell(1);
-      actionGesture.innerHTML = item.actionGesture;
+      actionGesture.innerHTML = item.actionGesture[0];
+      let devicesGesture = row.insertCell(2);
+      devicesGesture.innerHTML = item.actionGesture[1];
+      let EnvironmentGesture = row.insertCell(3);
+      EnvironmentGesture.innerHTML = item.actionGesture[2];
+      let ParametersGesture = row.insertCell(4);
+      ParametersGesture.innerHTML = item.actionGesture[3];
     }
   }
 
@@ -536,23 +594,28 @@ class App extends React.Component {
   clearDataSet(){
     this.clearEverything()
     this.gestureHandler.clearDataset()
+    window.location.reload();
   }
 
   ModifyActionsList(event){
+    console.log(event)
     this.setState({
      actions:event
     })
   }
+
   ModifyDevicesList(event){
     this.setState({
      devices:event
     })
   }
+
   ModifyEnvironmentList(event){
     this.setState({
      environment:event
     })
   }
+  
   ModifyParametersList(event){
     this.setState({
      parameters:event
@@ -594,7 +657,7 @@ class App extends React.Component {
       </div>
       <div className="container">
         <div className="box2">
-              <div className={"time before next gesture"}>Timer : {this.fmt(this.state.count)}</div>
+          <div className={"time before next gesture"}>Timer : {this.fmt(this.state.count)}</div>
           <form className={"container"}>
             <div className={"box"}>
               <label className="custom-field one">
@@ -603,14 +666,12 @@ class App extends React.Component {
               </label>
             </div>
             <div className={"list"}>
-
             <MultiSelect options={ActionsList}
               value={this.state.actions}
               onChange={this.ModifyActionsList}
               labelledBy="Action"
               isCreatable={true}/>
             </div>
-
             <div className={"list"}>
             <MultiSelect options={DevicesList}
               value={this.state.devices}
@@ -629,10 +690,9 @@ class App extends React.Component {
               <MultiSelect options={ParametersList}
                 value={this.state.parameters}
                 onChange={this.ModifyParametersList}
-                labelledBy="Environment"
+                labelledBy="Parameters"
                 isCreatable={true}/>
-            </div>
-          <button className={"button"} onClick={this.record}>Record</button>
+                </div>
 
             <div className={"box"}>
               <div className="select">
@@ -662,6 +722,7 @@ class App extends React.Component {
           <button className={"button"} onClick={this.recognize_canvas}>Recognize</button>
           <button className={"button"} onClick={this.clear}>Clear</button>
           <button className={"button"} onClick={this.macroCommand}>Macro-Command</button>
+          <button className={"button"} onClick={this.record}>Record</button>
           
 
           <div >

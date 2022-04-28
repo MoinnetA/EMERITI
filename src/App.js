@@ -666,25 +666,25 @@ class App extends React.Component {
               </label>
             </div>
             <div className={"list"}>
-            <MultiSelect options={ActionsList}
-              value={this.state.actions}
-              onChange={this.ModifyActionsList}
-              labelledBy="Action"
-              isCreatable={true}/>
+              <MultiSelect options={ActionsList}
+                value={this.state.actions}
+                onChange={this.ModifyActionsList}
+                labelledBy="Action"
+                isCreatable={true}/>
             </div>
             <div className={"list"}>
-            <MultiSelect options={DevicesList}
-              value={this.state.devices}
-              onChange={this.ModifyDevicesList}
-              labelledBy="Device"
-              isCreatable={true}/>
+              <MultiSelect options={DevicesList}
+                value={this.state.devices}
+                onChange={this.ModifyDevicesList}
+                labelledBy="Device"
+                isCreatable={true}/>
             </div>
             <div className={"list"}>
-            <MultiSelect options={EnvironmentList}
-              value={this.state.environment}
-              onChange={this.ModifyEnvironmentList}
-              labelledBy="Environment"
-              isCreatable={true}/>
+              <MultiSelect options={EnvironmentList}
+                value={this.state.environment}
+                onChange={this.ModifyEnvironmentList}
+                labelledBy="Environment"
+                isCreatable={true}/>
             </div>
             <div className={"list"}>
               <MultiSelect options={ParametersList}
@@ -692,31 +692,6 @@ class App extends React.Component {
                 onChange={this.ModifyParametersList}
                 labelledBy="Parameters"
                 isCreatable={true}/>
-                </div>
-
-            <div className={"box"}>
-              <div className="select">
-
-                <select className={"format"} id={"list"} onChange={this.getSelectValue}>
-                  <option selected disabled>Choose an action</option>
-                  <optgroup label="Actions">
-                    <option value={"Allumer"}>Allumer</option>
-                    <option value={"Eteindre"}>Eteindre</option>
-                    <option value={"Tout_Allumer"}>Tout Allumer</option>
-                    <option value={"Tout_Eteindre"}>Tout Eteindre</option>
-                  </optgroup>
-                  <optgroup label="Appareils connectés">
-                    <option value={"TV"}>TV</option>
-                    <option value={"LampeCave"}>Lampe Cave</option>
-                    <option value={"LampeSalon"}>Lampe Salon</option>
-                    <option value={"LampeSDB"}>Lampe Salle de bain</option>
-                    <option value={"Ordinateur"}>Ordinateur</option>
-                    <option value={"Micro_ondes"}>Micro-ondes</option>
-                    <option value={"Machine_a_laver"}>Machine à laver</option>
-                    <option value={"LampeSAM"}>Lampe Salle à manger</option>
-                  </optgroup>
-                </select>
-              </div>
             </div>
           </form>
           <button className={"button"} onClick={this.recognize_canvas}>Recognize</button>

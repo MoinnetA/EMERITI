@@ -63,7 +63,31 @@ let ParametersList =[
 ]
 
 
-
+const actionsRenderer = (selected, _options) => {
+  return selected.length
+    ? selected.map(({ label }) => label+ ", ")
+    : "Actions";
+};
+const DevicesRenderer = (selected, _options) => {
+  return selected.length
+    ? selected.map(({ label }) => label+ ", ")
+    : "Devices";
+};
+const EnvironmentRenderer = (selected, _options) => {
+  return selected.length
+    ? selected.map(({ label }) => label+ ", ")
+    : "Environments";
+};
+const parametersRenderer = (selected, _options) => {
+  return selected.length
+    ? selected.map(({ label }) => label+ ", ")
+    : "Actions";
+};
+const MacroRenderer = (selected, _options) => {
+  return selected.length
+    ? selected.map(({ label }) => label+ ", ")
+    : "Macro-commandes";
+};
 
 class App extends React.Component {
   constructor(props) {
@@ -72,6 +96,7 @@ class App extends React.Component {
       name: '/',
       type: '/',
       image: '',
+      visible: true,
       displayTime: 0,
       connected: false,
       mouseDown: false,
@@ -120,7 +145,7 @@ class App extends React.Component {
     //this.updateCount =this.updateCount.bind(this);
 
   }
-
+  
   setData(){
     console.log("checkListAssign for setData:", checkListAssign)
     localStorage.setItem('checkListAssign', JSON.stringify(checkListAssign));
@@ -621,6 +646,15 @@ class App extends React.Component {
      parameters:event
     })
   }
+  toggleTable(){
+    var element= document.getElementById("TableOfGestures")
+    if (element.style.display === "none") {
+      element.style.display = "block";
+    } else {
+      element.style.display = "none";
+    }
+
+  }
 
   render() {
     return (
@@ -665,33 +699,38 @@ class App extends React.Component {
                 <span className="placeholder">Name of the gesture</span>
               </label>
             </div>
+            
             <div className={"list"}>
               <MultiSelect options={ActionsList}
                 value={this.state.actions}
                 onChange={this.ModifyActionsList}
                 labelledBy="Action"
-                isCreatable={true}/>
+                isCreatable={true}
+                valueRenderer={actionsRenderer}/>
             </div>
             <div className={"list"}>
               <MultiSelect options={DevicesList}
                 value={this.state.devices}
                 onChange={this.ModifyDevicesList}
                 labelledBy="Device"
-                isCreatable={true}/>
+                isCreatable={true}
+                valueRenderer={DevicesRenderer}/>
             </div>
             <div className={"list"}>
               <MultiSelect options={EnvironmentList}
                 value={this.state.environment}
                 onChange={this.ModifyEnvironmentList}
                 labelledBy="Environment"
-                isCreatable={true}/>
+                isCreatable={true}
+                valueRenderer={EnvironmentRenderer}/>
             </div>
             <div className={"list"}>
               <MultiSelect options={ParametersList}
                 value={this.state.parameters}
                 onChange={this.ModifyParametersList}
                 labelledBy="Parameters"
-                isCreatable={true}/>
+                isCreatable={true}
+                valueRenderer={parametersRenderer}/>
             </div>
           </form>
           <button className={"button"} onClick={this.recognize_canvas}>Recognize</button>
@@ -699,24 +738,35 @@ class App extends React.Component {
           <button className={"button"} onClick={this.macroCommand}>Macro-Command</button>
           <button className={"button"} onClick={this.record}>Record</button>
           
+          <div>
 
-          <div >
-          <h1>Table of gestures</h1>
-          {/* <button className={"button"} onClick={this.clearEverything}>Clear Everything</button> */}
-          <button className={"button"} onClick={this.clearDataSet}>Clear Dataset</button>
-          <table className={"content-table"} id={"target"}>
-            <tr>
-            <th>Name of gesture</th>
-            <th>Actions</th>
-            <th>Devices</th>
-            <th>Environments</th>
-            <th>Parameters</th>
-            </tr>
-          </table>
+          <div className={"list"}>
+              <MultiSelect options={ActionsList}
+                value={this.state.actions}
+                onChange={this.ModifyActionsList}
+                labelledBy="Action"
+                isCreatable={true}
+                valueRenderer={MacroRenderer}/>
+            </div>
           </div>
-        </div>
+          <div>              
+            <a className={"triangle-down"} onClick={this.toggleTable}></a>
+              <h1>Table of gestures</h1>
+              <div id ="TableOfGestures">
+                <button className={"button"} onClick={this.clearDataSet}>Clear Dataset</button>
+                <table className={"content-table"} id={"target"}>
+                  <tr>
+                  <th>Name of gesture</th>
+                  <th>Actions</th>
+                  <th>Devices</th>
+                  <th>Environments</th>
+                  <th>Parameters</th>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
       </div>
-      
     </div>
     
     

@@ -32,13 +32,13 @@ let ActionsList =[
   { label: 'Next', value: 8 },
 ]
 let DevicesList =[
-  { label: 'Television', value: 1 },
-  { label: 'Computer', value: 2 },
-  { label: 'Micro-waves', value: 3 },
-  { label: 'Washing machine', value: 4 },
-  { label: 'Radio', value: 5 },
-  { label: 'Air Conditionner', value: 6 },
-  { label: 'Fan', value: 7 },
+  { label: 'Television', value: 1 , disabled: false},
+  { label: 'Computer', value: 2 , disabled: false},
+  { label: 'Micro-waves', value: 3 , disabled: false},
+  { label: 'Washing machine', value: 4 , disabled: false},
+  { label: 'Radio', value: 5 , disabled: false},
+  { label: 'Air Conditionner', value: 6 , disabled: false},
+  { label: 'Fan', value: 7 , disabled: false},
 ]
 
 let EnvironmentList =[
@@ -81,7 +81,7 @@ const EnvironmentRenderer = (selected, _options) => {
 const parametersRenderer = (selected, _options) => {
   return selected.length
     ? selected.map(({ label }) => label+ ", ")
-    : "Actions";
+    : "Parameters";
 };
 const MacroRenderer = (selected, _options) => {
   return selected.length
@@ -137,6 +137,7 @@ class App extends React.Component {
     this.ModifyDevicesList = this.ModifyDevicesList.bind(this);
     this.ModifyEnvironmentList = this.ModifyEnvironmentList.bind(this);
     this.ModifyParametersList = this.ModifyParametersList.bind(this);
+    this.dynamicActionsList = this.dynamicActionsList.bind(this);
 
     // Timer
     this.timer = null;
@@ -598,24 +599,6 @@ class App extends React.Component {
     }
   }
 
-
-  // updateCheckListAssign(){
-  //   document.getElementById("target").innerHTML="<tr>\n" +
-  //       " <th>#</th>\n" +
-  //       " <th>Nom du geste</th>\n" +
-  //       " <th>Action</th>\n" +
-  //       " </tr>"
-  //   var iter = 1
-  //   for(const i in checkListAssign){
-  //     document.getElementById("target").innerHTML+="<tr>\n" +
-  //       " <td>"+iter+"</td>\n" +
-  //       " <td>"+i+"</td>\n" +
-  //       " <td>"+checkListAssign[i]+"</td>\n" +
-  //       " </tr>"
-  //     iter+=1;
-  //   }
-  // }
-
   clearDataSet(){
     this.clearEverything()
     this.gestureHandler.clearDataset()
@@ -626,13 +609,63 @@ class App extends React.Component {
     console.log(event)
     this.setState({
      actions:event
-    })
+    },function(){this.dynamicActionsList(this.state.actions)})
+    
+    
+  }
+
+  dynamicActionsList(event){
+    if(!event[0]){  
+      for(let j=0;j<DevicesList.length;j++){
+        DevicesList[j].disabled=false
+      } 
+    }
+    else{     
+      for(let j=0;j<DevicesList.length;j++){
+        DevicesList[j].disabled=false
+      } 
+
+      for(let i = 0; i<event.length; i++){
+        if(event[i].label==="Increase" || event[i].label==="Dicrease"){          
+          for(let j=0;j<DevicesList.length;j++){
+            let label =DevicesList[j].label
+            if(label==="Micro-waves" || label==="Fan" ){
+              DevicesList[j].disabled=true
+            }
+          }          
+        }
+        if(event[i].label==="Pause" || event[i].label==="Play"){          
+          for(let j=0;j<DevicesList.length;j++){
+            let label =DevicesList[j].label
+            if(label==="Computer" || label==="Micro-waves" || label==="Washing machine" || label==="Radio" || label==="Air Conditionner" || label==="Fan" ){
+              DevicesList[j].disabled=true
+            }
+          }          
+        }
+        if(event[i].label==="Mute" ){          
+          for(let j=0;j<DevicesList.length;j++){
+            let label =DevicesList[j].label
+            if(label==="Micro-waves" || label==="Washing machine" || label==="Air Conditionner" || label==="Fan" ){
+              DevicesList[j].disabled=true
+            }
+          }          
+        }
+        if(event[i].label==="Next" ){          
+          for(let j=0;j<DevicesList.length;j++){
+            let label =DevicesList[j].label
+            if(label==="Micro-waves" || label==="Computer" || label==="Fan" ){
+              DevicesList[j].disabled=true
+            }
+          }          
+        }
+      }
+    }
   }
 
   ModifyDevicesList(event){
     this.setState({
      devices:event
-    })
+    }) 
   }
 
   ModifyEnvironmentList(event){

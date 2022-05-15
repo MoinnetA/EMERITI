@@ -18,19 +18,18 @@ let checkListAssign = {}
 let gestureList = []
 let recognizedActionList = []
 let recognizedDeviceList = []
-let deviceList = ["TV", "LampeCave", "LampeSalon", "LampeSDB", "LampeSAM", "Ordinateur", "Micro_ondes", "Machine_a_laver"]
-const actionList = ["Allumer", "Eteindre", "Tout_Allumer", "Tout_Eteindre"]
 
 let ActionsList =[
-  { label: 'Turn on', value: 1 },
+  { label: 'Turn On', value: 1 },
   { label: 'Turn Off', value: 2 },
   { label: 'Increase', value: 3 },
-  { label: 'Dicrease', value: 4 },
+  { label: 'Decrease', value: 4 },
   { label: 'Pause', value: 5 },
   { label: 'Play', value: 6 },
   { label: 'Mute', value: 7 },
   { label: 'Next', value: 8 },
 ]
+
 let DevicesList =[
   { label: 'Television', value: 1 , disabled: false},
   { label: 'Computer', value: 2 , disabled: false},
@@ -44,14 +43,13 @@ let DevicesList =[
 let EnvironmentList =[
   { label: 'Children bedroom', value: 1 },
   { label: 'Bathroom', value: 2 },
-  { label: 'Parent\'s bedrrom', value: 3 },
+  { label: 'Parent\'s bedroom', value: 3 },
   { label: 'Kitchen', value: 4 },
   { label: 'Dining room', value: 5 },
   { label: 'Living room', value: 6 },
   { label: 'Office', value: 7 },
   { label: 'Laundry room', value: 7 },
 ]
-
 
 let ParametersList =[
   { label: 'Volume', value: 1 },
@@ -155,6 +153,7 @@ class App extends React.Component {
 
   getData(){
     let checkListAssignData = localStorage.getItem('checkListAssign');
+    console.log("checkListAssignData: ", checkListAssignData)
     checkListAssignData = JSON.parse(checkListAssignData);
     if(checkListAssignData === null){
       checkListAssign = {}
@@ -164,6 +163,7 @@ class App extends React.Component {
     }
 
     let checkListData = localStorage.getItem('checkList');
+    console.log("checkListData: ", checkListData)
     checkListData = JSON.parse(checkListData);
     if(checkListData === null){
       checkList = []
@@ -197,96 +197,90 @@ class App extends React.Component {
 
     // STEPS 5, 7, 8, 10, 11
     this.gestureHandler.addListener('gesture', (event) => {
-      if (checkList.includes(event.gesture.name)) {
+      if (checkListAssign.hasOwnProperty(event.gesture.name)) {
         console.log("NOW, IT'S %s", event.gesture.name)
-        try {
-          if (checkListAssign.hasOwnProperty(event.gesture.name)) {
-            if (deviceList.includes(checkListAssign[event.gesture.name])) {
-              recognizedDeviceList.push(checkListAssign[event.gesture.name])
-            } else if (actionList.includes(checkListAssign[event.gesture.name])) {
-              recognizedActionList.push(checkListAssign[event.gesture.name])
-            } else {
-              console.log("error gesture recognize");
-            }
-            console.log("recognizedDeviceList:", recognizedDeviceList)
-            console.log("recognizedActionList:", recognizedActionList)
+        let macroList = checkListAssign[event.gesture.name]
+        console.log("macroList: ", macroList)
+        console.log("macroList[0]: ", macroList[0])
+        let macroActionList = macroList[0].split(', ')
+        console.log("macroActionList: ", macroActionList)
+        let macroDeviceList = macroList[1].split(', ')
+        console.log("macroDeviceList: ", macroDeviceList)
+        for(const macro_action of macroActionList){
+          console.log("macro_action: ", macro_action)
+          if(macro_action==="Turn On"){
+            this.setState({
+              turn_on: "1"
+            }, function (){
+              console.log("macro Turn On")
+            })
           }
-        } catch (error) {
-          console.log(error)
-        }
-        if(recognizedActionList.length!==0) {
-          for (let i = 0; i < recognizedActionList.length; i++) {
-            console.log("action:", recognizedActionList[i])
-            if (recognizedActionList[i] === "Allumer") {
-              this.setState({
-                turn_on: "1"
-              })
-              for (const device of recognizedDeviceList) {
-                try {
-                  console.log("device:", device)
-                  let image = document.getElementById(device);
-                  image.style.opacity = this.state.turn_on;
-                } catch (error) {
-                  console.log(error)
-                }
-              }
-            }
-            else if (recognizedActionList[i] === "Eteindre") {
-              this.setState({
-                turn_on: "0"
-              })
-              for (const device of recognizedDeviceList) {
-                try {
-                  console.log("device:", device)
-                  let image = document.getElementById(device);
-                  image.style.opacity = this.state.turn_on;
-                } catch (error) {
-                  console.log(error)
-                }
-              }
-            }
-            else if (recognizedActionList[i] === "Tout_Allumer") {
-              for (const device of deviceList) {
-                try {
-                  console.log("device:", device)
-                  let image = document.getElementById(device);
-                  image.style.opacity = "1";
-                } catch (error) {
-                  console.log(error)
-                }
-              }
-            }
-            else if (recognizedActionList[i] === "Tout_Eteindre") {
-              for (const device of deviceList) {
-                try {
-                  console.log("device:", device)
-                  let image = document.getElementById(device);
-                  image.style.opacity = "0";
-                } catch (error) {
-                  console.log(error)
-                }
-              }
-            }
-            else {
-              console.log("No action")
-            }
+          else if(macro_action==="Turn Off"){
+            this.setState({
+              turn_on: "0"
+            }, function (){
+              console.log("macro Turn Off")
+            })
           }
         }
-        else{
-          var lastGesture = recognizedDeviceList[recognizedDeviceList.length-1];
-          try {
-            console.log("device with no action:", lastGesture)
-            let image = document.getElementById(lastGesture);
-            if(image.style.opacity === "1"){
-              image.style.opacity = "0"
-            }
-            else{
-              image.style.opacity ="1"
-            }
-          } catch (error) {
-            console.log(error)
-          }
+        for(const macro_device of macroDeviceList){
+          let image = document.getElementById(macro_device);
+          image.style.opacity = this.state.turn_on;
         }
+
+        // try {
+        //   if (checkListAssign.hasOwnProperty(event.gesture.name)) {
+        //     if (deviceList.includes(checkListAssign[event.gesture.name])) {
+        //       recognizedDeviceList.push(checkListAssign[event.gesture.name])
+        //     } else if (actionList.includes(checkListAssign[event.gesture.name])) {
+        //       recognizedActionList.push(checkListAssign[event.gesture.name])
+        //     } else {
+        //       console.log("error gesture recognize");
+        //     }
+        //     console.log("recognizedDeviceList:", recognizedDeviceList)
+        //     console.log("recognizedActionList:", recognizedActionList)
+        //     console.log("checkListAssign:", checkListAssign)
+        //   }
+        // } catch (error) {
+        //   console.log(error)
+        // }
+        // if(recognizedActionList.length!==0) {
+        //   for (let i = 0; i < recognizedActionList.length; i++) {
+        //     console.log("action:", recognizedActionList[i])
+        //     if (recognizedActionList[i] === "Turn On") {
+        //       this.setState({
+        //         turn_on: "1"
+        //       })}
+        //     else if (recognizedActionList[i] === "Turn Off") {
+        //     this.setState({
+        //       turn_on: "0"
+        //     })}
+        //     for (let j = 0; j < this.state.devices.length; j++){
+        //       try {
+        //         console.log("device:", this.state.devices[j])
+        //         let image = document.getElementById(this.state.devices[j].label);
+        //         image.style.opacity = this.state.turn_on;
+        //       } catch (error) {
+        //         console.log(error)
+        //       }
+        //     }
+        //   }
+        // }
+        // else{
+        //   var lastGesture = recognizedDeviceList[recognizedDeviceList.length-1];
+        //   try {
+        //     console.log("device with no action:", lastGesture)
+        //     let image = document.getElementById(lastGesture);
+        //     if(image.style.opacity === "1"){
+        //       image.style.opacity = "0"
+        //     }
+        //     else{
+        //       image.style.opacity ="1"
+        //     }
+        //   } catch (error) {
+        //     console.log(error)
+        //   }
+        // }
       } else {
         console.log("Unsupported gesture");
       }
@@ -606,57 +600,56 @@ class App extends React.Component {
   }
 
   ModifyActionsList(event){
-    console.log(event)
     this.setState({
      actions:event
     },function(){this.dynamicActionsList(this.state.actions)})
-    
-    
+
+
   }
 
   dynamicActionsList(event){
-    if(!event[0]){  
+    if(!event[0]){
       for(let j=0;j<DevicesList.length;j++){
         DevicesList[j].disabled=false
-      } 
+      }
     }
-    else{     
+    else{
       for(let j=0;j<DevicesList.length;j++){
         DevicesList[j].disabled=false
-      } 
+      }
 
       for(let i = 0; i<event.length; i++){
-        if(event[i].label==="Increase" || event[i].label==="Dicrease"){          
+        if(event[i].label==="Increase" || event[i].label==="Dicrease"){
           for(let j=0;j<DevicesList.length;j++){
             let label =DevicesList[j].label
             if(label==="Micro-waves" || label==="Fan" ){
               DevicesList[j].disabled=true
             }
-          }          
+          }
         }
-        if(event[i].label==="Pause" || event[i].label==="Play"){          
+        if(event[i].label==="Pause" || event[i].label==="Play"){
           for(let j=0;j<DevicesList.length;j++){
             let label =DevicesList[j].label
             if(label==="Computer" || label==="Micro-waves" || label==="Washing machine" || label==="Radio" || label==="Air Conditionner" || label==="Fan" ){
               DevicesList[j].disabled=true
             }
-          }          
+          }
         }
-        if(event[i].label==="Mute" ){          
+        if(event[i].label==="Mute" ){
           for(let j=0;j<DevicesList.length;j++){
             let label =DevicesList[j].label
             if(label==="Micro-waves" || label==="Washing machine" || label==="Air Conditionner" || label==="Fan" ){
               DevicesList[j].disabled=true
             }
-          }          
+          }
         }
-        if(event[i].label==="Next" ){          
+        if(event[i].label==="Next" ){
           for(let j=0;j<DevicesList.length;j++){
             let label =DevicesList[j].label
             if(label==="Micro-waves" || label==="Computer" || label==="Fan" ){
               DevicesList[j].disabled=true
             }
-          }          
+          }
         }
       }
     }
@@ -665,7 +658,7 @@ class App extends React.Component {
   ModifyDevicesList(event){
     this.setState({
      devices:event
-    }) 
+    })
   }
 
   ModifyEnvironmentList(event){
@@ -677,6 +670,8 @@ class App extends React.Component {
   ModifyParametersList(event){
     this.setState({
      parameters:event
+    }, function (){
+      console.log(this.state.parameters)
     })
   }
   toggleTable(){
@@ -711,12 +706,12 @@ class App extends React.Component {
           <div className="box">
             <h1 className={"h1"}>Smart home</h1>
             <img className="overlay" style={{maxWidth:'100%'}} src={House} alt={"HOUSE"}/>
-            <img className="overlay" style={{opacity:"0"}} src={TV} id="TV" alt={"TV"}/>
+            <img className="overlay" style={{opacity:"0"}} src={TV} id="Television" alt={"Television"}/>
             <img className="overlay" style={{opacity:"0"}} src={LampeCave} id="LampeCave" alt={"LampeCave"}/>
             <img className="overlay" style={{opacity:"0"}} src={LampeSalon} id="LampeSalon" alt={"LampeSalon"}/>
             <img className="overlay" style={{opacity:"0"}} src={LampeSDB} id="LampeSDB" alt={"LampeSDB"}/>
             <img className="overlay" style={{opacity:"0"}} src={LampeSAM} id="LampeSAM" alt={"LampeSAM"}/>
-            <img className="overlay" style={{opacity:"0"}} src={Ordinateur} id="Ordinateur" alt={"Ordinateur"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Ordinateur} id="Computer" alt={"Computer"}/>
             <img className="overlay" style={{opacity:"0"}} src={Micro_ondes} id="Micro_ondes" alt={"Micro_ondes"}/>
             <img className="overlay" style={{opacity:"0"}} src={Machine_a_laver} id="Machine_a_laver" alt={"Machine_a_laver"}/>
             
@@ -737,7 +732,7 @@ class App extends React.Component {
               <MultiSelect options={ActionsList}
                 value={this.state.actions}
                 onChange={this.ModifyActionsList}
-                labelledBy="Action"
+                labelledBy="Actions"
                 isCreatable={true}
                 valueRenderer={actionsRenderer}/>
             </div>
@@ -745,7 +740,7 @@ class App extends React.Component {
               <MultiSelect options={DevicesList}
                 value={this.state.devices}
                 onChange={this.ModifyDevicesList}
-                labelledBy="Device"
+                labelledBy="Devices"
                 isCreatable={true}
                 valueRenderer={DevicesRenderer}/>
             </div>
@@ -753,7 +748,7 @@ class App extends React.Component {
               <MultiSelect options={EnvironmentList}
                 value={this.state.environment}
                 onChange={this.ModifyEnvironmentList}
-                labelledBy="Environment"
+                labelledBy="Environments"
                 isCreatable={true}
                 valueRenderer={EnvironmentRenderer}/>
             </div>

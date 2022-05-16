@@ -27,38 +27,40 @@ let ActionsList =[
   { label: 'Pause', value: 5 },
   { label: 'Play', value: 6 },
   { label: 'Mute', value: 7 },
-  { label: 'Next', value: 8 },
+  { label: 'Next', value: 8 }
 ]
 let MacrosList =[]
 
 let DevicesList =[
-  { label: 'Television', value: 1 , disabled: false},
+
+  { label: 'Air Conditionner', value: 1 , disabled: false},
   { label: 'Computer', value: 2 , disabled: false},
-  { label: 'Micro-waves', value: 3 , disabled: false},
-  { label: 'Washing machine', value: 4 , disabled: false},
-  { label: 'Radio', value: 5 , disabled: false},
-  { label: 'Air Conditionner', value: 6 , disabled: false},
-  { label: 'Fan', value: 7 , disabled: false},
+  { label: 'Fan', value: 3 , disabled: false},
+  { label: 'Ligth', value: 4 , disabled: false},
+  { label: 'Micro-waves', value: 5 , disabled: false},
+  { label: 'Radio', value: 6 , disabled: false},
+  { label: 'Television', value: 7 , disabled: false},
+  { label: 'Washing machine', value: 8 , disabled: false},
 ]
 
 let EnvironmentList =[
-  { label: 'Children bedroom', value: 1 },
-  { label: 'Bathroom', value: 2 },
-  { label: 'Parent\'s bedroom', value: 3 },
-  { label: 'Kitchen', value: 4 },
-  { label: 'Dining room', value: 5 },
-  { label: 'Living room', value: 6 },
-  { label: 'Office', value: 7 },
-  { label: 'Laundry room', value: 7 },
+  { label: 'Bathroom', value: 1 , disabled: false},
+  { label: 'Children bedroom', value: 2 , disabled: false},
+  { label: 'Dining room', value: 3 , disabled: false},
+  { label: 'Kitchen', value: 4 , disabled: false},
+  { label: 'Laundry room', value: 5 , disabled: false},
+  { label: 'Living room', value: 6 , disabled: false},
+  { label: 'Office', value: 7 , disabled: false},
+  { label: 'Parent\'s bedroom', value: 8 , disabled: false},
 ]
 
 let ParametersList =[
-  { label: 'Volume', value: 1 },
-  { label: 'Brightness', value: 2 },
-  { label: 'Speed', value: 3 },
-  { label: 'Channel', value: 4 },
-  { label: 'Time', value: 5 },
-  { label: 'Program', value: 6 }
+  { label: 'Brightness', value: 1 , disabled: false},
+  { label: 'Channel', value: 2 , disabled: false},
+  { label: 'Program', value: 3 , disabled: false},
+  { label: 'Speed', value: 4 , disabled: false},
+  { label: 'Time', value: 5 , disabled: false},
+  { label: 'Volume', value: 6 , disabled: false},
 ]
 
 
@@ -139,6 +141,7 @@ class App extends React.Component {
     this.ModifyParametersList = this.ModifyParametersList.bind(this);
     this.ModifyMacrosList = this.ModifyMacrosList.bind(this);
     this.dynamicActionsList = this.dynamicActionsList.bind(this);
+    this.dynamicDevicesList = this.dynamicDevicesList.bind(this);
 
     // Timer
     this.timer = null;
@@ -176,7 +179,7 @@ class App extends React.Component {
     }
     console.log("checkListAssign for getData:", checkListAssign)
     console.log("checkList for getData:", checkList)
-    for(let i=checkList.length;i>0;i++){
+    for(let i=0;i<checkList.length;i++){
       MacrosList=MacrosList.concat({label:checkList[i],value:i})
     }
   }
@@ -482,6 +485,7 @@ class App extends React.Component {
     console.log("checkListAssign:", checkListAssign)
     console.log("checkList:", checkList)
     this.setData()
+    MacrosList=MacrosList.concat({label:actionValue.toUpperCase(),value:checkList.length})
   }
 
   macroCommand(){
@@ -666,7 +670,119 @@ class App extends React.Component {
   ModifyDevicesList(event){
     this.setState({
      devices:event
-    })
+    },function(){this.dynamicDevicesList(this.state.devices)})
+  }
+
+  dynamicDevicesList(event){
+    if(!event[0]){
+      for(let j=0;j<EnvironmentList.length;j++){
+        EnvironmentList[j].disabled=false
+      }
+      for(let j=0;j<ParametersList.length;j++){
+        ParametersList[j].disabled=false
+      }
+    }
+    else{
+      for(let j=0;j<EnvironmentList.length;j++){
+        EnvironmentList[j].disabled=false
+      }
+      for(let j=0;j<ParametersList.length;j++){
+        ParametersList[j].disabled=false
+      }
+    }
+    
+    for(let j=0;j<event.length;j++){
+      let label =event[j].label
+      console.log(label)
+      if(event[j].disabled!==true){
+        if(label==="Micro-waves"){
+          for(let i=0;i<EnvironmentList.length;i++){
+            if(EnvironmentList[i].label!=="Kitchen"){
+              EnvironmentList[i].disabled=true
+            }
+          }
+          for(let i=0;i<ParametersList.length;i++){
+            if(ParametersList[i].label==="Speed" || ParametersList[i].label==="Volume" || ParametersList[i].label==="Channel"|| ParametersList[i].label==="Brightness"){
+              ParametersList[i].disabled=true
+            }
+          }
+        }
+        if(label==="Washing machine"){
+          for(let i=0;i<EnvironmentList.length;i++){
+            if(EnvironmentList[i].label!=="Laundry room"){
+              EnvironmentList[i].disabled=true
+            }
+          }
+          for(let i=0;i<ParametersList.length;i++){
+            if(ParametersList[i].label==="Speed" || ParametersList[i].label==="Volume" || ParametersList[i].label==="Channel"|| ParametersList[i].label==="Brightness"){
+              ParametersList[i].disabled=true
+            }
+          }
+        }
+        if(label==="Computer"){
+          console.log(label)
+          for(let i=0;i<EnvironmentList.length;i++){
+            if(EnvironmentList[i].label!=="Office"){
+              EnvironmentList[i].disabled=true
+            }
+          }
+          for(let i=0;i<ParametersList.length;i++){
+            if(ParametersList[i].label==="Speed" || ParametersList[i].label==="Time" || ParametersList[i].label==="Channel"|| ParametersList[i].label==="Program"){
+              ParametersList[i].disabled=true
+            }
+          }
+        }
+        if(label==="Television"){
+          for(let i=0;i<EnvironmentList.length;i++){
+            if(EnvironmentList[i].label!=="Living room"){
+              EnvironmentList[i].disabled=true
+            }
+          }
+          for(let i=0;i<ParametersList.length;i++){
+            if(ParametersList[i].label==="Speed" || ParametersList[i].label==="Time"|| ParametersList[i].label==="Program" ){
+              ParametersList[i].disabled=true
+            }
+          }
+        }
+        if(label==="Radio"){
+          for(let i=0;i<EnvironmentList.length;i++){
+            if(EnvironmentList[i].label!=="Parent's bedroom"){
+              EnvironmentList[i].disabled=true
+            }
+          }
+          for(let i=0;i<ParametersList.length;i++){
+            if(ParametersList[i].label==="Speed" || ParametersList[i].label==="Time"|| ParametersList[i].label==="Program" || ParametersList[i].label==="Brightness" ){
+              ParametersList[i].disabled=true
+            }
+          }
+        }
+        if(label==="Air Conditionner"){
+          for(let i=0;i<EnvironmentList.length;i++){
+            if(EnvironmentList[i].label!=="Children bedroom"){
+              EnvironmentList[i].disabled=true
+            }
+          }
+          for(let i=0;i<ParametersList.length;i++){
+            if(ParametersList[i].label!=="Program"){
+              ParametersList[i].disabled=true
+            }
+          }
+        }
+        if(label==="Fan"){
+          for(let i=0;i<EnvironmentList.length;i++){
+            if(EnvironmentList[i].label!=="Living room"){
+              EnvironmentList[i].disabled=true
+            }
+          }
+          for(let i=0;i<ParametersList.length;i++){
+            if(!ParametersList[i].label==="Program" || !ParametersList[i].label==="Speed"){
+              ParametersList[i].disabled=true
+            }
+          }
+        }
+      }      
+    }
+
   }
 
   ModifyEnvironmentList(event){
@@ -791,18 +907,20 @@ class App extends React.Component {
             </div>
           </div>
           <div>              
-            <a className={"triangle-down"} onClick={this.toggleTable}></a>
+            <button className={"triangle-down"} onClick={this.toggleTable}></button>
               <h1>Table of gestures</h1>
               <div id ="TableOfGestures">
                 <button className={"button"} onClick={this.clearDataSet}>Clear Dataset</button>
                 <table className={"content-table"} id={"target"}>
-                  <tr>
-                  <th>Name of gesture</th>
-                  <th>Actions</th>
-                  <th>Devices</th>
-                  <th>Environments</th>
-                  <th>Parameters</th>
-                  </tr>
+                  <tbody>
+                    <tr>
+                    <th>Name of gesture</th>
+                    <th>Actions</th>
+                    <th>Devices</th>
+                    <th>Environments</th>
+                    <th>Parameters</th>
+                    </tr>
+                  </tbody>
                 </table>
               </div>
             </div>

@@ -316,6 +316,103 @@ select::-ms-expand {
 }
 
 
+
+.custom1-field {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  font-size: 12px;
+  border-top: 0px solid transparent;
+  margin-bottom: 5px;
+  --field-padding: 12px;
+}
+
+.custom1-field input {
+  border: none;
+  -webkit-appearance: none;
+  -ms-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background: #f2f2f2;
+  padding: var(--field-padding);
+  border-radius: 4px;
+  width: 80px;
+  outline: none;
+  font-size: 12px;
+}
+
+.custom1-field .placeholder {
+  position: absolute;
+  left: var(--field-padding);
+  width: calc(100% - (var(--field-padding) * 2));
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  top: 22px;
+  line-height: 100%;
+  transform: translateY(-50%);
+  color: #aaa;
+  transition:
+    top 0.3s ease,
+    color 0.3s ease,
+    font-size 0.3s ease;
+}
+
+.custom1-field input.dirty + .placeholder,
+.custom1-field input:focus + .placeholder,
+.custom1-field input:not(:placeholder-shown) + .placeholder {
+  top: -10px;
+  font-size: 12px;
+  color: #222;
+}
+
+.custom1-field .error-message {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  font-size: 12px;
+  background: #d30909;
+  color: #fff;
+  height: 24px;
+}
+
+.custom1-field .error-message:empty {
+  opacity: 0;
+}
+
+/* ONE */
+.custom1-field.one input {
+  background: none;
+  border: 2px solid #ddd;
+  transition: border-color 0.3s ease;
+}
+
+.custom1-field.one input + .placeholder {
+  left: 8px;
+  padding: 0 5px;
+}
+
+.custom1-field.one input.dirty,
+.custom1-field.one input:not(:placeholder-shown),
+.custom1-field.one input:focus {
+  border-color: #222;
+  transition-delay: 0.1s
+}
+
+.custom1-field.one input.dirty + .placeholder,
+.custom1-field.one input:not(:placeholder-shown) + .placeholder,
+.custom1-field.one input:focus + .placeholder {
+  top: 0;
+  font-size: 12px;
+  color: #222;
+  background: #fff;
+  width: auto
+}
+
+
 /**************************************************************************************************/
 
 

@@ -143,6 +143,8 @@ class App extends React.Component {
     this.dynamicActionsList = this.dynamicActionsList.bind(this);
     this.add_instruction = this.add_instruction.bind(this);
     this.dynamicDevicesList = this.dynamicDevicesList.bind(this);
+    this.toggleTable = this.toggleTable.bind(this);
+    this.toggleNumber = this.toggleNumber.bind(this);
 
     // Timer
     this.timer = null;
@@ -202,6 +204,7 @@ class App extends React.Component {
       this.ctx.current = this.canvasRef.current.getContext('2d');
     }
     this.action = document.getElementById('action');
+    this.number = document.getElementById('number');
     // STEPS 6 and 7
     this.gestureHandler.registerGestures("dynamic", this.state.checked);
 
@@ -792,7 +795,14 @@ class App extends React.Component {
     })
   }
   
-  ModifyParametersList(event){
+  ModifyParametersList(event){var element= document.getElementById("Numbers")
+      if(event.length>this.state.parameters.length){
+          element.style.display = "block";        
+      }
+      else{
+        element.style.display = "none";
+    }
+    
     this.setState({
      parameters:event
     })
@@ -800,8 +810,6 @@ class App extends React.Component {
   ModifyMacrosList(event){
     this.setState({
      macros:event
-    }, function (){
-      console.log("MACRO: ", this.state.macros)
     })
   }
   toggleTable(){
@@ -811,6 +819,16 @@ class App extends React.Component {
     } else {
       element.style.display = "none";
     }
+  }
+  toggleNumber(){
+    var element= document.getElementById("Numbers")
+    element.style.display = "none";
+  
+    this.number = document.getElementById('number');
+    this.setState({
+      parameters:this.state.parameters.concat({label:this.number.value.trim(),value:this.state.parameters[this.state.parameters.length-1].value})
+    },function(){console.log(this.state.parameters)})
+    this.number.value=""
   }
 
   add_instruction(){
@@ -897,11 +915,18 @@ class App extends React.Component {
                 isCreatable={true}
                 valueRenderer={parametersRenderer}/>
             </div>
+            <div id ="Numbers" style={{display:"none"}}>
+              <label className="custom1-field one">
+                <input className={"textArea"} type="text" placeholder=" " id="number"/>
+                <span className="placeholder">Number</span>
+              </label>
+              <button type="button" className={"button"} onClick={this.toggleNumber}>Number</button>
+            </div>
+          <button type="button" className={"button"} onClick={this.record}>Record</button>
           </form>
           <button className={"button"} onClick={this.recognize_canvas}>Recognize</button>
           <button className={"button"} onClick={this.clear}>Clear</button>
           <button className={"button"} onClick={this.macroCommand}>Macro-Command</button>
-          <button className={"button"} onClick={this.record}>Record</button>
           <button className={"button"} onClick={this.add_instruction}>Add Instruction</button>
 
           <div>
@@ -914,26 +939,26 @@ class App extends React.Component {
                 isCreatable={true}
                 valueRenderer={MacroRenderer}/>
             </div>
-          </div>
-        </div>
-        <div className="box4">
-            <button className={"triangle-down"} onClick={this.toggleTable}></button>
-            <h1>Table of gestures</h1>
-            <div id ="TableOfGestures">
-              <button className={"button"} onClick={this.clearDataSet}>Clear Dataset</button>
-              <table className={"content-table"} id={"target"}>
-                <tbody>
-                  <tr>
-                    <th>Name of gesture</th>
-                    <th>Actions</th>
-                    <th>Devices</th>
-                    <th>Environments</th>
-                    <th>Parameters</th>
-                  </tr>
-                </tbody>
-              </table>
+            <div className="box4">
+                <button className={"triangle-down"} onClick={this.toggleTable}></button>
+                <h1>Table of gestures</h1>
+                <div id ="TableOfGestures">
+                  <button className={"button"} onClick={this.clearDataSet}>Clear Dataset</button>
+                  <table className={"content-table"} id={"target"}>
+                    <tbody>
+                      <tr>
+                        <th>Name of gesture</th>
+                        <th>Actions</th>
+                        <th>Devices</th>
+                        <th>Environments</th>
+                        <th>Parameters</th>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
-          </div>
+        </div>
       </div>
     </div>
     

@@ -796,22 +796,24 @@ class App extends React.Component {
   }
   
   ModifyParametersList(event){var element= document.getElementById("Numbers")
-      if(event.length>this.state.parameters.length){
-          element.style.display = "block";        
-      }
-      else{
-        element.style.display = "none";
+    if(event.length>this.state.parameters.length){
+        element.style.display = "block";        
+    }
+    else{
+      element.style.display = "none";
     }
     
     this.setState({
      parameters:event
     })
   }
+
   ModifyMacrosList(event){
     this.setState({
      macros:event
     })
   }
+
   toggleTable(){
     var element= document.getElementById("TableOfGestures")
     if (element.style.display === "none") {
@@ -820,6 +822,7 @@ class App extends React.Component {
       element.style.display = "none";
     }
   }
+
   toggleNumber(){
     var element= document.getElementById("Numbers")
     element.style.display = "none";
@@ -827,7 +830,7 @@ class App extends React.Component {
     this.number = document.getElementById('number');
     this.setState({
       parameters:this.state.parameters.concat({label:this.number.value.trim(),value:this.state.parameters[this.state.parameters.length-1].value})
-    },function(){console.log(this.state.parameters)})
+    })
     this.number.value=""
   }
 

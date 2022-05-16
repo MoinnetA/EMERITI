@@ -18,24 +18,45 @@ code {
   display: flex;
 }
 
+.container2{
+  width: 100%;
+  display: flex;
+}
+
 .h1{
     text-align: left;
     font-family: 'Open Sans', sans-serif;
-    font-size: 50px;
+    font-size: 40px;
 }
 
 .box{
-  width: 650px;
+  width: 500px;
   height:40%;
   margin: 10px;
   box-sizing: border-box;
   font-size: 12px;
-  
 }
+
 .box2{
-  width: 650px;
+  width: 950px;
   height:40%;
   margin: 10px;
+  box-sizing: border-box;
+  font-size: 12px;
+}
+
+.box3{
+  width: 40%;
+  height:40%;
+  margin: 25px;
+  box-sizing: border-box;
+  font-size: 12px;
+}
+
+.box4{
+  width: 60%;
+  height:40%;
+  margin: 25px;
   box-sizing: border-box;
   font-size: 12px;
 }
@@ -123,8 +144,8 @@ code {
 
 .overlay{
   position:absolute;
-  width: 50%;
-  height: 50%;
+  width: 950px;
+  height: 500px;
 }
 
 .list{

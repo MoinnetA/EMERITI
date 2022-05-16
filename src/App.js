@@ -32,7 +32,6 @@ let ActionsList =[
 let MacrosList =[]
 
 let DevicesList =[
-
   { label: 'Air Conditionner', value: 1 , disabled: false},
   { label: 'Computer', value: 2 , disabled: false},
   { label: 'Fan', value: 3 , disabled: false},
@@ -111,7 +110,8 @@ class App extends React.Component {
       devices:[],
       environment:[],
       parameters:[],
-      macros:[]
+      macros:[],
+      macro_instruction:[]
     };
     this.canvasRef = createRef(null);
     this.ctx = createRef(null);
@@ -141,6 +141,7 @@ class App extends React.Component {
     this.ModifyParametersList = this.ModifyParametersList.bind(this);
     this.ModifyMacrosList = this.ModifyMacrosList.bind(this);
     this.dynamicActionsList = this.dynamicActionsList.bind(this);
+    this.add_instruction = this.add_instruction.bind(this);
     this.dynamicDevicesList = this.dynamicDevicesList.bind(this);
 
     // Timer
@@ -182,6 +183,9 @@ class App extends React.Component {
     for(let i=0;i<checkList.length;i++){
       MacrosList=MacrosList.concat({label:checkList[i],value:i})
     }
+    this.setState({
+      checked:checkList
+    })
   }
 
   componentDidMount() {
@@ -199,9 +203,6 @@ class App extends React.Component {
     }
     this.action = document.getElementById('action');
     // STEPS 6 and 7
-    this.setState({
-      checked:checkList
-    })
     this.gestureHandler.registerGestures("dynamic", this.state.checked);
 
     // STEPS 5, 7, 8, 10, 11
@@ -354,8 +355,8 @@ class App extends React.Component {
         "t": Date.now(),
       };
       tabFinal[stroke_id].push(objectCoord);
-      this.ctx.current.moveTo(this.state.lastPosition.x-10, this.state.lastPosition.y-10);
-      this.ctx.current.lineTo(x-10, y-10);
+      this.ctx.current.moveTo(this.state.lastPosition.x-10, this.state.lastPosition.y-67);
+      this.ctx.current.lineTo(x-10, y-67);
       this.ctx.current.closePath();
       this.ctx.current.stroke();
       this.setState({
@@ -690,7 +691,7 @@ class App extends React.Component {
         ParametersList[j].disabled=false
       }
     }
-    
+
     for(let j=0;j<event.length;j++){
       let label =event[j].label
       console.log(label)
@@ -780,7 +781,7 @@ class App extends React.Component {
             }
           }
         }
-      }      
+      }
     }
 
   }
@@ -800,7 +801,7 @@ class App extends React.Component {
     this.setState({
      macros:event
     }, function (){
-      console.log(this.state.macros)
+      console.log("MACRO: ", this.state.macros)
     })
   }
   toggleTable(){
@@ -810,7 +811,13 @@ class App extends React.Component {
     } else {
       element.style.display = "none";
     }
+  }
 
+  add_instruction(){
+    console.log("actions :", this.state.actions)
+    console.log("devices :", this.state.devices)
+    console.log("environment :", this.state.environment)
+    console.log("parameters :", this.state.parameters)
   }
 
   render() {
@@ -819,12 +826,13 @@ class App extends React.Component {
       <div className="App">
         <div className="container">
           <div className="box">
+            <h1 className={"h1"} style={{textAlign: "center"}}>Drawing area</h1>
             <canvas id="myCanvas" ref={this.canvasRef}
               style={{
                 border: "1px solid #000"
               }}
-              width={650}
-              height={650}
+              width={500}
+              height={500}
               onMouseDown={this.onMouseDown}
               onMouseUp={this.onMouseUp}
               onMouseLeave={this.onMouseUp}
@@ -832,8 +840,8 @@ class App extends React.Component {
             </canvas>
           </div>
           <br />
-          <div className="box">
-            <h1 className={"h1"}>Smart home</h1>
+          <div className="box2">
+            <h1 className={"h1"} style={{textAlign: "center"}}>Smart home</h1>
             <img className="overlay" style={{maxWidth:'100%'}} src={House} alt={"HOUSE"}/>
             <img className="overlay" style={{opacity:"0"}} src={TV} id="Television" alt={"Television"}/>
             <img className="overlay" style={{opacity:"0"}} src={LampeCave} id="LampeCave" alt={"LampeCave"}/>
@@ -846,8 +854,8 @@ class App extends React.Component {
             
           </div>
       </div>
-      <div className="container">
-        <div className="box2">
+      <div className="container2">
+        <div className="box3">
           <div className={"time before next gesture"}>Timer : {this.fmt(this.state.count)}</div>
           <form className={"container"}>
             <div className={"box"}>
@@ -894,7 +902,8 @@ class App extends React.Component {
           <button className={"button"} onClick={this.clear}>Clear</button>
           <button className={"button"} onClick={this.macroCommand}>Macro-Command</button>
           <button className={"button"} onClick={this.record}>Record</button>
-          
+          <button className={"button"} onClick={this.add_instruction}>Add Instruction</button>
+
           <div>
 
           <div className={"list"}>
@@ -906,23 +915,23 @@ class App extends React.Component {
                 valueRenderer={MacroRenderer}/>
             </div>
           </div>
-          <div>              
+        </div>
+        <div className="box4">
             <button className={"triangle-down"} onClick={this.toggleTable}></button>
-              <h1>Table of gestures</h1>
-              <div id ="TableOfGestures">
-                <button className={"button"} onClick={this.clearDataSet}>Clear Dataset</button>
-                <table className={"content-table"} id={"target"}>
-                  <tbody>
-                    <tr>
+            <h1>Table of gestures</h1>
+            <div id ="TableOfGestures">
+              <button className={"button"} onClick={this.clearDataSet}>Clear Dataset</button>
+              <table className={"content-table"} id={"target"}>
+                <tbody>
+                  <tr>
                     <th>Name of gesture</th>
                     <th>Actions</th>
                     <th>Devices</th>
                     <th>Environments</th>
                     <th>Parameters</th>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
       </div>

@@ -29,6 +29,7 @@ let ActionsList =[
   { label: 'Mute', value: 7 },
   { label: 'Next', value: 8 },
 ]
+let MacrosList =[]
 
 let DevicesList =[
   { label: 'Television', value: 1 , disabled: false},
@@ -107,7 +108,8 @@ class App extends React.Component {
       actions:[],
       devices:[],
       environment:[],
-      parameters:[]
+      parameters:[],
+      macros:[]
     };
     this.canvasRef = createRef(null);
     this.ctx = createRef(null);
@@ -135,6 +137,7 @@ class App extends React.Component {
     this.ModifyDevicesList = this.ModifyDevicesList.bind(this);
     this.ModifyEnvironmentList = this.ModifyEnvironmentList.bind(this);
     this.ModifyParametersList = this.ModifyParametersList.bind(this);
+    this.ModifyMacrosList = this.ModifyMacrosList.bind(this);
     this.dynamicActionsList = this.dynamicActionsList.bind(this);
 
     // Timer
@@ -173,6 +176,9 @@ class App extends React.Component {
     }
     console.log("checkListAssign for getData:", checkListAssign)
     console.log("checkList for getData:", checkList)
+    for(let i=checkList.length;i>0;i++){
+      MacrosList=MacrosList.concat({label:checkList[i],value:i})
+    }
   }
 
   componentDidMount() {
@@ -401,6 +407,7 @@ class App extends React.Component {
   record(){
     var dataStringRecord = this.checkInputsRecord();
     const actionValue = this.action.value.trim();
+  
     this.gestureHandler.addNewGesture(dataStringRecord, actionValue.toLowerCase());
 
     let a=""
@@ -450,6 +457,7 @@ class App extends React.Component {
 
     if(!checkList.includes(actionValue.toUpperCase())){
        checkList.push(actionValue.toUpperCase());
+       
     }
     if(!checkListAssign.hasOwnProperty(actionValue.toUpperCase())) {
       console.log("It's in")
@@ -670,8 +678,13 @@ class App extends React.Component {
   ModifyParametersList(event){
     this.setState({
      parameters:event
+    })
+  }
+  ModifyMacrosList(event){
+    this.setState({
+     macros:event
     }, function (){
-      console.log(this.state.parameters)
+      console.log(this.state.macros)
     })
   }
   toggleTable(){
@@ -769,10 +782,10 @@ class App extends React.Component {
           <div>
 
           <div className={"list"}>
-              <MultiSelect options={ActionsList}
-                value={this.state.actions}
-                onChange={this.ModifyActionsList}
-                labelledBy="Action"
+              <MultiSelect options={MacrosList}
+                value={this.state.macros}
+                onChange={this.ModifyMacrosList}
+                labelledBy="Macros"
                 isCreatable={true}
                 valueRenderer={MacroRenderer}/>
             </div>

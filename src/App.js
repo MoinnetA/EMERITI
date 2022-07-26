@@ -103,6 +103,7 @@ class App extends React.Component {
       lastPosition: {x:0, y:0},
       checked: [],
       action:"",
+      gestureDeleted:"",
       count:2,
       pause:true,
       turn_on:"1",
@@ -134,6 +135,7 @@ class App extends React.Component {
     this.setData = this.setData.bind(this);
     this.updateCheckListAssign = this.updateCheckListAssign.bind(this);
     this.clearDataSet = this.clearDataSet.bind(this);
+    this.clearGesture = this.clearGesture.bind(this);
     this.macroCommand = this.macroCommand.bind(this);
     this.ModifyActionsList = this.ModifyActionsList.bind(this);
     this.ModifyDevicesList = this.ModifyDevicesList.bind(this);
@@ -145,6 +147,7 @@ class App extends React.Component {
     this.dynamicDevicesList = this.dynamicDevicesList.bind(this);
     this.toggleTable = this.toggleTable.bind(this);
     this.toggleNumber = this.toggleNumber.bind(this);
+    this.deleteGesture = this.deleteGesture.bind(this);
 
     // Timer
     this.timer = null;
@@ -204,6 +207,7 @@ class App extends React.Component {
       this.ctx.current = this.canvasRef.current.getContext('2d');
     }
     this.action = document.getElementById('action');
+    this.gestureDeleted = document.getElementById('gestureDeleted');
     this.number = document.getElementById('number');
     // STEPS 6 and 7
     this.gestureHandler.registerGestures("dynamic", this.state.checked);
@@ -535,6 +539,35 @@ class App extends React.Component {
     checkList = []
     this.setData()
     this.updateCheckListAssign()
+  }
+
+  clearGesture(){
+    const gestureDeleted=this.gestureDeleted.value.trim();
+    this.gestureHandler.clearGesture(gestureDeleted.toLowerCase());
+    
+    this.clear()
+    console.log("checkListAssign "+Object.keys(checkListAssign))
+    delete checkListAssign[gestureDeleted];
+    console.log("checkListAssign " +Object.keys(checkListAssign))
+    
+    console.log("checkList " +Object.keys(checkList))
+    delete checkList[gestureDeleted];
+    console.log("checkList " +Object.keys(checkList))
+
+    console.log("gestureList " +Object.keys(gestureList))
+    delete checkList[gestureDeleted];
+    console.log("gestureList " +Object.keys(gestureList))
+
+    this.setData()
+    this.updateCheckListAssign()
+
+    window.location.reload();
+    
+
+  }
+  
+  deleteGesture(){
+
   }
 
   onMouseDown(e){
@@ -947,6 +980,14 @@ class App extends React.Component {
                 <h1>Table of gestures</h1>
                 <div id ="TableOfGestures">
                   <button className={"button"} onClick={this.clearDataSet}>Clear Dataset</button>
+
+                  <div className={"box"}>
+                    <label className="custom-field one">
+                      <input className={"textArea"} type="text" placeholder=" " id="gestureDeleted"/>
+                      <span className="placeholder">Name of the gesture to delete</span>
+                    </label>
+                    <button type="button" className={"button"} onClick={this.clearGesture}>Delete</button>
+                  </div>
                   <table className={"content-table"} id={"target"}>
                     <tbody>
                       <tr>

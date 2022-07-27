@@ -148,6 +148,7 @@ class App extends React.Component {
     this.toggleTable = this.toggleTable.bind(this);
     this.toggleNumber = this.toggleNumber.bind(this);
     this.deleteGesture = this.deleteGesture.bind(this);
+    this.showInstructions = this.showInstructions.bind(this);
 
     // Timer
     this.timer = null;
@@ -208,6 +209,7 @@ class App extends React.Component {
     }
     this.action = document.getElementById('action');
     this.gestureDeleted = document.getElementById('gestureDeleted');
+    this.instructions = document.getElementById('instructions');
     this.number = document.getElementById('number');
     // STEPS 6 and 7
     this.gestureHandler.registerGestures("dynamic", this.state.checked);
@@ -560,10 +562,7 @@ class App extends React.Component {
 
     this.setData()
     this.updateCheckListAssign()
-
     window.location.reload();
-    
-
   }
   
   deleteGesture(){
@@ -652,17 +651,21 @@ class App extends React.Component {
     this.setState({
      actions:event
     },function(){this.dynamicActionsList(this.state.actions)})
-
-
   }
 
   dynamicActionsList(event){
     if(!event[0]){
+      for(let k=0;k<ActionsList.length;k++){
+        ActionsList[k].disabled=false
+      }
       for(let j=0;j<DevicesList.length;j++){
         DevicesList[j].disabled=false
       }
     }
     else{
+      for(let k=0;k<ActionsList.length;k++){
+        ActionsList[k].disabled=true
+      }
       for(let j=0;j<DevicesList.length;j++){
         DevicesList[j].disabled=false
       }
@@ -730,7 +733,6 @@ class App extends React.Component {
 
     for(let j=0;j<event.length;j++){
       let label =event[j].label
-      console.log(label)
       if(event[j].disabled!==true){
         if(label==="Micro-waves"){
           for(let i=0;i<EnvironmentList.length;i++){
@@ -757,7 +759,6 @@ class App extends React.Component {
           }
         }
         if(label==="Computer"){
-          console.log(label)
           for(let i=0;i<EnvironmentList.length;i++){
             if(EnvironmentList[i].label!=="Office"){
               EnvironmentList[i].disabled=true
@@ -828,7 +829,8 @@ class App extends React.Component {
     })
   }
   
-  ModifyParametersList(event){var element= document.getElementById("Numbers")
+  ModifyParametersList(event){
+    var element= document.getElementById("Numbers")
     if(event.length>this.state.parameters.length){
         element.style.display = "block";        
     }
@@ -874,6 +876,23 @@ class App extends React.Component {
     console.log("parameters :", this.state.parameters)
   }
 
+  showInstructions(){
+    let instruction =""
+    for( const i in this.state.actions){
+      instruction +=" "+this.state.actions[i].label
+    }
+    for( const i in this.state.devices){
+      instruction +=" "+this.state.devices[i].label
+    }
+    for( const i in this.state.environment){
+      instruction +=" "+this.state.environment[i].label
+    }
+    for( const i in this.state.parameters){
+      instruction +=" "+this.state.parameters[i].label
+    }
+    return instruction;
+  }
+
   render() {
     return (
       
@@ -893,7 +912,6 @@ class App extends React.Component {
               onMouseMove={this.onMouseMove}>
             </canvas>
           </div>
-          <br />
           <div className="box2">
             <h1 className={"h1"} style={{textAlign: "center"}}>Smart home</h1>
             <img className="overlay" style={{maxWidth:'100%'}} src={House} alt={"HOUSE"}/>
@@ -904,110 +922,102 @@ class App extends React.Component {
             <img className="overlay" style={{opacity:"0"}} src={LampeSAM} id="LampeSAM" alt={"LampeSAM"}/>
             <img className="overlay" style={{opacity:"0"}} src={Ordinateur} id="Computer" alt={"Computer"}/>
             <img className="overlay" style={{opacity:"0"}} src={Micro_ondes} id="Micro_ondes" alt={"Micro_ondes"}/>
-            <img className="overlay" style={{opacity:"0"}} src={Machine_a_laver} id="Machine_a_laver" alt={"Machine_a_laver"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Machine_a_laver} id="Machine_a_laver" alt={"Machine_a_laver"}/> 
+                 
+          </div>     
+        </div>
+        <div className={"instructions"}>  Instruction : {this.showInstructions()}</div> 
+        <div className="container2">
+          <div className="box3">
+            <div className={"time before next gesture"}>Timer : {this.fmt(this.state.count)}</div>
+            <form className={"container"}>
+              <div className={"box"}>
+                <label className="custom-field one">
+                  <input className={"textArea"} type="text" placeholder=" " id="action"/>
+                  <span className="placeholder">Name of the gesture</span>
+                </label>
+              </div>
             
-          </div>
-      </div>
-      <div className="container2">
-        <div className="box3">
-          <div className={"time before next gesture"}>Timer : {this.fmt(this.state.count)}</div>
-          <form className={"container"}>
-            <div className={"box"}>
-              <label className="custom-field one">
-                <input className={"textArea"} type="text" placeholder=" " id="action"/>
-                <span className="placeholder">Name of the gesture</span>
-              </label>
-            </div>
-            
-            <div className={"list"}>
-              <MultiSelect options={ActionsList}
-                value={this.state.actions}
-                onChange={this.ModifyActionsList}
-                labelledBy="Actions"
-                isCreatable={true}
-                valueRenderer={actionsRenderer}/>
-            </div>
-            <div className={"list"}>
-              <MultiSelect options={DevicesList}
-                value={this.state.devices}
-                onChange={this.ModifyDevicesList}
-                labelledBy="Devices"
-                isCreatable={true}
-                valueRenderer={DevicesRenderer}/>
-            </div>
-            <div className={"list"}>
-              <MultiSelect options={EnvironmentList}
-                value={this.state.environment}
-                onChange={this.ModifyEnvironmentList}
-                labelledBy="Environments"
-                isCreatable={true}
-                valueRenderer={EnvironmentRenderer}/>
-            </div>
-            <div className={"list"}>
-              <MultiSelect options={ParametersList}
-                value={this.state.parameters}
-                onChange={this.ModifyParametersList}
-                labelledBy="Parameters"
-                isCreatable={true}
-                valueRenderer={parametersRenderer}/>
-            </div>
-            <div id ="Numbers" style={{display:"none"}}>
-              <label className="custom1-field one">
-                <input className={"textArea"} type="text" placeholder=" " id="number"/>
-                <span className="placeholder">Number</span>
-              </label>
-              <button type="button" className={"button"} onClick={this.toggleNumber}>Number</button>
-            </div>
-          <button type="button" className={"button"} onClick={this.record}>Record</button>
-          </form>
-          <button className={"button"} onClick={this.recognize_canvas}>Recognize</button>
-          <button className={"button"} onClick={this.clear}>Clear</button>
-          <button className={"button"} onClick={this.macroCommand}>Macro-Command</button>
-          <button className={"button"} onClick={this.add_instruction}>Add Instruction</button>
+              <div className={"list"}>
+                <MultiSelect options={ActionsList}
+                  value={this.state.actions}
+                  onChange={this.ModifyActionsList}
+                  labelledBy="Actions"
+                  isCreatable={true}
+                  valueRenderer={actionsRenderer}
+                  hasSelectAll={false}/>
+              </div>
+              <div className={"list"}>
+                <MultiSelect options={DevicesList}
+                  value={this.state.devices}
+                  onChange={this.ModifyDevicesList}
+                  labelledBy="Devices"
+                  isCreatable={true}
+                  valueRenderer={DevicesRenderer}/>
+              </div>
+              <div className={"list"}>
+                <MultiSelect options={EnvironmentList}
+                  value={this.state.environment}
+                  onChange={this.ModifyEnvironmentList}
+                  labelledBy="Environments"
+                  isCreatable={true}
+                  valueRenderer={EnvironmentRenderer}/>
+              </div>
+              <div className={"list"}>
+                <MultiSelect options={ParametersList}
+                  value={this.state.parameters}
+                  onChange={this.ModifyParametersList}
+                  labelledBy="Parameters"
+                  isCreatable={true}
+                  valueRenderer={parametersRenderer}/>
+              </div>
+              <div id ="Numbers" style={{display:"none"}}>
+                <label className="custom1-field one">
+                  <input className={"textArea"} type="text" placeholder=" " id="number"/>
+                  <span className="placeholder">Number</span>
+                </label>
+                <button type="button" className={"button"} onClick={this.toggleNumber}>Number</button>
+              </div>
+              <button type="button" className={"button"} onClick={this.record}>Record</button>
+            </form>
+            <button className={"button"} onClick={this.recognize_canvas}>Recognize</button>
+            <button className={"button"} onClick={this.clear}>Clear</button>
+            <button className={"button"} onClick={this.macroCommand}>Macro-Command</button>
+            <button className={"button"} onClick={this.add_instruction}>Add Instruction</button>
 
-          <div>
-
-          <div className={"list"}>
-              <MultiSelect options={MacrosList}
-                value={this.state.macros}
-                onChange={this.ModifyMacrosList}
-                labelledBy="Macros"
-                isCreatable={true}
-                valueRenderer={MacroRenderer}/>
-            </div>
-            <div className="box4">
+            <div className={"list"}>
+                <MultiSelect options={MacrosList}
+                  value={this.state.macros}
+                  onChange={this.ModifyMacrosList}
+                  labelledBy="Macros"
+                  isCreatable={true}
+                  valueRenderer={MacroRenderer}/>
+              </div>
                 <button className={"triangle-down"} onClick={this.toggleTable}></button>
                 <h1>Table of gestures</h1>
                 <div id ="TableOfGestures">
-                  <button className={"button"} onClick={this.clearDataSet}>Clear Dataset</button>
-
-                  <div className={"box"}>
                     <label className="custom-field one">
                       <input className={"textArea"} type="text" placeholder=" " id="gestureDeleted"/>
                       <span className="placeholder">Name of the gesture to delete</span>
                     </label>
                     <button type="button" className={"button"} onClick={this.clearGesture}>Delete</button>
-                  </div>
-                  <table className={"content-table"} id={"target"}>
-                    <tbody>
-                      <tr>
-                        <th>Name of gesture</th>
-                        <th>Actions</th>
-                        <th>Devices</th>
-                        <th>Environments</th>
-                        <th>Parameters</th>
-                      </tr>
-                    </tbody>
-                  </table>
+                    <button className={"button"} onClick={this.clearDataSet}>Clear Dataset</button>
+                    <table className={"content-table"} id={"target"}>
+                      <tbody>
+                        <tr>
+                          <th>Name of gesture</th>
+                          <th>Actions</th>
+                          <th>Devices</th>
+                          <th>Environments</th>
+                          <th>Parameters</th>
+                        </tr>
+                      </tbody>
+                    </table>
                 </div>
-              </div>
             </div>
-        </div>
-      </div>
-    </div>
-    
-    
-  );
+          </div>
+      </div>   
+    );
   }
 }
 

@@ -14,7 +14,9 @@ import { MultiSelect } from "react-multi-select-component";
 let tabFinal=[];
 let stroke_id=0;
 let checkList = []
+let checkMacroList = []
 let checkListAssign = {}
+let checkMacroListAssign = {}
 let gestureList = []
 let recognizedActionList = []
 let recognizedDeviceList = []
@@ -86,7 +88,7 @@ const parametersRenderer = (selected, _options) => {
 const MacroRenderer = (selected, _options) => {
   return selected.length
     ? selected.map(({ label }) => label+ ", ")
-    : "Macro-commandes";
+    : "Macro-commands";
 };
 
 class App extends React.Component {
@@ -112,7 +114,8 @@ class App extends React.Component {
       environment:[],
       parameters:[],
       macros:[],
-      macro_instruction:[]
+      macro_instruction:[],
+      instructions:[]
     };
     this.canvasRef = createRef(null);
     this.ctx = createRef(null);
@@ -147,7 +150,7 @@ class App extends React.Component {
     this.dynamicDevicesList = this.dynamicDevicesList.bind(this);
     this.toggleTable = this.toggleTable.bind(this);
     this.toggleNumber = this.toggleNumber.bind(this);
-    this.deleteGesture = this.deleteGesture.bind(this);
+    this.composedInstructions = this.composedInstructions.bind(this);
     this.showInstructions = this.showInstructions.bind(this);
 
     // Timer
@@ -418,64 +421,20 @@ class App extends React.Component {
   }
 
   record(){
-    var dataStringRecord = this.checkInputsRecord();
-    const actionValue = this.action.value.trim();
-  
-    this.gestureHandler.addNewGesture(dataStringRecord, actionValue.toLowerCase());
-
-    let a=""
-    let d=""
-    let e=""
-    let p=""
+      var dataStringRecord = this.checkInputsRecord();
+      const actionValue = this.action.value.trim();
     
-    if(!this.state.actions[0]){
-      a = "-"
-    }
-    else{
-      for(let i = 0; i<this.state.actions.length-1; i++){
-        a = a.concat(this.state.actions[i].label+", ")
-      }
-      a = a.concat(this.state.actions[this.state.actions.length-1].label)
-    }
+      this.gestureHandler.addNewGesture(dataStringRecord, actionValue.toLowerCase());
 
-    if(!this.state.devices[0]){
-      d = "-"
-    }
-    else{      
-      for(let i = 0; i<this.state.devices.length-1; i++){
-        d = d.concat(this.state.devices[i].label+", ")
+      var tab = this.composedInstructions()
+      if(!checkList.includes(actionValue.toUpperCase())){
+        checkList.push(actionValue.toUpperCase());
+        
       }
-      d = d.concat(this.state.devices[this.state.devices.length-1].label)
-    }
-    
-    if(!this.state.environment[0]){
-      e = "-"
-    }
-    else{
-      for(let i = 0; i<this.state.environment.length-1; i++){
-        e = e.concat(this.state.environment[i].label+", ")
-      }
-      e = e.concat(this.state.environment[this.state.environment.length-1].label)
-    }
-    
-    if(!this.state.parameters[0]){
-      p = "-"
-    }
-    else{
-      for(let i = 0; i<this.state.parameters.length-1; i++){
-        p = p.concat(this.state.parameters[i].label+", ")
-      }
-      p = p.concat(this.state.parameters[this.state.parameters.length-1].label)
-    }
-
-    if(!checkList.includes(actionValue.toUpperCase())){
-       checkList.push(actionValue.toUpperCase());
-       
-    }
-    if(!checkListAssign.hasOwnProperty(actionValue.toUpperCase())) {
-      console.log("It's in")
-      const table = document.getElementById("target")
-      const item = {nameGesture: actionValue.toUpperCase(), actionGesture: a,devicesGesture: d,EnvironmentGesture: e,ParametersGesture: p}
+      if(!checkListAssign.hasOwnProperty(actionValue.toUpperCase())) {
+        console.log("It's in")
+        const table = document.getElementById("target")
+      const item = {nameGesture: actionValue.toUpperCase(), actionGesture: tab[0],devicesGesture: tab[1],EnvironmentGesture: tab[2],ParametersGesture: tab[3]}
       let row = table.insertRow();
       let nameGesture = row.insertCell(0);
       nameGesture.innerHTML = item.nameGesture;
@@ -488,15 +447,14 @@ class App extends React.Component {
       let ParametersGesture = row.insertCell(4);
       ParametersGesture.innerHTML = item.ParametersGesture;
     }
-    console.log(a,d,e,p)
-    checkListAssign[actionValue.toUpperCase()] = [a,d,e,p];
-    if(!checkList.includes(actionValue.toUpperCase()))
-      checkList.push(actionValue.toUpperCase())
-    console.log("checkListAssign:", checkListAssign)
-    console.log("checkList:", checkList)
-    this.setData()
-    MacrosList=MacrosList.concat({label:actionValue.toUpperCase(),value:checkList.length})
-  }
+      checkListAssign[actionValue.toUpperCase()] = tab;
+      if(!checkList.includes(actionValue.toUpperCase()))
+        checkList.push(actionValue.toUpperCase())
+      console.log("checkListAssign:", checkListAssign)
+      console.log("checkList:", checkList)
+      this.setData()
+      MacrosList=MacrosList.concat({label:actionValue.toUpperCase(),value:checkList.length})
+    }
 
   macroCommand(){
     var dataStringRecord = this.checkInputsRecord();
@@ -548,25 +506,15 @@ class App extends React.Component {
     this.gestureHandler.clearGesture(gestureDeleted.toLowerCase());
     
     this.clear()
-    console.log("checkListAssign "+Object.keys(checkListAssign))
     delete checkListAssign[gestureDeleted];
-    console.log("checkListAssign " +Object.keys(checkListAssign))
-    
-    console.log("checkList " +Object.keys(checkList))
-    delete checkList[gestureDeleted];
-    console.log("checkList " +Object.keys(checkList))
-
-    console.log("gestureList " +Object.keys(gestureList))
-    delete checkList[gestureDeleted];
-    console.log("gestureList " +Object.keys(gestureList))
+    const index=checkList.indexOf(gestureDeleted);
+    if(index>-1){
+      checkList.splice(index,1)
+    }
 
     this.setData()
     this.updateCheckListAssign()
     window.location.reload();
-  }
-  
-  deleteGesture(){
-
   }
 
   onMouseDown(e){
@@ -870,27 +818,113 @@ class App extends React.Component {
   }
 
   add_instruction(){
-    console.log("actions :", this.state.actions)
-    console.log("devices :", this.state.devices)
-    console.log("environment :", this.state.environment)
-    console.log("parameters :", this.state.parameters)
+
+    var listI= this.composedInstructions()
+    var list = []
+      for(const j in listI){
+        console.log(listI[j])
+        if(listI[j]!=="-"){
+          list.push(listI[j])
+        }
+      }
+    if(!this.state.macros[0]){  
+    this.setState({
+      instructions: this.state.instructions.concat({value:list}) 
+     })
+    }
+    else{
+      this.setState({
+        instructions:this.state.instructions.concat({value:this.state.macros[0].label}) 
+       })
+    }
+  }
+
+  composedInstructions(){
+
+    let a=""
+    let d=""
+    let e=""
+    let p=""
+    
+    if(!this.state.actions[0]){
+      a = "-"
+    }
+    else{
+      for(let i = 0; i<this.state.actions.length-1; i++){
+        a = a.concat(this.state.actions[i].label+", ")
+      }
+      a = a.concat(this.state.actions[this.state.actions.length-1].label)
+    }
+
+    if(!this.state.devices[0]){
+      d = "-"
+    }
+    else{      
+      for(let i = 0; i<this.state.devices.length-1; i++){
+        d = d.concat(this.state.devices[i].label+", ")
+      }
+      d = d.concat(this.state.devices[this.state.devices.length-1].label)
+    }
+    
+    if(!this.state.environment[0]){
+      e = "-"
+    }
+    else{
+      for(let i = 0; i<this.state.environment.length-1; i++){
+        e = e.concat(this.state.environment[i].label+", ")
+      }
+      e = e.concat(this.state.environment[this.state.environment.length-1].label)
+    }
+    
+    if(!this.state.parameters[0]){
+      p = "-"
+    }
+    else{
+      for(let i = 0; i<this.state.parameters.length-1; i++){
+        p = p.concat(this.state.parameters[i].label+", ")
+      }
+      p = p.concat(this.state.parameters[this.state.parameters.length-1].label)
+    }
+    var basicInstruction = [a,d,e,p]
+    return basicInstruction;
+  }
+  composedMacrosInstructions(){
+
+    let m=""
+    for (const i in this.state.macros){
+      if(!this.state.macros[i]){
+        m = "-"
+      }
+      else{
+          m = m.concat(this.state.macros[i].label+", ")
+      }
+    }
+    var macro = [m]
+    return macro;
   }
 
   showInstructions(){
-    let instruction =""
-    for( const i in this.state.actions){
-      instruction +=" "+this.state.actions[i].label
+    var listI= this.composedInstructions()
+    var list = []
+      for(const j in listI){
+        console.log(listI[j])
+        if(listI[j]!=="-"){
+          list.push(listI[j])
+        }
+      }
+    if(!this.state.instructions[0]){
+      return list
     }
-    for( const i in this.state.devices){
-      instruction +=" "+this.state.devices[i].label
+    else{
+      var ins = ""
+      for(var i in this.state.instructions){
+        if(this.state.instructions[i].value !=="-"){
+
+          ins+= this.state.instructions[i].value +" and "
+        }
+      }
+      return ins + list
     }
-    for( const i in this.state.environment){
-      instruction +=" "+this.state.environment[i].label
-    }
-    for( const i in this.state.parameters){
-      instruction +=" "+this.state.parameters[i].label
-    }
-    return instruction;
   }
 
   render() {
@@ -991,7 +1025,8 @@ class App extends React.Component {
                   onChange={this.ModifyMacrosList}
                   labelledBy="Macros"
                   isCreatable={true}
-                  valueRenderer={MacroRenderer}/>
+                  valueRenderer={MacroRenderer}
+                  hasSelectAll={false}/>
               </div>
                 <button className={"triangle-down"} onClick={this.toggleTable}></button>
                 <h1>Table of gestures</h1>
@@ -1013,6 +1048,21 @@ class App extends React.Component {
                         </tr>
                       </tbody>
                     </table>
+                </div>
+                <button className={"triangle-down"} onClick={this.toggleTable}></button>
+                <h1>Table of macros</h1>
+                <div id ="TableOfMacros">
+                  <table className={"content-table"} id={"TableM"}>
+                    <tbody>
+                      <tr>
+                        <th>Name of gesture</th>
+                        <th>First instruction</th>
+                        <th>Second instruction</th>
+                        <th>Third instruction</th>
+                        <th>Fourth instruction</th>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
             </div>
           </div>

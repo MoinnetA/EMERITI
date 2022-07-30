@@ -226,9 +226,6 @@ class App extends React.Component {
     }
     console.log("checkMacroListAssign for getData:", checkMacroListAssign)
     console.log("checkMacroList for getData:", checkMacroList)
-    for(let i=0;i<checkMacroList.length;i++){
-      MacrosList=MacrosList.concat({label:checkList[i],value:i})
-    }
     this.setState({
       checked:checkMacroList
     })
@@ -472,7 +469,6 @@ class App extends React.Component {
         
       }
       if(!checkListAssign.hasOwnProperty(actionValue.toUpperCase())) {
-        console.log("It's in")
         const table = document.getElementById("target")
         const item = {nameGesture: actionValue.toUpperCase(), actionGesture: tab[0],devicesGesture: tab[1],EnvironmentGesture: tab[2],ParametersGesture: tab[3]}
         let row = table.insertRow();
@@ -499,10 +495,7 @@ class App extends React.Component {
   macroCommand(){
     var dataStringRecord = this.checkInputsRecord();
     const macroValue = this.macro.value.trim();
-    console.log(macroValue)
     this.gestureHandler.addNewGesture(dataStringRecord, macroValue.toLowerCase());
-
-
     var tableau = this.composedMacrosInstructions()
     if(!checkMacroList.includes(macroValue.toUpperCase())){
       checkMacroList.push(macroValue.toUpperCase());
@@ -667,7 +660,6 @@ class App extends React.Component {
     const table = document.getElementById("TableM")
     for(const i in checkMacroListAssign){
       const item = { nameGesture: i, instruction: checkMacroListAssign[i] }
-      console.log("item"+item.instruction)
       let row = table.insertRow();
       let nameGesture = row.insertCell(0);
       nameGesture.innerHTML = item.nameGesture;
@@ -944,7 +936,6 @@ class App extends React.Component {
     var listI= this.composedInstructions()
     var list = []
       for(const j in listI){
-        console.log(listI[j])
         if(listI[j]!=="-"){
           list.push(listI[j])
         }
@@ -1023,7 +1014,6 @@ class App extends React.Component {
     var listI= this.composedInstructions()
     var list = []
       for(const j in listI){
-        console.log(listI[j])
         if(listI[j]!=="-"){
           list.push(listI[j]+" ")
         }
@@ -1076,6 +1066,7 @@ class App extends React.Component {
                  
           </div>     
         </div>
+        <div className={"instructions"}>  Instruction : {this.showInstructions()}</div> 
         <div className="container2">
           <div className="box3">
             <div className={"time before next gesture"}>Timer : {this.fmt(this.state.count)}</div>
@@ -1084,7 +1075,6 @@ class App extends React.Component {
             <button className={"button"} onClick={this.clear}>Clear</button>
             <button className={"button"} onClick={this.add_instruction}>Add Instruction</button>
 
-        <div className={"instructions"}>  Instruction : {this.showInstructions()}</div> 
             <form className={"container"}>
               <div className={"box"}>
                 <label className="custom-field one">
@@ -1135,6 +1125,7 @@ class App extends React.Component {
               </div>
               <button type="button" className={"button"} onClick={this.record}>Record</button>
             </form>
+
             <form className={"container"}>
               <div className={"box"}>
                 <label className="custom-field one">
@@ -1143,41 +1134,40 @@ class App extends React.Component {
                 </label>
               </div>
               <div className={"list"}>
-                  <MultiSelect options={MacrosList}
-                    value={this.state.macros}
-                    onChange={this.ModifyMacrosList}
-                    labelledBy="Macros"
-                    isCreatable={true}
-                    valueRenderer={MacroRenderer}
-                    hasSelectAll={false}/>
-                </div>
+                <MultiSelect options={MacrosList}
+                  value={this.state.macros}
+                  onChange={this.ModifyMacrosList}
+                  labelledBy="Macros"
+                  isCreatable={true}
+                  valueRenderer={MacroRenderer}
+                  hasSelectAll={false}/>
+              </div>
+              <button  type="button" className={"button"} onClick={this.macroCommand}>Macro-Command</button>
+            </form>
 
-              <button className={"button"} onClick={this.macroCommand}>Macro-Command</button>
-              </form>
-              <form >
-                <a className={"triangle-down"} onClick={this.toggleTable}></a>
-                  <h1>Table of gestures</h1>
-                
+            <form >
+              <a className={"triangle-down"} onClick={this.toggleTable}></a>
+                <h1>Table of gestures</h1>  
                 <div id ="TableOfGestures">
-                    <label className="custom-field one">
-                      <input className={"textArea"} type="text" placeholder=" " id="gestureDeleted"/>
-                      <span className="placeholder">Name of the gesture to delete</span>
-                    </label>
-                    <button type="button" className={"button"} onClick={this.clearGesture}>Delete</button>
-                    <button className={"button"} onClick={this.clearDataSet}>Clear Dataset</button>
-                    <table className={"content-table"} id={"target"}>
-                      <tbody>
-                        <tr>
-                          <th>Name of gesture</th>
-                          <th>Actions</th>
-                          <th>Devices</th>
-                          <th>Environments</th>
-                          <th>Parameters</th>
-                        </tr>
-                      </tbody>
-                    </table>
+                  <label className="custom-field one">
+                    <input className={"textArea"} type="text" placeholder=" " id="gestureDeleted"/>
+                    <span className="placeholder">Name of the gesture to delete</span>
+                  </label>
+                  <button type="button" className={"button"} onClick={this.clearGesture}>Delete</button>
+                  <button className={"button"} onClick={this.clearDataSet}>Clear Dataset</button>
+                  <table className={"content-table"} id={"target"}>
+                    <tbody>
+                      <tr>
+                        <th>Name of gesture</th>
+                        <th>Actions</th>
+                        <th>Devices</th>
+                        <th>Environments</th>
+                        <th>Parameters</th>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>                
-                <a className={"triangle-down"} onClick={this.toggleCITable}></a>
+                <button type="button" className={"triangle-down"} onClick={this.toggleCITable}></button>
                 <div id ="TableOfMacros">
                   <h1>Table of composed instruction</h1>
                   <table className={"content-table"} id={"TableM"}>

@@ -105,7 +105,6 @@ class App extends React.Component {
       lastPosition: {x:0, y:0},
       checked: [],
       action:"",
-      macro:"",
       gestureDeleted:"",
       count:2,
       pause:true,
@@ -138,7 +137,6 @@ class App extends React.Component {
     this.getData = this.getData.bind(this);
     this.setData = this.setData.bind(this);
     this.updateCheckListAssign = this.updateCheckListAssign.bind(this);
-    this.updateCheckMacroListAssign = this.updateCheckMacroListAssign.bind(this);
     this.clearDataSet = this.clearDataSet.bind(this);
     this.clearGesture = this.clearGesture.bind(this);
     this.macroCommand = this.macroCommand.bind(this);
@@ -151,7 +149,6 @@ class App extends React.Component {
     this.add_instruction = this.add_instruction.bind(this);
     this.dynamicDevicesList = this.dynamicDevicesList.bind(this);
     this.toggleTable = this.toggleTable.bind(this);
-    this.toggleCITable = this.toggleCITable.bind(this);
     this.toggleNumber = this.toggleNumber.bind(this);
     this.composedInstructions = this.composedInstructions.bind(this);
     this.showInstructions = this.showInstructions.bind(this);
@@ -168,11 +165,6 @@ class App extends React.Component {
     console.log("checkListAssign for setData:", checkListAssign)
     localStorage.setItem('checkListAssign', JSON.stringify(checkListAssign));
     localStorage.setItem('checkList', JSON.stringify(checkList));
-  }
-  setMacroData(){
-    console.log("checkMacroListAssign for setMacroData:", checkMacroListAssign)
-    localStorage.setItem('checkMacroListAssign', JSON.stringify(checkMacroListAssign));
-    localStorage.setItem('checkMacroList', JSON.stringify(checkMacroList));
   }
 
   getData(){
@@ -204,41 +196,10 @@ class App extends React.Component {
       checked:checkList
     })
   }
-  getMacroData(){
-    let checkListAssignData = localStorage.getItem('checkMacroListAssign');
-    console.log("checkListAssignData: ", checkListAssignData)
-    checkListAssignData = JSON.parse(checkListAssignData);
-    if(checkListAssignData === null){
-      checkMacroListAssign = {}
-    }
-    else{
-      checkMacroListAssign = checkListAssignData
-    }
-
-    let checkListData = localStorage.getItem('checkMacroList');
-    console.log("checkListData: ", checkListData)
-    checkListData = JSON.parse(checkListData);
-    if(checkListData === null){
-      checkMacroList = []
-    }
-    else{
-      checkMacroList = checkListData
-    }
-    console.log("checkMacroListAssign for getData:", checkMacroListAssign)
-    console.log("checkMacroList for getData:", checkMacroList)
-    for(let i=0;i<checkMacroList.length;i++){
-      MacrosList=MacrosList.concat({label:checkList[i],value:i})
-    }
-    this.setState({
-      checked:checkMacroList
-    })
-  }
 
   componentDidMount() {
     this.getData()
-    this.getMacroData()
-    this.updateCheckListAssign();
-    this.updateCheckMacroListAssign();
+    this.updateCheckListAssign("target");
     this.timer= setInterval(() =>{
       if(!this.state.pause && this.state.count !== 0) {
         this.setState({
@@ -250,7 +211,6 @@ class App extends React.Component {
       this.ctx.current = this.canvasRef.current.getContext('2d');
     }
     this.action = document.getElementById('action');
-    this.macro = document.getElementById('macro');
     this.gestureDeleted = document.getElementById('gestureDeleted');
     this.instructions = document.getElementById('instructions');
     this.number = document.getElementById('number');
@@ -461,6 +421,7 @@ class App extends React.Component {
   }
 
   record(){
+    if(!this.state.instructions[0]){
       var dataStringRecord = this.checkInputsRecord();
       const actionValue = this.action.value.trim();
     
@@ -474,7 +435,8 @@ class App extends React.Component {
       if(!checkListAssign.hasOwnProperty(actionValue.toUpperCase())) {
         console.log("It's in")
         const table = document.getElementById("target")
-        const item = {nameGesture: actionValue.toUpperCase(), actionGesture: tab[0],devicesGesture: tab[1],EnvironmentGesture: tab[2],ParametersGesture: tab[3]}
+        console.log(tab[0])
+        const item = {nameGesture: actionValue.toUpperCase(), actionGesture: tab[0],devicesGesture: tab[1],EnvironmentGesture: tab[2],ParametersGesture:tab[3]}
         let row = table.insertRow();
         let nameGesture = row.insertCell(0);
         nameGesture.innerHTML = item.nameGesture;
@@ -495,60 +457,72 @@ class App extends React.Component {
       this.setData()
       MacrosList=MacrosList.concat({label:actionValue.toUpperCase(),value:checkList.length})
     }
+    else{
+      console.log("je suis bien la ")  
+      var dataSR = this.checkInputsRecord();
+      const actionValue = this.action.value.trim();
+    
+      var tableau = this.composedMacrosInstructions()
+      this.gestureHandler.addNewGesture(dataSR, actionValue.toLowerCase());
+
+      if(!checkMacroList.includes(actionValue.toUpperCase())){
+        checkMacroList.push(actionValue.toUpperCase());
+        
+      }
+      if(!checkMacroListAssign.hasOwnProperty(actionValue.toUpperCase())) {
+        
+        console.log("je suis bien la "+tableau[0].label)  
+        const item = {nameGesture: actionValue.toUpperCase(), instruction1: tableau[0],instruction2: tableau[1],instruction3: tableau[2],instruction4:tableau[3]}
+        const table = document.getElementById("TableM")
+        let row = table.insertRow();
+        let nameGesture = row.insertCell(0);
+        nameGesture.innerHTML = item.nameGesture;
+        let instruction1 = row.insertCell(1);
+        instruction1.innerHTML = item.instruction1;
+        let instruction2 = row.insertCell(2);
+        instruction2.innerHTML = item.instruction2;
+        let instruction3 = row.insertCell(3);
+        instruction3.innerHTML = item.instruction3;
+        let instruction4 = row.insertCell(4);
+        instruction4.innerHTML = item.instruction4;
+
+
+        checkMacroListAssign[actionValue.toUpperCase()] = tableau;
+        if(!checkMacroList.includes(actionValue.toUpperCase()))
+        checkMacroList.push(actionValue.toUpperCase())
+        console.log("checkMacroListAssign:", checkMacroListAssign)
+        console.log("checkMacroList:", checkMacroList)
+      }
+    }
+    this.setState({
+      instructions:"",
+      macros:[]
+    })
+  }
 
   macroCommand(){
     var dataStringRecord = this.checkInputsRecord();
-    const macroValue = this.macro.value.trim();
-    console.log(macroValue)
-    this.gestureHandler.addNewGesture(dataStringRecord, macroValue.toLowerCase());
-
-
-    var tableau = this.composedMacrosInstructions()
-    if(!checkMacroList.includes(macroValue.toUpperCase())){
-      checkMacroList.push(macroValue.toUpperCase());
+    const actionValue = this.action.value.trim();
+    this.gestureHandler.addNewGesture(dataStringRecord, actionValue.toLowerCase());
+    if(!checkList.includes(actionValue.toUpperCase())){
+       checkList.push(actionValue.toUpperCase());
     }
-    if(!checkMacroListAssign.hasOwnProperty(macroValue.toUpperCase())) {      
-      const item = {nameGesture: macroValue.toUpperCase(), instruction1: tableau[0],instruction2: tableau[1],instruction3: tableau[2],instruction4:tableau[3]}
-      const table = document.getElementById("TableM")
+    if(!checkListAssign.hasOwnProperty(actionValue.toUpperCase())) {
+      console.log("It's in")
+      const table = document.getElementById("target")
+      const item = {nameGesture: actionValue.toUpperCase(), actionGesture: this.state.action}
       let row = table.insertRow();
       let nameGesture = row.insertCell(0);
       nameGesture.innerHTML = item.nameGesture;
-      let instruction1 = row.insertCell(1);
-      instruction1.innerHTML = item.instruction1;
-      let instruction2 = row.insertCell(2);
-      let instruction3 = row.insertCell(3);
-      let instruction4 = row.insertCell(4);
-      var i2 = true
-      if(typeof item.instruction2==='undefined'){
-        instruction2.innerHTML = '-';        
-        instruction3.innerHTML = '-';        
-        instruction4.innerHTML = '-';  
-        i2=false
-      }
-      else{
-        instruction2.innerHTML = item.instruction2;
-      }
-      if(i2){
-        if(typeof item.instruction3==='undefined'){   
-          instruction3.innerHTML = '-';        
-          instruction4.innerHTML = '-';  
-          i2=false      
-        }
-        else{
-          instruction3.innerHTML = item.instruction3;
-        }
-
-      }
-      if(!i2 & typeof item.instruction3!=='undefined'){   
-        instruction4.innerHTML = item.instruction4;
-      }
+      let actionGesture = row.insertCell(1);
+      actionGesture.innerHTML = item.actionGesture;
     }
-    checkMacroListAssign[macroValue.toUpperCase()] = tableau;
-    if(!checkMacroList.includes(macroValue.toUpperCase()))
-      checkMacroList.push(macroValue.toUpperCase())
-    console.log("checkMacroListAssign:", checkMacroListAssign)
-    console.log("checkMacroList:", checkMacroList)
-    this.setMacroData()
+    checkListAssign[actionValue.toUpperCase()] = this.state.action;
+    if(!checkList.includes(actionValue.toUpperCase()))
+      checkList.push(actionValue.toUpperCase())
+    console.log("checkListAssign:", checkListAssign)
+    console.log("checkList:", checkList)
+    this.setData()
   }
 
   clear(){
@@ -567,12 +541,9 @@ class App extends React.Component {
     gestureList = []
     checkListAssign = {}
     checkList = []
-    checkMacroListAssign = {}
-    checkMacroList = []
     this.setData()
-    this.setMacroData()
-    this.updateCheckListAssign()
-    this.updateCheckMacroListAssign()
+    this.updateCheckListAssign("target")
+    this.updateCheckListAssign("TableM")
   }
 
   clearGesture(){
@@ -587,7 +558,7 @@ class App extends React.Component {
     }
 
     this.setData()
-    this.updateCheckListAssign()
+    this.updateCheckListAssign("target")
     window.location.reload();
   }
 
@@ -645,8 +616,8 @@ class App extends React.Component {
     return s
   }
 
-  updateCheckListAssign(){
-    const table = document.getElementById("target")
+  updateCheckListAssign(e){
+    const table = document.getElementById(e)
     for(const i in checkListAssign){
       const item = { nameGesture: i, actionGesture: checkListAssign[i] }
       let row = table.insertRow();
@@ -660,46 +631,6 @@ class App extends React.Component {
       EnvironmentGesture.innerHTML = item.actionGesture[2];
       let ParametersGesture = row.insertCell(4);
       ParametersGesture.innerHTML = item.actionGesture[3];
-    }
-  }
-
-  updateCheckMacroListAssign(){
-    const table = document.getElementById("TableM")
-    for(const i in checkMacroListAssign){
-      const item = { nameGesture: i, instruction: checkMacroListAssign[i] }
-      console.log("item"+item.instruction)
-      let row = table.insertRow();
-      let nameGesture = row.insertCell(0);
-      nameGesture.innerHTML = item.nameGesture;
-      let instruction1 = row.insertCell(1);
-      instruction1.innerHTML = item.instruction[0];
-      let instruction2 = row.insertCell(2);
-      let instruction3 = row.insertCell(3);
-      let instruction4 = row.insertCell(4);
-      var i2 = true
-      if(typeof item.instruction[1]==='undefined'){
-        instruction2.innerHTML = '-';        
-        instruction3.innerHTML = '-';        
-        instruction4.innerHTML = '-';  
-        i2=false
-      }
-      else{
-        instruction2.innerHTML = item.instruction[1];
-      }
-      if(i2){
-        if(typeof item.instruction[2]==='undefined'){   
-          instruction3.innerHTML = '-';        
-          instruction4.innerHTML = '-';  
-          i2=false      
-        }
-        else{
-          instruction3.innerHTML = item.instruction[2];
-        }
-
-      }
-      if(!i2 & typeof item.instruction[3]!=='undefined'){ 
-        instruction4.innerHTML = item.instruction[3];
-      }
     }
   }
 
@@ -919,14 +850,6 @@ class App extends React.Component {
       element.style.display = "none";
     }
   }
-  toggleCITable(){
-    var element= document.getElementById("TableOfMacros")
-    if (element.style.display === "none") {
-      element.style.display = "block";
-    } else {
-      element.style.display = "none";
-    }
-  }
 
   toggleNumber(){
     var element= document.getElementById("Numbers")
@@ -1012,10 +935,16 @@ class App extends React.Component {
   }
   composedMacrosInstructions(){
 
-    let macro=[]
+    let m=""
     for (const i in this.state.macros){
-      macro = macro.concat(this.state.macros[i].label)
+      if(!this.state.macros[i]){
+        m = "-"
+      }
+      else{
+          m = m.concat(this.state.macros[i].label+", ")
+      }
     }
+    var macro = [m]
     return macro;
   }
 
@@ -1134,29 +1063,18 @@ class App extends React.Component {
             <button className={"button"} onClick={this.clear}>Clear</button>
             <button className={"button"} onClick={this.macroCommand}>Macro-Command</button>
             <button className={"button"} onClick={this.add_instruction}>Add Instruction</button>
-            <form className={"container"}>
-              <div className={"box"}>
-                <label className="custom-field one">
-                  <input className={"textArea"} type="text" placeholder=" " id="macro"/>
-                  <span className="placeholder">Name of the composed instruction</span>
-                </label>
-              </div>
-              <div className={"list"}>
-                  <MultiSelect options={MacrosList}
-                    value={this.state.macros}
-                    onChange={this.ModifyMacrosList}
-                    labelledBy="Macros"
-                    isCreatable={true}
-                    valueRenderer={MacroRenderer}
-                    hasSelectAll={false}/>
-                </div>
 
-              <button className={"button"} onClick={this.macroCommand}>Macro-Command</button>
-              </form>
-              <form >
-                <a className={"triangle-down"} onClick={this.toggleTable}></a>
-                  <h1>Table of gestures</h1>
-                
+            <div className={"list"}>
+                <MultiSelect options={MacrosList}
+                  value={this.state.macros}
+                  onChange={this.ModifyMacrosList}
+                  labelledBy="Macros"
+                  isCreatable={true}
+                  valueRenderer={MacroRenderer}
+                  hasSelectAll={false}/>
+              </div>
+                <button className={"triangle-down"} onClick={this.toggleTable}></button>
+                <h1>Table of gestures</h1>
                 <div id ="TableOfGestures">
                     <label className="custom-field one">
                       <input className={"textArea"} type="text" placeholder=" " id="gestureDeleted"/>
@@ -1175,14 +1093,14 @@ class App extends React.Component {
                         </tr>
                       </tbody>
                     </table>
-                </div>                
-                <a className={"triangle-down"} onClick={this.toggleCITable}></a>
+                </div>
+                <button className={"triangle-down"} onClick={this.toggleTable}></button>
+                <h1>Table of macros</h1>
                 <div id ="TableOfMacros">
-                  <h1>Table of composed instruction</h1>
                   <table className={"content-table"} id={"TableM"}>
                     <tbody>
                       <tr>
-                        <th>Name of composed instruction</th>
+                        <th>Name of gesture</th>
                         <th>First instruction</th>
                         <th>Second instruction</th>
                         <th>Third instruction</th>
@@ -1191,7 +1109,6 @@ class App extends React.Component {
                     </tbody>
                   </table>
                 </div>
-                </form>
             </div>
           </div>
       </div>   

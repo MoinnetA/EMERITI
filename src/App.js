@@ -1025,7 +1025,7 @@ class App extends React.Component {
       for(const j in listI){
         console.log(listI[j])
         if(listI[j]!=="-"){
-          list.push(listI[j])
+          list.push(listI[j]+" ")
         }
       }
     if(!this.state.instructions[0]){
@@ -1076,10 +1076,15 @@ class App extends React.Component {
                  
           </div>     
         </div>
-        <div className={"instructions"}>  Instruction : {this.showInstructions()}</div> 
         <div className="container2">
           <div className="box3">
             <div className={"time before next gesture"}>Timer : {this.fmt(this.state.count)}</div>
+
+            <button className={"button"} onClick={this.recognize_canvas}>Recognize</button>
+            <button className={"button"} onClick={this.clear}>Clear</button>
+            <button className={"button"} onClick={this.add_instruction}>Add Instruction</button>
+
+        <div className={"instructions"}>  Instruction : {this.showInstructions()}</div> 
             <form className={"container"}>
               <div className={"box"}>
                 <label className="custom-field one">
@@ -1130,10 +1135,6 @@ class App extends React.Component {
               </div>
               <button type="button" className={"button"} onClick={this.record}>Record</button>
             </form>
-            <button className={"button"} onClick={this.recognize_canvas}>Recognize</button>
-            <button className={"button"} onClick={this.clear}>Clear</button>
-            <button className={"button"} onClick={this.macroCommand}>Macro-Command</button>
-            <button className={"button"} onClick={this.add_instruction}>Add Instruction</button>
             <form className={"container"}>
               <div className={"box"}>
                 <label className="custom-field one">

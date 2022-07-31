@@ -126,6 +126,7 @@ class App extends React.Component {
     this.draw = this.draw.bind(this);
     this.recognize_canvas = this.recognize_canvas.bind(this);
     this.checkInputsRecord = this.checkInputsRecord.bind(this);
+    this.checkMacroInputsRecord = this.checkMacroInputsRecord.bind(this);
     this.record = this.record.bind(this);
     this.clear = this.clear.bind(this);
     this.onMouseDown = this.onMouseDown.bind(this);
@@ -456,6 +457,25 @@ class App extends React.Component {
       return dataStringRecord;
     }
   }
+  checkMacroInputsRecord(){
+    const macroValue = this.macro.value.trim();
+    if(macroValue === ''){
+        console.log(this.macro, 'Action cannot be blank');
+    }
+    else {
+      var dataGestureRecord = {
+          "name":macroValue,
+          "subjet":"1",
+          "paths":[{"label":"point", "strokes":[]}]
+      };
+
+      tabFinal.forEach((stroke, strokeId) => {dataGestureRecord.paths[0].strokes.push({"id": strokeId, "points": stroke})})
+      var dataStringRecord = JSON.stringify(dataGestureRecord);
+      tabFinal = [];
+      this.clear()
+      return dataStringRecord;
+    }
+  }
 
   record(){
       var dataStringRecord = this.checkInputsRecord();
@@ -493,7 +513,7 @@ class App extends React.Component {
     }
 
   macroCommand(){
-    var dataStringRecord = this.checkInputsRecord();
+    var dataStringRecord = this.checkMacroInputsRecord();
     const macroValue = this.macro.value.trim();
     this.gestureHandler.addNewGesture(dataStringRecord, macroValue.toLowerCase());
     var tableau = this.composedMacrosInstructions()

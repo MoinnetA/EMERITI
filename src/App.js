@@ -103,7 +103,7 @@ class App extends React.Component {
       connected: false,
       mouseDown: false,
       lastPosition: {x:0, y:0},
-      checked: [],
+      nameListOfGesture: [],
       action:"",
       macro:"",
       gestureDeleted:"",
@@ -132,7 +132,6 @@ class App extends React.Component {
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
     this.onMouseMove = this.onMouseMove.bind(this);
-    this.handleCheck = this.handleCheck.bind(this);
     this.getSelectValue = this.getSelectValue.bind(this);
     this.fmt = this.fmt.bind(this);
     this.clearEverything = this.clearEverything.bind(this);
@@ -178,7 +177,6 @@ class App extends React.Component {
 
   getData(){
     let checkListAssignData = localStorage.getItem('checkListAssign');
-    console.log("checkListAssignData: ", checkListAssignData)
     checkListAssignData = JSON.parse(checkListAssignData);
     if(checkListAssignData === null){
       checkListAssign = {}
@@ -188,7 +186,6 @@ class App extends React.Component {
     }
 
     let checkListData = localStorage.getItem('checkList');
-    console.log("checkListData: ", checkListData)
     checkListData = JSON.parse(checkListData);
     if(checkListData === null){
       checkList = []
@@ -202,39 +199,40 @@ class App extends React.Component {
       MacrosList=MacrosList.concat({label:checkList[i],value:i})
     }
     this.setState({
-      checked:checkList
+      nameListOfGesture:checkList
+    }, () => {
+      this.getMacroData()
     })
   }
   getMacroData(){
-    let checkListAssignData = localStorage.getItem('checkMacroListAssign');
-    console.log("checkListAssignData: ", checkListAssignData)
-    checkListAssignData = JSON.parse(checkListAssignData);
-    if(checkListAssignData === null){
+    let checkMacroListAssignData = localStorage.getItem('checkMacroListAssign');
+    checkMacroListAssignData = JSON.parse(checkMacroListAssignData);
+    if(checkMacroListAssignData === null){
       checkMacroListAssign = {}
     }
     else{
-      checkMacroListAssign = checkListAssignData
+      checkMacroListAssign = checkMacroListAssignData
     }
 
-    let checkListData = localStorage.getItem('checkMacroList');
-    console.log("checkListData: ", checkListData)
-    checkListData = JSON.parse(checkListData);
-    if(checkListData === null){
+    let checkMacroListData = localStorage.getItem('checkMacroList');
+    checkMacroListData = JSON.parse(checkMacroListData);
+    if(checkMacroListData === null){
       checkMacroList = []
     }
     else{
-      checkMacroList = checkListData
+      checkMacroList = checkMacroListData
     }
     console.log("checkMacroListAssign for getData:", checkMacroListAssign)
     console.log("checkMacroList for getData:", checkMacroList)
     this.setState({
-      checked:checkMacroList
+      nameListOfGesture:this.state.nameListOfGesture.concat(checkMacroList)
+    }, () => {
+      console.log("nameListOfGesture : ", this.state.nameListOfGesture)
     })
   }
 
   componentDidMount() {
     this.getData()
-    this.getMacroData()
     this.updateCheckListAssign();
     this.updateCheckMacroListAssign();
     this.timer= setInterval(() =>{
@@ -253,8 +251,7 @@ class App extends React.Component {
     this.instructions = document.getElementById('instructions');
     this.number = document.getElementById('number');
     // STEPS 6 and 7
-    this.gestureHandler.registerGestures("dynamic", this.state.checked);
-
+    this.gestureHandler.registerGestures("dynamic", this.state.nameListOfGesture);
     // STEPS 5, 7, 8, 10, 11
     this.gestureHandler.addListener('gesture', (event) => {
       if (checkListAssign.hasOwnProperty(event.gesture.name)) {
@@ -416,7 +413,7 @@ class App extends React.Component {
   }
 
   recognize_canvas(){
-    this.gestureHandler.registerGestures("dynamic", this.state.checked);
+    this.gestureHandler.registerGestures("dynamic", this.state.nameListOfGesture);
     if(tabFinal.length!==0) {
       gestureList.push(tabFinal)
       this.clear()
@@ -631,19 +628,6 @@ class App extends React.Component {
 
   onMouseMove(e){
     this.draw(e.pageX, e.pageY)
-  }
-
-  handleCheck(e){
-    var updatedList = [...this.state.checked];
-    if (e.target.checked) {
-      updatedList = [...this.state.checked, e.target.value];
-    } else {
-      updatedList.splice(this.state.checked.indexOf(e.target.value), 1);
-    }
-    this.setState({
-      checked:updatedList
-    });
-    this.gestureHandler.registerGestures("dynamic", this.state.checked);
   }
 
   getSelectValue(){
@@ -1166,7 +1150,7 @@ class App extends React.Component {
             </form>
 
             <form >
-              <a className={"triangle-down"} onClick={this.toggleTable}></a>
+              <button className={"triangle-down"} onClick={this.toggleTable}></button>
                 <h1>Table of gestures</h1>  
                 <div id ="TableOfGestures">
                   <label className="custom-field one">

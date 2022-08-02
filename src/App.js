@@ -19,7 +19,8 @@ let checkListAssign = {}
 let checkMacroListAssign = {}
 let gestureList = []
 let recognizedList = []
-let timer=0
+let macroActionList = []
+let macroDeviceList=[]
 
 let ActionsList =[
   { label: 'Turn On', value: 1 },
@@ -155,6 +156,7 @@ class App extends React.Component {
     this.toggleNumber = this.toggleNumber.bind(this);
     this.composedInstructions = this.composedInstructions.bind(this);
     this.showInstructions = this.showInstructions.bind(this);
+    this.recognizeDevice = this.recognizeDevice.bind(this);
 
     // Timer
     this.timer = null;
@@ -263,32 +265,44 @@ class App extends React.Component {
         let macroList = checkListAssign[event.gesture.name]
         console.log("macroList: ", macroList)
         console.log("macroList[0]: ", macroList[0])
-        let macroActionList = macroList[0].split(', ')
-        console.log("macroActionList: ", macroActionList)
-        let macroDeviceList = macroList[1].split(', ')
-        console.log("macroDeviceList: ", macroDeviceList)
-        for(const macro_action of macroActionList){
-          console.log("macro_action: ", macro_action)
-          if(macro_action==="Turn On"){
-            this.setState({
-              turn_on: "1"
-            }, function (){
-              console.log("macro Turn On")
-            })
-          }
-          else if(macro_action==="Turn Off"){
-            this.setState({
-              turn_on: "0"
-            }, function (){
-              console.log("macro Turn Off")
-            })
+        let action = macroList[0].split(', ')
+        if(action[0]!=="-"){
+          macroActionList = macroActionList.concat(action)
+          if(macroActionList.length>1){
+            macroActionList=[macroActionList[1]]
+            macroDeviceList=[]
           }
         }
-        for(const macro_device of macroDeviceList){
-          let image = document.getElementById(macro_device);
-          image.style.opacity = this.state.turn_on;
+        let device=macroList[1].split(', ')
+        console.log("device",device[0]!=='-')
+        if(device[0]!=='-'){
+          macroDeviceList = macroDeviceList.concat(device)
         }
 
+        console.log("macroDeviceList: ", macroDeviceList)
+        console.log("macroActionList: ", macroActionList)
+        if(macroActionList.length>0 && macroDeviceList.length>0){
+          for(const macro_action of macroActionList){
+            if(macro_action==="Turn On"){
+              this.setState({
+                turn_on: "1"
+              }, function (){
+                console.log("macro Turn On")
+              })
+            }
+            else if(macro_action==="Turn Off"){
+              this.setState({
+                turn_on: "0"
+              }, function (){
+                console.log("macro Turn Off");
+              })
+            }
+            this.recognizeDevice()
+          }
+        }
+        else{
+          console.log("You must have an Action and a Device")
+        }
         // try {
         //   if (checkListAssign.hasOwnProperty(event.gesture.name)) {
         //     if (deviceList.includes(checkListAssign[event.gesture.name])) {
@@ -374,6 +388,15 @@ class App extends React.Component {
     }, 100);
   }
 
+  recognizeDevice(){
+    var i=0
+    while(i< macroDeviceList.length){
+      console.log(macroDeviceList[i])
+      let image = document.getElementById(macroDeviceList[i]);
+      image.style.opacity = this.state.turn_on;
+      i++
+    }
+  }
   componentWillUnmount() {
     clearInterval(this.timer);
     // STEP 4
@@ -436,6 +459,10 @@ class App extends React.Component {
     gestureList = []
     this.clear()
     stroke_id=0;
+
+    this.setState({
+      count:2
+    })
   }
 
 
@@ -558,12 +585,11 @@ class App extends React.Component {
             let instruction3 = row.insertCell(3);
             let instruction4 = row.insertCell(4);
             var bool = true
-            timer=1
+            
             if(item.instruction2===[]){
               instruction2.innerHTML = '-';        
               instruction3.innerHTML = '-';        
               instruction4.innerHTML = '-';  
-              timer=2
               bool=false
             }
             else{
@@ -573,7 +599,6 @@ class App extends React.Component {
               if(item.instruction3!==[]){   
                 instruction3.innerHTML = '-';        
                 instruction4.innerHTML = '-';  
-                timer=3
                 bool=false      
               }
               else{
@@ -584,7 +609,6 @@ class App extends React.Component {
             if(bool){
               if(item.instruction4!==[]){   
                 instruction4.innerHTML = '-'; 
-                timer=4
               }
               else{      
                 instruction4.innerHTML = item.instruction4;

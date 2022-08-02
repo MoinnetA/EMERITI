@@ -19,6 +19,7 @@ let checkListAssign = {}
 let checkMacroListAssign = {}
 let gestureList = []
 let recognizedList = []
+let timer=0
 
 let ActionsList =[
   { label: 'Turn On', value: 1 },
@@ -557,11 +558,12 @@ class App extends React.Component {
             let instruction3 = row.insertCell(3);
             let instruction4 = row.insertCell(4);
             var bool = true
-            
+            timer=1
             if(item.instruction2===[]){
               instruction2.innerHTML = '-';        
               instruction3.innerHTML = '-';        
               instruction4.innerHTML = '-';  
+              timer=2
               bool=false
             }
             else{
@@ -571,6 +573,7 @@ class App extends React.Component {
               if(item.instruction3!==[]){   
                 instruction3.innerHTML = '-';        
                 instruction4.innerHTML = '-';  
+                timer=3
                 bool=false      
               }
               else{
@@ -580,7 +583,8 @@ class App extends React.Component {
             }
             if(bool){
               if(item.instruction4!==[]){   
-              instruction4.innerHTML = '-'; 
+                instruction4.innerHTML = '-'; 
+                timer=4
               }
               else{      
                 instruction4.innerHTML = item.instruction4;
@@ -619,59 +623,78 @@ class App extends React.Component {
       }
     }
 
-  macroCommand(){
+  
+    macroCommand(){
     var dataStringRecord = this.checkMacroInputsRecord();
     const macroValue = this.macro.value.trim();
     this.gestureHandler.addNewGesture(dataStringRecord, macroValue.toLowerCase());
     var tableau = this.composedMacrosInstructions()
-    if(!checkMacroList.includes(macroValue.toUpperCase())){
-      checkMacroList.push(macroValue.toUpperCase());
+    var actionAndDevice=true
+    for(const i in tableau){
+      if(checkMacroList.includes(macroValue.toUpperCase())){
+        var tab =checkListAssign[tableau[i]] 
+        if(tab[0]==='-' || tab[1]==='-'){
+          actionAndDevice=false
+        }
+      }
     }
-    if(!checkMacroListAssign.hasOwnProperty(macroValue.toUpperCase())) {      
-      const item = {nameGesture: macroValue.toUpperCase(), instruction1: tableau[0],instruction2: tableau[1],instruction3: tableau[2],instruction4:tableau[3]}
-      const table = document.getElementById("TableM")
-      let row = table.insertRow();
-      let nameGesture = row.insertCell(0);
-      nameGesture.innerHTML = item.nameGesture;
-      let instruction1 = row.insertCell(1);
-      instruction1.innerHTML = item.instruction1;
-      let instruction2 = row.insertCell(2);
-      let instruction3 = row.insertCell(3);
-      let instruction4 = row.insertCell(4);
-      var i2 = true
-      if(typeof item.instruction2==='undefined'){
-        instruction2.innerHTML = '-';        
-        instruction3.innerHTML = '-';        
-        instruction4.innerHTML = '-';  
-        i2=false
+    if (actionAndDevice){
+      if(!checkMacroList.includes(macroValue.toUpperCase())){
+        checkMacroList.push(macroValue.toUpperCase());
       }
-      else{
-        instruction2.innerHTML = item.instruction2;
-      }
-      if(i2){
-        if(typeof item.instruction3==='undefined'){   
+      if(!checkMacroListAssign.hasOwnProperty(macroValue.toUpperCase())) {      
+        const item = {nameGesture: macroValue.toUpperCase(), instruction1: tableau[0],instruction2: tableau[1],instruction3: tableau[2],instruction4:tableau[3]}
+        const table = document.getElementById("TableM")
+        let row = table.insertRow();
+        let nameGesture = row.insertCell(0);
+        nameGesture.innerHTML = item.nameGesture;
+        let instruction1 = row.insertCell(1);
+        instruction1.innerHTML = item.instruction1;
+        let instruction2 = row.insertCell(2);
+        let instruction3 = row.insertCell(3);
+        let instruction4 = row.insertCell(4);
+        var i2 = true
+        if(typeof item.instruction2==='undefined'){
+          instruction2.innerHTML = '-';        
           instruction3.innerHTML = '-';        
           instruction4.innerHTML = '-';  
-          i2=false      
+          i2=false
         }
         else{
-          instruction3.innerHTML = item.instruction3;
+          instruction2.innerHTML = item.instruction2;
         }
-
+        if(i2){
+          if(typeof item.instruction3==='undefined'){   
+            instruction3.innerHTML = '-';        
+            instruction4.innerHTML = '-';  
+            i2=false      
+          }
+          else{
+            instruction3.innerHTML = item.instruction3;
+          }
+  
+        }
+        if(!i2 && typeof item.instruction4!=='undefined'){   
+          instruction4.innerHTML = item.instruction4;
+        }
+        else{      
+          instruction4.innerHTML = '-'; 
+        }
       }
-      if(!i2 && typeof item.instruction4!=='undefined'){   
-        instruction4.innerHTML = item.instruction4;
-      }
-      else{      
-        instruction4.innerHTML = '-'; 
-      }
+      checkMacroListAssign[macroValue.toUpperCase()] = tableau;
+      if(!checkMacroList.includes(macroValue.toUpperCase()))
+        checkMacroList.push(macroValue.toUpperCase())
+      console.log("checkMacroListAssign:", checkMacroListAssign)
+      console.log("checkMacroList:", checkMacroList)
+      this.setMacroData()
+      this.setState({
+        macros:[]
+      })
     }
-    checkMacroListAssign[macroValue.toUpperCase()] = tableau;
-    if(!checkMacroList.includes(macroValue.toUpperCase()))
-      checkMacroList.push(macroValue.toUpperCase())
-    console.log("checkMacroListAssign:", checkMacroListAssign)
-    console.log("checkMacroList:", checkMacroList)
-    this.setMacroData()
+    else{
+      console.log("The macro command must have an Action and a Device")
+    }
+    
   }
 
   clear(){
@@ -1071,9 +1094,14 @@ class App extends React.Component {
         }
       }
     if(!this.state.macros[0]){  
-    this.setState({
-      instructions: this.state.instructions.concat({value:list}) 
-     })
+      if(listI[0]!=='-' && listI[1]!=='-'){
+        this.setState({
+          instructions: this.state.instructions.concat({value:list}) 
+        })
+      }
+      else{
+        console.log('You have to choose an Action and a Device')
+      }
     }
     else{
       this.setState({

@@ -1,6 +1,6 @@
 import React, {createRef} from 'react';
 import GestureHandler from "quantumleapjs";
-import TV from './images/TV.png';
+import Television from './images/Television.png';
 import House from './images/house.png';
 import LampeCave from './images/lampeCave.png';
 import LampeSalon from './images/lampeSalon.png';
@@ -18,7 +18,6 @@ let checkMacroList = []
 let checkListAssign = {}
 let checkMacroListAssign = {}
 let gestureList = []
-let recognizedList = []
 let macroActionList = []
 let macroDeviceList=[]
 
@@ -117,7 +116,8 @@ class App extends React.Component {
       parameters:[],
       macros:[],
       macro_instruction:[],
-      instructions:[]
+      instructions:[],
+      recognizedList:[]
     };
     this.canvasRef = createRef(null);
     this.ctx = createRef(null);
@@ -142,6 +142,7 @@ class App extends React.Component {
     this.updateCheckMacroListAssign = this.updateCheckMacroListAssign.bind(this);
     this.clearDataSet = this.clearDataSet.bind(this);
     this.clearGesture = this.clearGesture.bind(this);
+    this.clearMacroGesture = this.clearMacroGesture.bind(this);
     this.macroCommand = this.macroCommand.bind(this);
     this.ModifyActionsList = this.ModifyActionsList.bind(this);
     this.ModifyDevicesList = this.ModifyDevicesList.bind(this);
@@ -156,6 +157,7 @@ class App extends React.Component {
     this.toggleNumber = this.toggleNumber.bind(this);
     this.composedInstructions = this.composedInstructions.bind(this);
     this.showInstructions = this.showInstructions.bind(this);
+    this.showRecognizedInstructions = this.showRecognizedInstructions.bind(this);
     this.recognizeDevice = this.recognizeDevice.bind(this);
 
     // Timer
@@ -206,6 +208,7 @@ class App extends React.Component {
       this.getMacroData()
     })
   }
+
   getMacroData(){
     let checkMacroListAssignData = localStorage.getItem('checkMacroListAssign');
     checkMacroListAssignData = JSON.parse(checkMacroListAssignData);
@@ -254,6 +257,7 @@ class App extends React.Component {
     this.action = document.getElementById('action');
     this.macro = document.getElementById('macro');
     this.gestureDeleted = document.getElementById('gestureDeleted');
+    this.macrogestureDeleted = document.getElementById('macrogestureDeleted');
     this.instructions = document.getElementById('instructions');
     this.number = document.getElementById('number');
     // STEPS 6 and 7
@@ -263,22 +267,25 @@ class App extends React.Component {
       if (checkListAssign.hasOwnProperty(event.gesture.name)) {
         console.log("NOW, IT'S %s", event.gesture.name)
         let macroList = checkListAssign[event.gesture.name]
-        console.log("macroList: ", macroList)
-        console.log("macroList[0]: ", macroList[0])
         let action = macroList[0].split(', ')
         if(action[0]!=="-"){
           macroActionList = macroActionList.concat(action)
           if(macroActionList.length>1){
             macroActionList=[macroActionList[1]]
             macroDeviceList=[]
+            this.setState({
+              recognizedList: []
+            })
           }
         }
         let device=macroList[1].split(', ')
-        console.log("device",device[0]!=='-')
         if(device[0]!=='-'){
           macroDeviceList = macroDeviceList.concat(device)
         }
 
+        this.setState({
+          recognizedList: macroActionList.concat(macroDeviceList)
+        })
         console.log("macroDeviceList: ", macroDeviceList)
         console.log("macroActionList: ", macroActionList)
         if(macroActionList.length>0 && macroDeviceList.length>0){
@@ -356,7 +363,65 @@ class App extends React.Component {
         //     console.log(error)
         //   }
         // }
-      } else {
+      }
+      else if(checkMacroListAssign.hasOwnProperty(event.gesture.name)){
+        console.log("NOW, IT'S %s", event.gesture.name)
+        let composedList = checkMacroListAssign[event.gesture.name]
+        console.log(composedList)
+        for(const i in composedList){
+          var instruction=composedList[i]
+          if(checkListAssign.hasOwnProperty(instruction)){
+          let macroList = checkListAssign[instruction]
+
+          let action = macroList[0].split(', ')
+            if(action[0]!=="-"){
+              macroActionList = macroActionList.concat(action)
+              if(macroActionList.length>1){
+                macroActionList=[macroActionList[1]]
+                macroDeviceList=[]
+                this.setState({
+                  recognizedList: []
+                })
+              }
+            }
+
+            let device=macroList[1].split(', ')
+            if(device[0]!=='-'){
+              macroDeviceList = macroDeviceList.concat(device)
+            }
+          }
+
+          console.log("macroDeviceList: ", macroDeviceList)
+          console.log("macroActionList: ", macroActionList)
+          this.setState({
+            recognizedList: macroActionList.concat(macroDeviceList)
+          })
+          if(macroActionList.length>0 && macroDeviceList.length>0){
+            for(const macro_action of macroActionList){
+              if(macro_action==="Turn On"){
+                this.setState({
+                  turn_on: "1"
+                }, function (){
+                  console.log("macro Turn On")
+                })
+              }
+              else if(macro_action==="Turn Off"){
+                this.setState({
+                  turn_on: "0"
+                }, function (){
+                  console.log("macro Turn Off");
+                })
+              }
+              this.recognizeDevice()
+            }
+          }
+          else{
+            console.log("You must have an Action and a Device")
+          }
+        }
+
+      }
+      else {
         console.log("Unsupported gesture");
       }
       this.onGesture(event.gesture.type, event.gesture.name);
@@ -391,7 +456,6 @@ class App extends React.Component {
   recognizeDevice(){
     var i=0
     while(i< macroDeviceList.length){
-      console.log(macroDeviceList[i])
       let image = document.getElementById(macroDeviceList[i]);
       image.style.opacity = this.state.turn_on;
       i++
@@ -470,9 +534,11 @@ class App extends React.Component {
     const actionValue = this.action.value.trim();
     if(actionValue === ''){
         console.log('Action cannot be blank');
+        this.clear()
     }
     else if(tabFinal.length===0){
         console.log( 'No Data');
+        this.clear()
     }
     else {
       var dataGestureRecord = {
@@ -492,6 +558,7 @@ class App extends React.Component {
     const macroValue = this.macro.value.trim();
     if(macroValue === ''){
         console.log(this.macro, 'Action cannot be blank');
+        this.clear()
     }
     else {
       var dataGestureRecord = {
@@ -650,73 +717,91 @@ class App extends React.Component {
   
     macroCommand(){
     var dataStringRecord = this.checkMacroInputsRecord();
-    const macroValue = this.macro.value.trim();
-    this.gestureHandler.addNewGesture(dataStringRecord, macroValue.toLowerCase());
-    var tableau = this.composedMacrosInstructions()
-    var actionAndDevice=true
-    for(const i in tableau){
-      if(checkMacroList.includes(macroValue.toUpperCase())){
-        var tab =checkListAssign[tableau[i]] 
-        if(tab[0]==='-' || tab[1]==='-'){
-          actionAndDevice=false
+    if(typeof dataStringRecord!=='undefined'){
+      const macroValue = this.macro.value.trim();
+      this.gestureHandler.addNewGesture(dataStringRecord, macroValue.toLowerCase());
+
+      var tableau = this.composedMacrosInstructions()
+      var actionAndDevice=true
+
+
+      var act = []
+      var dev = []
+      for(const i in tableau){
+        if(checkList.includes(tableau[i])){
+          console.log(checkList)
+          var instruct = checkListAssign[tableau[i]]
+          if(instruct[0]!=='-'){
+            act=act.concat([instruct[0]])
+          }
+          if(instruct[1]!=='-'){
+            dev=dev.concat([instruct[1]])
+          }
         }
       }
-    }
-    if (actionAndDevice){
-      if(!checkMacroList.includes(macroValue.toUpperCase())){
-        checkMacroList.push(macroValue.toUpperCase());
+      if(act===[] || dev===[]){
+        actionAndDevice=false
       }
-      if(!checkMacroListAssign.hasOwnProperty(macroValue.toUpperCase())) {      
-        const item = {nameGesture: macroValue.toUpperCase(), instruction1: tableau[0],instruction2: tableau[1],instruction3: tableau[2],instruction4:tableau[3]}
-        const table = document.getElementById("TableM")
-        let row = table.insertRow();
-        let nameGesture = row.insertCell(0);
-        nameGesture.innerHTML = item.nameGesture;
-        let instruction1 = row.insertCell(1);
-        instruction1.innerHTML = item.instruction1;
-        let instruction2 = row.insertCell(2);
-        let instruction3 = row.insertCell(3);
-        let instruction4 = row.insertCell(4);
-        var i2 = true
-        if(typeof item.instruction2==='undefined'){
-          instruction2.innerHTML = '-';        
-          instruction3.innerHTML = '-';        
-          instruction4.innerHTML = '-';  
-          i2=false
+      console.log(actionAndDevice)
+      if (actionAndDevice){
+        if(!checkMacroList.includes(macroValue.toUpperCase())){
+          checkMacroList.push(macroValue.toUpperCase());
         }
-        else{
-          instruction2.innerHTML = item.instruction2;
-        }
-        if(i2){
-          if(typeof item.instruction3==='undefined'){   
+        if(!checkMacroListAssign.hasOwnProperty(macroValue.toUpperCase())) {      
+          const item = {nameGesture: macroValue.toUpperCase(), instruction1: tableau[0],instruction2: tableau[1],instruction3: tableau[2],instruction4:tableau[3]}
+          const table = document.getElementById("TableM")
+          let row = table.insertRow();
+          let nameGesture = row.insertCell(0);
+          nameGesture.innerHTML = item.nameGesture;
+          let instruction1 = row.insertCell(1);
+          instruction1.innerHTML = item.instruction1;
+          let instruction2 = row.insertCell(2);
+          let instruction3 = row.insertCell(3);
+          let instruction4 = row.insertCell(4);
+          var i2 = true
+          if(typeof item.instruction2==='undefined'){
+            instruction2.innerHTML = '-';        
             instruction3.innerHTML = '-';        
             instruction4.innerHTML = '-';  
-            i2=false      
+            i2=false
           }
           else{
-            instruction3.innerHTML = item.instruction3;
+            instruction2.innerHTML = item.instruction2;
           }
-  
+          if(i2){
+            if(typeof item.instruction3==='undefined'){   
+              instruction3.innerHTML = '-';        
+              instruction4.innerHTML = '-';  
+              i2=false      
+            }
+            else{
+              instruction3.innerHTML = item.instruction3;
+            }
+    
+          }
+          if(!i2 && typeof item.instruction4!=='undefined'){   
+            instruction4.innerHTML = item.instruction4;
+          }
+          else{      
+            instruction4.innerHTML = '-'; 
+          }
         }
-        if(!i2 && typeof item.instruction4!=='undefined'){   
-          instruction4.innerHTML = item.instruction4;
-        }
-        else{      
-          instruction4.innerHTML = '-'; 
-        }
+        checkMacroListAssign[macroValue.toUpperCase()] = tableau;
+        if(!checkMacroList.includes(macroValue.toUpperCase()))
+          checkMacroList.push(macroValue.toUpperCase())
+        console.log("checkMacroListAssign:", checkMacroListAssign)
+        console.log("checkMacroList:", checkMacroList)
+        this.setMacroData()
+        this.setState({
+          macros:[]
+        })
       }
-      checkMacroListAssign[macroValue.toUpperCase()] = tableau;
-      if(!checkMacroList.includes(macroValue.toUpperCase()))
-        checkMacroList.push(macroValue.toUpperCase())
-      console.log("checkMacroListAssign:", checkMacroListAssign)
-      console.log("checkMacroList:", checkMacroList)
-      this.setMacroData()
-      this.setState({
-        macros:[]
-      })
+      else{
+        console.log("The macro command must have an Action and a Device")
+      }
     }
     else{
-      console.log("The macro command must have an Action and a Device")
+      console.log("No Data")
     }
     
   }
@@ -763,14 +848,33 @@ class App extends React.Component {
     this.gestureHandler.clearGesture(gestureDeleted.toLowerCase());
     
     this.clear()
-    delete checkListAssign[gestureDeleted];
-    const index=checkList.indexOf(gestureDeleted);
+    delete checkListAssign[gestureDeleted.toUpperCase()];
+    var index=checkList.indexOf(gestureDeleted.toUpperCase());
     if(index>-1){
       checkList.splice(index,1)
+    }
+    index=MacrosList.indexOf(gestureDeleted.toUpperCase());
+    if(index>-1){
+      MacrosList.splice(index,1)
     }
 
     this.setData()
     this.updateCheckListAssign()
+    window.location.reload();
+  }
+
+  clearMacroGesture(){
+    const macrogestureDeleted=this.macrogestureDeleted.value.trim();
+    this.gestureHandler.clearGesture(macrogestureDeleted.toLowerCase());
+    
+    this.clear()
+    delete checkMacroListAssign[macrogestureDeleted.toUpperCase()];
+    const index=checkMacroList.indexOf(macrogestureDeleted.toUpperCase());
+    if(index>-1){
+      checkMacroList.splice(index,1)
+    }
+    this.setMacroData()
+    this.updateCheckMacroListAssign()
     window.location.reload();
   }
 
@@ -1088,6 +1192,7 @@ class App extends React.Component {
       element.style.display = "none";
     }
   }
+
   toggleCITable(){
     var element= document.getElementById("TableOfMacros")
     if (element.style.display === "none") {
@@ -1233,6 +1338,14 @@ class App extends React.Component {
     }
   }
 
+  showRecognizedInstructions(){
+    var list =""
+    for(const recognized in this.state.recognizedList){
+      list+=this.state.recognizedList[recognized]+" "
+    }
+    return list;
+  }
+
   render() {
     return (
       
@@ -1255,7 +1368,7 @@ class App extends React.Component {
           <div className="box2">
             <h1 className={"h1"} style={{textAlign: "center"}}>Smart home</h1>
             <img className="overlay" style={{maxWidth:'100%'}} src={House} alt={"HOUSE"}/>
-            <img className="overlay" style={{opacity:"0"}} src={TV} id="Television" alt={"Television"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Television} id="Television" alt={"Television"}/>
             <img className="overlay" style={{opacity:"0"}} src={LampeCave} id="LampeCave" alt={"LampeCave"}/>
             <img className="overlay" style={{opacity:"0"}} src={LampeSalon} id="LampeSalon" alt={"LampeSalon"}/>
             <img className="overlay" style={{opacity:"0"}} src={LampeSDB} id="LampeSDB" alt={"LampeSDB"}/>
@@ -1267,6 +1380,7 @@ class App extends React.Component {
           </div>     
         </div>
         <div className={"instructions"}>  Instruction : {this.showInstructions()}</div> 
+        <div className={"instructions"}>  Recognized Instruction : {this.showRecognizedInstructions()}</div> 
         <div className="container2">
           <div className="box3">
             <div className={"time before next gesture"}>Timer : {this.fmt(this.state.count)}</div>
@@ -1370,6 +1484,11 @@ class App extends React.Component {
                 <button type="button" className={"triangle-down"} onClick={this.toggleCITable}></button>
                 <h1>Table of composed instruction</h1>
                 <div id ="TableOfMacros">
+                  <label className="custom-field one">
+                    <input className={"textArea"} type="text" placeholder=" " id="macrogestureDeleted"/>
+                    <span className="placeholder">Name of the instruction to delete</span>
+                  </label>
+                  <button type="button" className={"button"} onClick={this.clearMacroGesture}>Delete</button>
                   <table className={"content-table"} id={"TableM"}>
                     <tbody>
                       <tr>

@@ -371,9 +371,9 @@ class App extends React.Component {
         for(const i in composedList){
           var instruction=composedList[i]
           if(checkListAssign.hasOwnProperty(instruction)){
-          let macroList = checkListAssign[instruction]
+            let macroList = checkListAssign[instruction]
 
-          let action = macroList[0].split(', ')
+            let action = macroList[0].split(', ')
             if(action[0]!=="-"){
               macroActionList = macroActionList.concat(action)
               if(macroActionList.length>1){
@@ -609,22 +609,28 @@ class App extends React.Component {
             this.setData()
             MacrosList=MacrosList.concat({label:actionValue.toUpperCase(),value:checkList.length})
           }
+
           else{
             if(!checkMacroList.includes(actionValue.toUpperCase())){
               checkList.push(actionValue.toUpperCase());          
             }
             tab = this.composedInstructions()
-            var i1,i2,i3,i4=[]
+            var i1=[]
+            var i2=[]
+            var i3=[]
+            var i4=[]
             var check=false
             if( this.state.instructions[0]){
               i1=this.state.instructions[0].value
             }
             if(typeof this.state.instructions[1]!== 'undefined'){
               i2=this.state.instructions[1].value
+              console.log("this.state.instructions",this.state.instructions)
             }
             else{
               i2=tab
               check=true
+              console.log("this.state",this.state.instructions)
             }
             if(!check && typeof this.state.instructions[2]!== 'undefined'){
               i3=this.state.instructions[2].value
@@ -1237,7 +1243,6 @@ class App extends React.Component {
         instructions:this.state.instructions.concat({value:this.state.macros[0].label}) 
        })
     }
-
 
     this.setState({
       actions:[],

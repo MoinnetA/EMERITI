@@ -1294,7 +1294,7 @@ class App extends React.Component {
             </form>
 
             <form >
-              <button className={"triangle-down"} onClick={this.toggleTable}></button>
+              <button type="button" className={"triangle-down"} onClick={this.toggleTable}></button>
                 <h1>Table of gestures</h1>  
                 <div id ="TableOfGestures">
                   <label className="custom-field one">
@@ -1316,8 +1316,8 @@ class App extends React.Component {
                   </table>
                 </div>                
                 <button type="button" className={"triangle-down"} onClick={this.toggleCITable}></button>
+                <h1>Table of composed instruction</h1>
                 <div id ="TableOfMacros">
-                  <h1>Table of composed instruction</h1>
                   <table className={"content-table"} id={"TableM"}>
                     <tbody>
                       <tr>

@@ -141,8 +141,8 @@ class App extends React.Component {
     this.updateCheckListAssign = this.updateCheckListAssign.bind(this);
     this.updateCheckMacroListAssign = this.updateCheckMacroListAssign.bind(this);
     this.clearDataSet = this.clearDataSet.bind(this);
-    this.clearGesture = this.clearGesture.bind(this);
-    this.clearMacroGesture = this.clearMacroGesture.bind(this);
+    this.deleteGesture = this.deleteGesture.bind(this);
+    this.deleteMacroGesture = this.deleteMacroGesture.bind(this);
     this.macroCommand = this.macroCommand.bind(this);
     this.ModifyActionsList = this.ModifyActionsList.bind(this);
     this.ModifyDevicesList = this.ModifyDevicesList.bind(this);
@@ -843,9 +843,9 @@ class App extends React.Component {
     this.updateCheckMacroListAssign()
   }
 
-  clearGesture(){
+  deleteGesture(){
     const gestureDeleted=this.gestureDeleted.value.trim();
-    this.gestureHandler.clearGesture(gestureDeleted.toLowerCase());
+    this.gestureHandler.deleteGesture(gestureDeleted.toLowerCase());
     
     this.clear()
     delete checkListAssign[gestureDeleted.toUpperCase()];
@@ -863,9 +863,9 @@ class App extends React.Component {
     window.location.reload();
   }
 
-  clearMacroGesture(){
+  deleteMacroGesture(){
     const macrogestureDeleted=this.macrogestureDeleted.value.trim();
-    this.gestureHandler.clearGesture(macrogestureDeleted.toLowerCase());
+    this.gestureHandler.deleteGesture(macrogestureDeleted.toLowerCase());
     
     this.clear()
     delete checkMacroListAssign[macrogestureDeleted.toUpperCase()];
@@ -1467,7 +1467,7 @@ class App extends React.Component {
                     <input className={"textArea"} type="text" placeholder=" " id="gestureDeleted"/>
                     <span className="placeholder">Name of the gesture to delete</span>
                   </label>
-                  <button type="button" className={"button"} onClick={this.clearGesture}>Delete</button>
+                  <button type="button" className={"button"} onClick={this.deleteGesture}>Delete</button>
                   <button className={"button"} onClick={this.clearDataSet}>Clear Dataset</button>
                   <table className={"content-table"} id={"target"}>
                     <tbody>
@@ -1488,7 +1488,7 @@ class App extends React.Component {
                     <input className={"textArea"} type="text" placeholder=" " id="macrogestureDeleted"/>
                     <span className="placeholder">Name of the instruction to delete</span>
                   </label>
-                  <button type="button" className={"button"} onClick={this.clearMacroGesture}>Delete</button>
+                  <button type="button" className={"button"} onClick={this.deleteMacroGesture}>Delete</button>
                   <table className={"content-table"} id={"TableM"}>
                     <tbody>
                       <tr>

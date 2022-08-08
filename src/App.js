@@ -15,10 +15,10 @@ import Fan from './images/Fan_on.png';
 import House from './images/House.png';
 import Light_bathroom from './images/Light_bathroom.png';
 import Light_children_bedroom from './images/Light_children_bedroom.png';
-import Light_diningroom from './images/Light_diningroom.png';
+import Light_dining_room from './images/Light_diningroom.png';
 import Light_kitchen from './images/Light_kitchen.png';
-import Light_laundryroom from './images/Light_laundryroom.png';
-import Light_livingroom from './images/Light_livingroom.png';
+import Light_laundry_room from './images/Light_laundryroom.png';
+import Light_living_room from './images/Light_livingroom.png';
 import Light_office from './images/Light_office.png';
 import Light_parent_bedroom from './images/Light_parent_bedroom.png';
 import Microwave from './images/Microwave.png';
@@ -292,6 +292,8 @@ class App extends React.Component {
           if(macroActionList.length>1){
             macroActionList=[macroActionList[1]]
             macroDeviceList=[]
+            macroEnvironmentList=[]
+            macroParameterList=[]
             this.setState({
               recognizedList: []
             })
@@ -358,9 +360,13 @@ class App extends React.Component {
             }
             if(macroParameterList.includes("Brightness")){
               let intensity_brightness = macroParameterList[macroParameterList.indexOf("Brightness") + 1]
-              let decimal_intensity = (1-(intensity_brightness/10).toFixed(1)).toString()
-              intensity_brightness = decimal_intensity
-              this.recognizeBrightness(intensity_brightness)
+              if(intensity_brightness>10){
+                console.log("Intensity of brightness too high !")
+              }
+              else {
+                let decimal_intensity = (1 - (intensity_brightness / 10).toFixed(1)).toString()
+                this.recognizeBrightness(decimal_intensity)
+              }
             }
             else{
               this.recognizeDevice()
@@ -385,6 +391,8 @@ class App extends React.Component {
               if(macroActionList.length>1){
                 macroActionList=[macroActionList[1]]
                 macroDeviceList=[]
+                macroEnvironmentList=[]
+                macroParameterList=[]
                 this.setState({
                   recognizedList: []
                 })
@@ -475,23 +483,18 @@ class App extends React.Component {
             let image_light = document.getElementById("Light_"+macroEnvironmentList[j].toLowerCase())
             image_light.style.opacity = this.state.turn_on;
             let image_brightness = document.getElementById("Brightness_"+macroEnvironmentList[j].toLowerCase())
-            if(this.state.turn_on==="1"){
-              image_brightness.style.opacity = "0";
-            }
-            else{
-              image_brightness.style.opacity = "1";
-            }
+            image_brightness.style.opacity = (1 - parseInt(this.state.turn_on)).toString();
           }
         }
         else{
           let all_light = ["Light_bathroom", "Light_children bedroom", "Light_dining room", "Light_kitchen", "Light_laundry room", "Light_living room", "Light_office", "Light_parent bedroom"]
           let all_brightness = ["Brightness_bathroom", "Brightness_children bedroom", "Brightness_dining room", "Brightness_kitchen", "Brightness_living room", "Brightness_office", "Brightness_parent bedroom", "Brightness_washing room"]
-          for(i of all_light){
-            let image = document.getElementById(i)
+          for(let k of all_light){
+            let image = document.getElementById(k)
             image.style.opacity = this.state.turn_on;
           }
-          for (i of all_brightness) {
-            let image = document.getElementById(i)
+          for (let l of all_brightness) {
+            let image = document.getElementById(l)
             image.style.opacity = (1 - parseInt(this.state.turn_on)).toString();
           }
         }
@@ -1463,10 +1466,10 @@ class App extends React.Component {
             <img className="overlay" style={{opacity:"0"}} src={Fan} id="Fan" alt={"Fan"}/>
             <img className="overlay" style={{opacity:"0"}} src={Light_bathroom} id="Light_bathroom" alt={"Light_bathroom"}/>
             <img className="overlay" style={{opacity:"0"}} src={Light_children_bedroom} id="Light_children bedroom" alt={"Light_children_bedroom"}/>
-            <img className="overlay" style={{opacity:"0"}} src={Light_diningroom} id="Light_dining room" alt={"Light_diningroom"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Light_dining_room} id="Light_dining room" alt={"Light_diningroom"}/>
             <img className="overlay" style={{opacity:"0"}} src={Light_kitchen} id="Light_kitchen" alt={"Light_kitchen"}/>
-            <img className="overlay" style={{opacity:"0"}} src={Light_laundryroom} id="Light_laundry room" alt={"Light_laundryroom"}/>
-            <img className="overlay" style={{opacity:"0"}} src={Light_livingroom} id="Light_living room" alt={"Light_livingroom"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Light_laundry_room} id="Light_laundry room" alt={"Light_laundryroom"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Light_living_room} id="Light_living room" alt={"Light_livingroom"}/>
             <img className="overlay" style={{opacity:"0"}} src={Light_office} id="Light_office" alt={"Light_office"}/>
             <img className="overlay" style={{opacity:"0"}} src={Light_parent_bedroom} id="Light_parent bedroom" alt={"Light_parent_bedroom"}/>
             <img className="overlay" style={{opacity:"0"}} src={Microwave} id="Microwave" alt={"Microwave"}/>

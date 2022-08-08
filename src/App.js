@@ -1,18 +1,48 @@
 import React, {createRef} from 'react';
 import GestureHandler from "quantumleapjs";
-import Television from './images/Television.png';
-import House from './images/house.png';
-import LampeCave from './images/lampeCave.png';
-import LampeSalon from './images/lampeSalon.png';
-import LampeSDB from './images/lampeSDB.png';
-import LampeSAM from './images/lampeSAM.png';
-import Computer from './images/Computer.png';
-import Micro_ondes from './images/microOnde.png';
-import Machine_a_laver from './images/machineALaver.png';
+import Air_conditioner from './images/Air_conditioner_on_cold.png';
+import Air_conditioner_hot from './images/Air_conditioner_on_hot.png';
+import Brightness_bathroom from './images/Brightness_bathroom.png';
+import Brightness_children_bedroom from './images/Brightness_children_bedroom.png';
+import Brightness_dining_room from './images/Brightness_diningroom.png';
+import Brightness_kitchen from './images/Brightness_kitchen.png';
+import Brightness_living_room from './images/Brightness_livingroom.png';
+import Brightness_office from './images/Brightness_office.png';
+import Brightness_parent_bedroom from './images/Brightness_parent_bedroom.png';
+import Brightness_washing_room from './images/Brightness_washingroom.png';
+import Computer from './images/Computer_on.png';
+import Fan from './images/Fan_on.png';
+import House from './images/House.png';
+import Light_bathroom from './images/Light_bathroom.png';
+import Light_children_bedroom from './images/Light_children_bedroom.png';
+import Light_dining_room from './images/Light_diningroom.png';
+import Light_kitchen from './images/Light_kitchen.png';
+import Light_laundry_room from './images/Light_laundryroom.png';
+import Light_living_room from './images/Light_livingroom.png';
+import Light_office from './images/Light_office.png';
+import Light_parent_bedroom from './images/Light_parent_bedroom.png';
+import Microwave from './images/Microwave.png';
+import Radio from './images/Radio_on.png';
+import Radio_channel_1 from './images/Radio_on_channel_1.png';
+import Radio_channel_2 from './images/Radio_on_channel_2.png';
+import Radio_channel_3 from './images/Radio_on_channel_3.png';
+import Radio_muted from './images/Radio_on_muted.png';
+import Television from './images/Tv_on_channel_1.png';
+import Television_channel_2 from './images/Tv_on_channel_2.png';
+import Television_channel_3 from './images/Tv_on_channel_3.png';
+import Television_channel_4 from './images/Tv_on_channel_4.png';
+import Television_channel_5 from './images/Tv_on_channel_5.png';
+import Television_muted from './images/Tv_on_muted.png';
+import Television_pause from './images/Tv_on_pause.png';
+import Washing_machine from './images/Washing_machine.png';
+import Washing_machine_program_1 from './images/Washing_machine_program_1.png';
+import Washing_machine_program_2 from './images/Washing_machine_program_2.png';
+import Washing_machine_program_3 from './images/Washing_machine_program_3.png';
 import { MultiSelect } from "react-multi-select-component";
 
 let tabFinal=[];
 let stroke_id=0;
+let nameListOfGesture = []
 let checkList = []
 let checkMacroList = []
 let checkListAssign = {}
@@ -20,6 +50,8 @@ let checkMacroListAssign = {}
 let gestureList = []
 let macroActionList = []
 let macroDeviceList=[]
+let macroEnvironmentList=[]
+let macroParameterList=[]
 
 let ActionsList =[
   { label: 'Turn On', value: 1 },
@@ -34,11 +66,11 @@ let ActionsList =[
 let MacrosList =[]
 
 let DevicesList =[
-  { label: 'Air Conditionner', value: 1 , disabled: false},
+  { label: 'Air conditioner', value: 1 , disabled: false},
   { label: 'Computer', value: 2 , disabled: false},
   { label: 'Fan', value: 3 , disabled: false},
-  { label: 'Ligth', value: 4 , disabled: false},
-  { label: 'Micro-waves', value: 5 , disabled: false},
+  { label: 'Light', value: 4 , disabled: false},
+  { label: 'Microwave', value: 5 , disabled: false},
   { label: 'Radio', value: 6 , disabled: false},
   { label: 'Television', value: 7 , disabled: false},
   { label: 'Washing machine', value: 8 , disabled: false},
@@ -52,7 +84,7 @@ let EnvironmentList =[
   { label: 'Laundry room', value: 5 , disabled: false},
   { label: 'Living room', value: 6 , disabled: false},
   { label: 'Office', value: 7 , disabled: false},
-  { label: 'Parent\'s bedroom', value: 8 , disabled: false},
+  { label: 'Parent bedroom', value: 8 , disabled: false},
 ]
 
 let ParametersList =[
@@ -103,7 +135,6 @@ class App extends React.Component {
       connected: false,
       mouseDown: false,
       lastPosition: {x:0, y:0},
-      nameListOfGesture: [],
       action:"",
       macro:"",
       gestureDeleted:"",
@@ -117,7 +148,8 @@ class App extends React.Component {
       macros:[],
       macro_instruction:[],
       instructions:[],
-      recognizedList:[]
+      recognizedList:[],
+      intensity_brightness:"0"
     };
     this.canvasRef = createRef(null);
     this.ctx = createRef(null);
@@ -141,8 +173,8 @@ class App extends React.Component {
     this.updateCheckListAssign = this.updateCheckListAssign.bind(this);
     this.updateCheckMacroListAssign = this.updateCheckMacroListAssign.bind(this);
     this.clearDataSet = this.clearDataSet.bind(this);
-    this.clearGesture = this.clearGesture.bind(this);
-    this.clearMacroGesture = this.clearMacroGesture.bind(this);
+    this.deleteGesture = this.deleteGesture.bind(this);
+    this.deleteMacroGesture = this.deleteMacroGesture.bind(this);
     this.macroCommand = this.macroCommand.bind(this);
     this.ModifyActionsList = this.ModifyActionsList.bind(this);
     this.ModifyDevicesList = this.ModifyDevicesList.bind(this);
@@ -159,6 +191,7 @@ class App extends React.Component {
     this.showInstructions = this.showInstructions.bind(this);
     this.showRecognizedInstructions = this.showRecognizedInstructions.bind(this);
     this.recognizeDevice = this.recognizeDevice.bind(this);
+    this.recognizeBrightness = this.recognizeBrightness.bind(this);
 
     // Timer
     this.timer = null;
@@ -167,7 +200,7 @@ class App extends React.Component {
     //this.updateCount =this.updateCount.bind(this);
 
   }
-  
+
   setData(){
     console.log("checkListAssign for setData:", checkListAssign)
     localStorage.setItem('checkListAssign', JSON.stringify(checkListAssign));
@@ -199,14 +232,9 @@ class App extends React.Component {
     }
     console.log("checkListAssign for getData:", checkListAssign)
     console.log("checkList for getData:", checkList)
-    for(let i=0;i<checkList.length;i++){
-      MacrosList=MacrosList.concat({label:checkList[i],value:i})
+    for(let i=0;i<checkList.length;i++) {
+      MacrosList = MacrosList.concat({label: checkList[i], value: i})
     }
-    this.setState({
-      nameListOfGesture:checkList
-    }, () => {
-      this.getMacroData()
-    })
   }
 
   getMacroData(){
@@ -227,23 +255,14 @@ class App extends React.Component {
     else{
       checkMacroList = checkMacroListData
     }
-    console.log("checkMacroListAssign for getData:", checkMacroListAssign)
-    console.log("checkMacroList for getData:", checkMacroList)
-    this.setState({
-      nameListOfGesture:this.state.nameListOfGesture.concat(checkMacroList)
-    }, () => {
-      console.log("nameListOfGesture : ", this.state.nameListOfGesture)
-    })
-    this.setState({
-    }, () => {
-      this.updateCheckListAssign();
-      this.updateCheckMacroListAssign();
-
-    })
   }
 
   componentDidMount() {
     this.getData()
+    this.getMacroData()
+    nameListOfGesture = checkList.concat(checkMacroList)
+    this.updateCheckListAssign();
+    this.updateCheckMacroListAssign();
     this.timer= setInterval(() =>{
       if(!this.state.pause && this.state.count !== 0) {
         this.setState({
@@ -261,7 +280,7 @@ class App extends React.Component {
     this.instructions = document.getElementById('instructions');
     this.number = document.getElementById('number');
     // STEPS 6 and 7
-    this.gestureHandler.registerGestures("dynamic", this.state.nameListOfGesture);
+    this.gestureHandler.registerGestures("dynamic", nameListOfGesture);
     // STEPS 5, 7, 8, 10, 11
     this.gestureHandler.addListener('gesture', (event) => {
       if (checkListAssign.hasOwnProperty(event.gesture.name)) {
@@ -273,101 +292,94 @@ class App extends React.Component {
           if(macroActionList.length>1){
             macroActionList=[macroActionList[1]]
             macroDeviceList=[]
+            macroEnvironmentList=[]
+            macroParameterList=[]
             this.setState({
               recognizedList: []
             })
           }
         }
-        let device=macroList[1].split(', ')
-        if(device[0]!=='-'){
-          macroDeviceList = macroDeviceList.concat(device)
+        if(macroList[1]!=='-'){
+          let device = macroList[1].split(', ')
+          macroDeviceList = device
         }
+        else{
+          macroDeviceList = []
+        }
+
+        if(macroList[2]!=='-'){
+          let environment = macroList[2].split(', ')
+          macroEnvironmentList = environment
+        }
+        else{
+          macroEnvironmentList = []
+        }
+
+        if(macroList[3]!=='-'){
+          let parameter = macroList[3].split(', ')
+          macroParameterList = parameter
+        }
+        else{
+          macroParameterList = []
+        }
+        // let device=macroList[1].split(', ')
+        // if(device[0]!=='-'){
+        //   macroDeviceList = macroDeviceList.concat(device)
+        // }
+        // let environment = macroList[2].split(', ')
+        // if(environment[0]!=='-'){
+        //   macroEnvironmentList = macroEnvironmentList.concat(environment)
+        // }
+        // let parameter=macroList[3].split(', ')
+        // if(parameter[0]!=='-'){
+        //   macroParameterList = parameter
+        // }
+        console.log("macroActionList : ", macroActionList)
+        console.log("macroDeviceList : ", macroDeviceList)
+        console.log("macroEnvironmentList : ", macroEnvironmentList)
+        console.log("macroParameterList : ", macroParameterList)
 
         this.setState({
           recognizedList: macroActionList.concat(macroDeviceList)
         })
-        console.log("macroDeviceList: ", macroDeviceList)
-        console.log("macroActionList: ", macroActionList)
         if(macroActionList.length>0 && macroDeviceList.length>0){
           for(const macro_action of macroActionList){
             if(macro_action==="Turn On"){
               this.setState({
                 turn_on: "1"
               }, function (){
-                console.log("macro Turn On")
+                console.log("Turn On")
               })
             }
             else if(macro_action==="Turn Off"){
               this.setState({
                 turn_on: "0"
               }, function (){
-                console.log("macro Turn Off");
+                console.log("Turn Off");
               })
             }
-            this.recognizeDevice()
+            if(macroParameterList.includes("Brightness")){
+              let intensity_brightness = macroParameterList[macroParameterList.indexOf("Brightness") + 1]
+              if(intensity_brightness>10){
+                console.log("Intensity of brightness too high !")
+              }
+              else {
+                let decimal_intensity = (1 - (intensity_brightness / 10).toFixed(1)).toString()
+                this.recognizeBrightness(decimal_intensity)
+              }
+            }
+            else{
+              this.recognizeDevice()
+            }
           }
         }
         else{
           console.log("You must have an Action and a Device")
         }
-        // try {
-        //   if (checkListAssign.hasOwnProperty(event.gesture.name)) {
-        //     if (deviceList.includes(checkListAssign[event.gesture.name])) {
-        //       recognizedDeviceList.push(checkListAssign[event.gesture.name])
-        //     } else if (actionList.includes(checkListAssign[event.gesture.name])) {
-        //       recognizedActionList.push(checkListAssign[event.gesture.name])
-        //     } else {
-        //       console.log("error gesture recognize");
-        //     }
-        //     console.log("recognizedDeviceList:", recognizedDeviceList)
-        //     console.log("recognizedActionList:", recognizedActionList)
-        //     console.log("checkListAssign:", checkListAssign)
-        //   }
-        // } catch (error) {
-        //   console.log(error)
-        // }
-        // if(recognizedActionList.length!==0) {
-        //   for (let i = 0; i < recognizedActionList.length; i++) {
-        //     console.log("action:", recognizedActionList[i])
-        //     if (recognizedActionList[i] === "Turn On") {
-        //       this.setState({
-        //         turn_on: "1"
-        //       })}
-        //     else if (recognizedActionList[i] === "Turn Off") {
-        //     this.setState({
-        //       turn_on: "0"
-        //     })}
-        //     for (let j = 0; j < this.state.devices.length; j++){
-        //       try {
-        //         console.log("device:", this.state.devices[j])
-        //         let image = document.getElementById(this.state.devices[j].label);
-        //         image.style.opacity = this.state.turn_on;
-        //       } catch (error) {
-        //         console.log(error)
-        //       }
-        //     }
-        //   }
-        // }
-        // else{
-        //   var lastGesture = recognizedDeviceList[recognizedDeviceList.length-1];
-        //   try {
-        //     console.log("device with no action:", lastGesture)
-        //     let image = document.getElementById(lastGesture);
-        //     if(image.style.opacity === "1"){
-        //       image.style.opacity = "0"
-        //     }
-        //     else{
-        //       image.style.opacity ="1"
-        //     }
-        //   } catch (error) {
-        //     console.log(error)
-        //   }
-        // }
       }
       else if(checkMacroListAssign.hasOwnProperty(event.gesture.name)){
         console.log("NOW, IT'S %s", event.gesture.name)
         let composedList = checkMacroListAssign[event.gesture.name]
-        console.log(composedList)
         for(const i in composedList){
           var instruction=composedList[i]
           if(checkListAssign.hasOwnProperty(instruction)){
@@ -379,6 +391,8 @@ class App extends React.Component {
               if(macroActionList.length>1){
                 macroActionList=[macroActionList[1]]
                 macroDeviceList=[]
+                macroEnvironmentList=[]
+                macroParameterList=[]
                 this.setState({
                   recognizedList: []
                 })
@@ -412,7 +426,15 @@ class App extends React.Component {
                   console.log("macro Turn Off");
                 })
               }
-              this.recognizeDevice()
+              if(macroParameterList.includes("Brightness")){
+                let intensity_brightness = macroParameterList[macroParameterList.indexOf("Brightness") + 1]
+                let decimal_intensity = (intensity_brightness/10).toFixed(1).toString()
+                intensity_brightness = decimal_intensity
+                this.recognizeBrightness(intensity_brightness)
+              }
+              else{
+                this.recognizeDevice()
+              }
             }
           }
           else{
@@ -454,13 +476,74 @@ class App extends React.Component {
   }
 
   recognizeDevice(){
-    var i=0
-    while(i< macroDeviceList.length){
-      let image = document.getElementById(macroDeviceList[i]);
-      image.style.opacity = this.state.turn_on;
-      i++
+    for(let i = 0; i<macroDeviceList.length; i++){
+      if(macroDeviceList[i]==="Light"){
+        if(macroEnvironmentList.length !== 0){
+          for(let j=0; j<macroEnvironmentList.length; j++){
+            let image_light = document.getElementById("Light_"+macroEnvironmentList[j].toLowerCase())
+            image_light.style.opacity = this.state.turn_on;
+            let image_brightness = document.getElementById("Brightness_"+macroEnvironmentList[j].toLowerCase())
+            image_brightness.style.opacity = (1 - parseInt(this.state.turn_on)).toString();
+          }
+        }
+        else{
+          let all_light = ["Light_bathroom", "Light_children bedroom", "Light_dining room", "Light_kitchen", "Light_laundry room", "Light_living room", "Light_office", "Light_parent bedroom"]
+          let all_brightness = ["Brightness_bathroom", "Brightness_children bedroom", "Brightness_dining room", "Brightness_kitchen", "Brightness_living room", "Brightness_office", "Brightness_parent bedroom", "Brightness_washing room"]
+          for(let k of all_light){
+            let image = document.getElementById(k)
+            image.style.opacity = this.state.turn_on;
+          }
+          for (let l of all_brightness) {
+            let image = document.getElementById(l)
+            image.style.opacity = (1 - parseInt(this.state.turn_on)).toString();
+          }
+        }
+      }
+      else {
+        let image = document.getElementById(macroDeviceList[i]);
+        image.style.opacity = this.state.turn_on;
+      }
     }
   }
+
+  recognizeBrightness(intensity_brightness){
+    for(let i = 0; i<macroDeviceList.length; i++){
+      if(macroDeviceList[i]==="Light"){
+        if(macroEnvironmentList.length !== 0){
+          for(let j=0; j<macroEnvironmentList.length; j++){
+            let image_light = document.getElementById("Light_"+macroEnvironmentList[j].toLowerCase())
+            image_light.style.opacity = this.state.turn_on;
+            let image_brightness = document.getElementById("Brightness_"+macroEnvironmentList[j].toLowerCase())
+            if(this.state.turn_on==="1"){
+              image_brightness.style.opacity = intensity_brightness;
+            }
+            else{
+              image_brightness.style.opacity = "0";
+            }
+          }
+        }
+        else{
+          let all_light = ["Light_bathroom", "Light_children bedroom", "Light_dining room", "Light_kitchen", "Light_laundry room", "Light_living room", "Light_office", "Light_parent bedroom"]
+          let all_brightness = ["Brightness_bathroom", "Brightness_children_bedroom", "Brightness_dining room", "Brightness_kitchen", "Brightness_living room", "Brightness_office", "Brightness_parent bedroom", "Brightness_washing room"]
+          for(i of all_light){
+            let image = document.getElementById(i)
+            image.style.opacity = this.state.turn_on;
+          }
+          if(this.state.turn_on==="1") {
+            for (i of all_brightness) {
+              let image = document.getElementById(i)
+              image.style.opacity = intensity_brightness;
+            }
+          }
+        }
+      }
+      else {
+        let image = document.getElementById(macroDeviceList[i]);
+        image.style.opacity = this.state.turn_on;
+      }
+    }
+  }
+
   componentWillUnmount() {
     clearInterval(this.timer);
     // STEP 4
@@ -504,11 +587,13 @@ class App extends React.Component {
   }
 
   recognize_canvas(){
-    this.gestureHandler.registerGestures("dynamic", this.state.nameListOfGesture);
+    console.log(nameListOfGesture)
+    this.gestureHandler.registerGestures("dynamic", nameListOfGesture);
     if(tabFinal.length!==0) {
       gestureList.push(tabFinal)
       this.clear()
     }
+
     for(const gest of gestureList) {
       var dataGesture = {
         "name": "",
@@ -576,152 +661,147 @@ class App extends React.Component {
   }
 
   record(){
-      var dataStringRecord = this.checkInputsRecord();
-      if(typeof dataStringRecord!=='undefined'){
-        const actionValue = this.action.value.trim();
-        this.gestureHandler.addNewGesture(dataStringRecord, actionValue.toLowerCase());
+    var dataStringRecord = this.checkInputsRecord();
+    if(typeof dataStringRecord!=='undefined'){
+      const actionValue = this.action.value.trim();
+      this.gestureHandler.addNewGesture(dataStringRecord, actionValue.toLowerCase());
+      if(!checkListAssign.hasOwnProperty(actionValue.toUpperCase())) {
+        if(!checkList.includes(actionValue.toUpperCase())){
+          checkList.push(actionValue.toUpperCase());
+        }
+        if(!this.state.instructions[0]){
+          var tab = this.composedInstructions()
+          const table = document.getElementById("target")
+          const item = {nameGesture: actionValue.toUpperCase(), actionGesture: tab[0],devicesGesture: tab[1],EnvironmentGesture: tab[2],ParametersGesture: tab[3]}
+          let row = table.insertRow();
+          let nameGesture = row.insertCell(0);
+          nameGesture.innerHTML = item.nameGesture;
+          let actionGesture = row.insertCell(1);
+          actionGesture.innerHTML = item.actionGesture;
+          let devicesGesture = row.insertCell(2);
+          devicesGesture.innerHTML = item.devicesGesture;
+          let EnvironmentGesture = row.insertCell(3);
+          EnvironmentGesture.innerHTML = item.EnvironmentGesture;
+          let ParametersGesture = row.insertCell(4);
+          ParametersGesture.innerHTML = item.ParametersGesture;
 
-        if(!checkListAssign.hasOwnProperty(actionValue.toUpperCase())) {
-          if(!checkList.includes(actionValue.toUpperCase())){
-            checkList.push(actionValue.toUpperCase());          
+          checkListAssign[actionValue.toUpperCase()] = tab;
+          if(!checkList.includes(actionValue.toUpperCase()))
+            checkList.push(actionValue.toUpperCase())
+          console.log("checkList in record :", checkList)
+          console.log("checkListAssign in record :", checkListAssign)
+          this.setData()
+          MacrosList=MacrosList.concat({label:actionValue.toUpperCase(),value:checkList.length})
+        }
+        else{
+          if(!checkMacroList.includes(actionValue.toUpperCase())){
+            checkList.push(actionValue.toUpperCase());
           }
-          if(!this.state.instructions[0]){
-            var tab = this.composedInstructions()
-            const table = document.getElementById("target")
-            const item = {nameGesture: actionValue.toUpperCase(), actionGesture: tab[0],devicesGesture: tab[1],EnvironmentGesture: tab[2],ParametersGesture: tab[3]}
-            let row = table.insertRow();
-            let nameGesture = row.insertCell(0);
-            nameGesture.innerHTML = item.nameGesture;
-            let actionGesture = row.insertCell(1);
-            actionGesture.innerHTML = item.actionGesture;
-            let devicesGesture = row.insertCell(2);
-            devicesGesture.innerHTML = item.devicesGesture;
-            let EnvironmentGesture = row.insertCell(3);
-            EnvironmentGesture.innerHTML = item.EnvironmentGesture;
-            let ParametersGesture = row.insertCell(4);
-            ParametersGesture.innerHTML = item.ParametersGesture;
-
-            checkListAssign[actionValue.toUpperCase()] = tab;
-            if(!checkList.includes(actionValue.toUpperCase()))
-              checkList.push(actionValue.toUpperCase())
-            console.log("checkListAssign:", checkListAssign)
-            console.log("checkList:", checkList)
-            this.setData()
-            MacrosList=MacrosList.concat({label:actionValue.toUpperCase(),value:checkList.length})
+          tab = this.composedInstructions()
+          var i1,i2,i3,i4=[]
+          var check=false
+          if( this.state.instructions[0]){
+            i1=this.state.instructions[0].value
+          }
+          if(typeof this.state.instructions[1]!== 'undefined'){
+            i2=this.state.instructions[1].value
           }
 
           else{
-            if(!checkMacroList.includes(actionValue.toUpperCase())){
-              checkList.push(actionValue.toUpperCase());          
-            }
-            tab = this.composedInstructions()
-            var i1=[]
-            var i2=[]
-            var i3=[]
-            var i4=[]
-            var check=false
-            if( this.state.instructions[0]){
-              i1=this.state.instructions[0].value
-            }
-            if(typeof this.state.instructions[1]!== 'undefined'){
-              i2=this.state.instructions[1].value
-              console.log("this.state.instructions",this.state.instructions)
-            }
-            else{
-              i2=tab
-              check=true
-              console.log("this.state",this.state.instructions)
-            }
-            if(!check && typeof this.state.instructions[2]!== 'undefined'){
-              i3=this.state.instructions[2].value
-            }
-            else if(!check && typeof this.state.instructions[2]=== 'undefined'){
-              i3=tab
-              check=true
-            }
+            i2=tab
+            check=true
+          }
+          if(!check && typeof this.state.instructions[2]!== 'undefined'){
+            i3=this.state.instructions[2].value
+          }
+          else if(!check && typeof this.state.instructions[2]=== 'undefined'){
+            i3=tab
+            check=true
+          }
 
-            if(!check && typeof this.state.instructions[3]!== 'undefined'){
-              i4=this.state.instructions[3].value
-            }
-            else if(!check && typeof this.state.instructions[3]=== 'undefined'){
-              i4=tab
-            }
+          if(!check && typeof this.state.instructions[3]!== 'undefined'){
+            i4=this.state.instructions[3].value
+          }
+          else if(!check && typeof this.state.instructions[3]=== 'undefined'){
+            i4=tab
+          }
 
-            const table = document.getElementById("TableM")
-            const item = {nameGesture: actionValue.toUpperCase(), instruction1: i1,instruction2: i2,instruction3: i3,instruction4: i4}
-            let row = table.insertRow();
-            let nameGesture = row.insertCell(0);
-            nameGesture.innerHTML = item.nameGesture;
-            let instruction1 = row.insertCell(1);
-            instruction1.innerHTML = item.instruction1;
-            let instruction2 = row.insertCell(2);
-            let instruction3 = row.insertCell(3);
-            let instruction4 = row.insertCell(4);
-            var bool = true
-            
-            if(item.instruction2===[]){
-              instruction2.innerHTML = '-';        
-              instruction3.innerHTML = '-';        
-              instruction4.innerHTML = '-';  
+          const table = document.getElementById("TableM")
+          const item = {nameGesture: actionValue.toUpperCase(), instruction1: i1,instruction2: i2,instruction3: i3,instruction4: i4}
+          let row = table.insertRow();
+          let nameGesture = row.insertCell(0);
+          nameGesture.innerHTML = item.nameGesture;
+          let instruction1 = row.insertCell(1);
+          instruction1.innerHTML = item.instruction1;
+          let instruction2 = row.insertCell(2);
+          let instruction3 = row.insertCell(3);
+          let instruction4 = row.insertCell(4);
+          var bool = true
+
+          if(item.instruction2===[]){
+            instruction2.innerHTML = '-';
+            instruction3.innerHTML = '-';
+            instruction4.innerHTML = '-';
+            bool=false
+          }
+          else{
+            instruction2.innerHTML = item.instruction2;
+          }
+          if(bool){
+            if(item.instruction3!==[]){
+              instruction3.innerHTML = '-';
+              instruction4.innerHTML = '-';
               bool=false
             }
             else{
-              instruction2.innerHTML = item.instruction2;
-            }
-            if(bool){
-              if(item.instruction3!==[]){   
-                instruction3.innerHTML = '-';        
-                instruction4.innerHTML = '-';  
-                bool=false      
-              }
-              else{
-                instruction3.innerHTML = item.instruction3;
-              }
-      
-            }
-            if(bool){
-              if(item.instruction4!==[]){   
-                instruction4.innerHTML = '-'; 
-              }
-              else{      
-                instruction4.innerHTML = item.instruction4;
-              }
+              instruction3.innerHTML = item.instruction3;
             }
 
-            checkMacroListAssign[actionValue.toUpperCase()] = [i1,i2,i3,i4];
-            if(!checkMacroList.includes(actionValue.toUpperCase()))
-              checkMacroList.push(actionValue.toUpperCase())
-            console.log("checkMacroListAssign:", checkMacroListAssign)
-            console.log("checkMacroList:", checkMacroList)
-            this.setMacroData()            
           }
+          if(bool){
+            if(item.instruction4!==[]){
+              instruction4.innerHTML = '-';
+            }
+            else{
+              instruction4.innerHTML = item.instruction4;
+            }
+          }
+
+          checkMacroListAssign[actionValue.toUpperCase()] = [i1,i2,i3,i4];
+          if(!checkMacroList.includes(actionValue.toUpperCase()))
+            checkMacroList.push(actionValue.toUpperCase())
+          console.log("checkMacroListAssign in record :", checkMacroListAssign)
+          console.log("checkMacroList in record :", checkMacroList)
+          this.setMacroData()
         }
       }
-      else{
-        console.log("No data")
-      }
-
-      this.setState({
-        instructions:[],
-        actions:[],
-        devices:[],
-        environment:[],
-        parameters:[]
-      })
-
-      for(let k=0;k<ActionsList.length;k++){
-        ActionsList[k].disabled=false
-      }
-      for(let k=0;k<EnvironmentList.length;k++){
-        EnvironmentList[k].disabled=false
-      }
-      for(let k=0;k<ParametersList.length;k++){
-        ParametersList[k].disabled=false
-      }
+    }
+    else{
+      console.log("No data")
     }
 
+    this.setState({
+      instructions:[],
+      actions:[],
+      devices:[],
+      environment:[],
+      parameters:[]
+    })
+
+    for(let k=0;k<ActionsList.length;k++){
+      ActionsList[k].disabled=false
+    }
+    for(let k=0;k<EnvironmentList.length;k++){
+      EnvironmentList[k].disabled=false
+    }
+    for(let k=0;k<ParametersList.length;k++){
+      ParametersList[k].disabled=false
+    }
+    nameListOfGesture = checkList.concat(checkMacroList)
+  }
+
   
-    macroCommand(){
+  macroCommand(){
     var dataStringRecord = this.checkMacroInputsRecord();
     if(typeof dataStringRecord!=='undefined'){
       const macroValue = this.macro.value.trim();
@@ -735,7 +815,7 @@ class App extends React.Component {
       var dev = []
       for(const i in tableau){
         if(checkList.includes(tableau[i])){
-          console.log(checkList)
+          console.log("checkList in macroCommand : ", checkList)
           var instruct = checkListAssign[tableau[i]]
           if(instruct[0]!=='-'){
             act=act.concat([instruct[0]])
@@ -748,7 +828,7 @@ class App extends React.Component {
       if(act===[] || dev===[]){
         actionAndDevice=false
       }
-      console.log(actionAndDevice)
+      console.log("actionAndDevice in macroCommand : ", actionAndDevice)
       if (actionAndDevice){
         if(!checkMacroList.includes(macroValue.toUpperCase())){
           checkMacroList.push(macroValue.toUpperCase());
@@ -849,9 +929,9 @@ class App extends React.Component {
     this.updateCheckMacroListAssign()
   }
 
-  clearGesture(){
+  deleteGesture(){
     const gestureDeleted=this.gestureDeleted.value.trim();
-    this.gestureHandler.clearGesture(gestureDeleted.toLowerCase());
+    this.gestureHandler.deleteGesture(gestureDeleted.toLowerCase());
     
     this.clear()
     delete checkListAssign[gestureDeleted.toUpperCase()];
@@ -869,9 +949,9 @@ class App extends React.Component {
     window.location.reload();
   }
 
-  clearMacroGesture(){
+  deleteMacroGesture(){
     const macrogestureDeleted=this.macrogestureDeleted.value.trim();
-    this.gestureHandler.clearGesture(macrogestureDeleted.toLowerCase());
+    this.gestureHandler.deleteGesture(macrogestureDeleted.toLowerCase());
     
     this.clear()
     delete checkMacroListAssign[macrogestureDeleted.toUpperCase()];
@@ -1373,15 +1453,43 @@ class App extends React.Component {
           <div className="box2">
             <h1 className={"h1"} style={{textAlign: "center"}}>Smart home</h1>
             <img className="overlay" style={{maxWidth:'100%'}} src={House} alt={"HOUSE"}/>
-            <img className="overlay" style={{opacity:"0"}} src={Television} id="Television" alt={"Television"}/>
-            <img className="overlay" style={{opacity:"0"}} src={LampeCave} id="LampeCave" alt={"LampeCave"}/>
-            <img className="overlay" style={{opacity:"0"}} src={LampeSalon} id="LampeSalon" alt={"LampeSalon"}/>
-            <img className="overlay" style={{opacity:"0"}} src={LampeSDB} id="LampeSDB" alt={"LampeSDB"}/>
-            <img className="overlay" style={{opacity:"0"}} src={LampeSAM} id="LampeSAM" alt={"LampeSAM"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Air_conditioner} id="Air conditioner" alt={"Air_conditioner_cold"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Air_conditioner_hot} id="Air_conditioner_hot" alt={"Air_conditioner_hot"}/>
+            <img className="overlay" style={{opacity:"1"}} src={Brightness_kitchen} id="Brightness_kitchen" alt={"Brightness_kitchen"}/>
+            <img className="overlay" style={{opacity:"1"}} src={Brightness_bathroom} id="Brightness_bathroom" alt={"Brightness_bathroom"}/>
+            <img className="overlay" style={{opacity:"1"}} src={Brightness_children_bedroom} id="Brightness_children bedroom" alt={"Brightness_children_bedroom"}/>
+            <img className="overlay" style={{opacity:"1"}} src={Brightness_living_room} id="Brightness_living room" alt={"Brightness_livingroom"}/>
+            <img className="overlay" style={{opacity:"1"}} src={Brightness_dining_room} id="Brightness_dining room" alt={"Brightness_diningroom"}/>
+            <img className="overlay" style={{opacity:"1"}} src={Brightness_parent_bedroom} id="Brightness_parent bedroom" alt={"Brightness_parent_bedroom"}/>
+            <img className="overlay" style={{opacity:"1"}} src={Brightness_washing_room} id="Brightness_washing room" alt={"Brightness_washingroom"}/>
+            <img className="overlay" style={{opacity:"1"}} src={Brightness_office} id="Brightness_office" alt={"Brightness_office"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Fan} id="Fan" alt={"Fan"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Light_bathroom} id="Light_bathroom" alt={"Light_bathroom"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Light_children_bedroom} id="Light_children bedroom" alt={"Light_children_bedroom"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Light_dining_room} id="Light_dining room" alt={"Light_diningroom"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Light_kitchen} id="Light_kitchen" alt={"Light_kitchen"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Light_laundry_room} id="Light_laundry room" alt={"Light_laundryroom"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Light_living_room} id="Light_living room" alt={"Light_livingroom"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Light_office} id="Light_office" alt={"Light_office"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Light_parent_bedroom} id="Light_parent bedroom" alt={"Light_parent_bedroom"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Microwave} id="Microwave" alt={"Microwave"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Radio} id="Radio" alt={"Radio"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Radio_channel_1} id="Radio_channel_1" alt={"Radio_channel_1"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Radio_channel_2} id="Radio_channel_2" alt={"Radio_channel_2"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Radio_channel_3} id="Radio_channel_3" alt={"Radio_channel_3"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Radio_muted} id="Radio_muted" alt={"Radio_muted"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Washing_machine} id="Washing machine" alt={"Washing_machine"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Washing_machine_program_1} id="Washing_machine_program_1" alt={"Washing_machine_program_1"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Washing_machine_program_2} id="Washing_machine_program_2" alt={"Washing_machine_program_2"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Washing_machine_program_3} id="Washing_machine_program_3" alt={"Washing_machine_program_3"}/>
             <img className="overlay" style={{opacity:"0"}} src={Computer} id="Computer" alt={"Computer"}/>
-            <img className="overlay" style={{opacity:"0"}} src={Micro_ondes} id="Micro_ondes" alt={"Micro_ondes"}/>
-            <img className="overlay" style={{opacity:"0"}} src={Machine_a_laver} id="Machine_a_laver" alt={"Machine_a_laver"}/> 
-                 
+            <img className="overlay" style={{opacity:"0"}} src={Television} id="Television" alt={"Television"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Television_channel_2} id="Television_channel_2" alt={"Television_channel_2"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Television_channel_3} id="Television_channel_3" alt={"Television_channel_3"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Television_channel_4} id="Television_channel_4" alt={"Television_channel_4"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Television_channel_5} id="Television_channel_4" alt={"Television_channel_4"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Television_muted} id="Television_muted" alt={"Television_muted"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Television_pause} id="Television_pause" alt={"Television_pause"}/>
           </div>     
         </div>
         <div className={"instructions"}>  Instruction : {this.showInstructions()}</div> 
@@ -1472,7 +1580,7 @@ class App extends React.Component {
                     <input className={"textArea"} type="text" placeholder=" " id="gestureDeleted"/>
                     <span className="placeholder">Name of the gesture to delete</span>
                   </label>
-                  <button type="button" className={"button"} onClick={this.clearGesture}>Delete</button>
+                  <button type="button" className={"button"} onClick={this.deleteGesture}>Delete</button>
                   <button className={"button"} onClick={this.clearDataSet}>Clear Dataset</button>
                   <table className={"content-table"} id={"target"}>
                     <tbody>
@@ -1493,7 +1601,7 @@ class App extends React.Component {
                     <input className={"textArea"} type="text" placeholder=" " id="macrogestureDeleted"/>
                     <span className="placeholder">Name of the instruction to delete</span>
                   </label>
-                  <button type="button" className={"button"} onClick={this.clearMacroGesture}>Delete</button>
+                  <button type="button" className={"button"} onClick={this.deleteMacroGesture}>Delete</button>
                   <table className={"content-table"} id={"TableM"}>
                     <tbody>
                       <tr>

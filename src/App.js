@@ -52,6 +52,7 @@ let macroActionList = []
 let macroDeviceList=[]
 let macroEnvironmentList=[]
 let macroParameterList=[]
+let numberOfGestures=0
 
 let ActionsList =[
   { label: 'Turn On', value: 1 },
@@ -283,6 +284,12 @@ class App extends React.Component {
     this.gestureHandler.registerGestures("dynamic", nameListOfGesture);
     // STEPS 5, 7, 8, 10, 11
     this.gestureHandler.addListener('gesture', (event) => {
+      numberOfGestures-=1
+      var isNew=false
+      if(numberOfGestures===0){
+        isNew=true
+      }
+      var ActionList=[]
       if (checkListAssign.hasOwnProperty(event.gesture.name)) {
         console.log("NOW, IT'S %s", event.gesture.name)
         let macroList = checkListAssign[event.gesture.name]
@@ -290,59 +297,60 @@ class App extends React.Component {
         if(action[0]!=="-"){
           macroActionList = macroActionList.concat(action)
           if(macroActionList.length>1){
-            macroActionList=[macroActionList[1]]
-            macroDeviceList=[]
-            macroEnvironmentList=[]
-            macroParameterList=[]
-            this.setState({
-              recognizedList: []
-            })
+            ActionList=macroActionList[1]
+            macroActionList=[macroActionList[0]]
+            isNew=true
           }
         }
         if(macroList[1]!=='-'){
           let device = macroList[1].split(', ')
-          macroDeviceList = device
-        }
-        else{
-          macroDeviceList = []
+          macroDeviceList = macroDeviceList.concat(device)
         }
 
         if(macroList[2]!=='-'){
           let environment = macroList[2].split(', ')
-          macroEnvironmentList = environment
-        }
-        else{
-          macroEnvironmentList = []
+          macroEnvironmentList = macroEnvironmentList.concat(environment)
         }
 
         if(macroList[3]!=='-'){
           let parameter = macroList[3].split(', ')
-          macroParameterList = parameter
+          macroParameterList = macroParameterList.concat(parameter)
         }
-        else{
-          macroParameterList = []
-        }
-        // let device=macroList[1].split(', ')
-        // if(device[0]!=='-'){
-        //   macroDeviceList = macroDeviceList.concat(device)
-        // }
-        // let environment = macroList[2].split(', ')
-        // if(environment[0]!=='-'){
-        //   macroEnvironmentList = macroEnvironmentList.concat(environment)
-        // }
-        // let parameter=macroList[3].split(', ')
-        // if(parameter[0]!=='-'){
-        //   macroParameterList = parameter
-        // }
+
         console.log("macroActionList : ", macroActionList)
         console.log("macroDeviceList : ", macroDeviceList)
         console.log("macroEnvironmentList : ", macroEnvironmentList)
         console.log("macroParameterList : ", macroParameterList)
 
-        this.setState({
-          recognizedList: macroActionList.concat(macroDeviceList)
-        })
-        if(macroActionList.length>0 && macroDeviceList.length>0){
+        if(!this.state.recognizedList.includes(macroActionList[0])){
+          this.setState({
+            recognizedList: this.state.recognizedList.concat(macroActionList[0])
+          })
+        }
+        for(let i in macroDeviceList){
+          if(!this.state.recognizedList.includes(macroDeviceList[i])){
+            this.setState({
+              recognizedList: this.state.recognizedList.concat(macroDeviceList[i])
+            })
+          }
+        }
+        for(let j in macroEnvironmentList){
+          if(!this.state.recognizedList.includes(macroEnvironmentList[j])){
+            this.setState({
+              recognizedList: this.state.recognizedList.concat(macroEnvironmentList[j])
+            })
+          }
+        }
+        for(let k in macroParameterList){
+          if(!this.state.recognizedList.includes(macroParameterList[k])){
+            this.setState({
+              recognizedList: this.state.recognizedList.concat(macroParameterList[k])
+            },function(){
+              console.log("recognizedList: ", this.state.recognizedList)})
+          }
+        }
+        
+        if(isNew && macroActionList.length>0 && macroDeviceList.length>0){
           for(const macro_action of macroActionList){
             if(macro_action==="Turn On"){
               this.setState({
@@ -376,6 +384,15 @@ class App extends React.Component {
         else{
           console.log("You must have an Action and a Device")
         }
+        if(isNew){
+          macroActionList=[ActionList]
+          macroDeviceList=[]
+          macroEnvironmentList=[]
+          macroParameterList=[]    
+          this.setState({
+            recognizedList: this.state.recognizedList.concat('-')
+          })      
+        }
       }
       else if(checkMacroListAssign.hasOwnProperty(event.gesture.name)){
         console.log("NOW, IT'S %s", event.gesture.name)
@@ -393,9 +410,6 @@ class App extends React.Component {
                 macroDeviceList=[]
                 macroEnvironmentList=[]
                 macroParameterList=[]
-                this.setState({
-                  recognizedList: []
-                })
               }
             }
 
@@ -405,10 +419,11 @@ class App extends React.Component {
             }
           }
 
-          console.log("macroDeviceList: ", macroDeviceList)
           console.log("macroActionList: ", macroActionList)
+          console.log("macroDeviceList: ", macroDeviceList)
+          console.log("recognizedList: ", this.state.recognizedList)
           this.setState({
-            recognizedList: macroActionList.concat(macroDeviceList)
+            recognizedList: this.state.recognizedList.concat(macroActionList,macroDeviceList,macroEnvironmentList,macroParameterList)
           })
           if(macroActionList.length>0 && macroDeviceList.length>0){
             for(const macro_action of macroActionList){
@@ -593,6 +608,7 @@ class App extends React.Component {
       gestureList.push(tabFinal)
       this.clear()
     }
+    numberOfGestures = gestureList.length
 
     for(const gest of gestureList) {
       var dataGesture = {
@@ -606,11 +622,18 @@ class App extends React.Component {
       this.gestureHandler.sendGestures(dataGesture);
     }
     gestureList = []
+    if(macroActionList!==[]){
+      macroActionList=[]
+      macroDeviceList=[]
+      macroEnvironmentList=[]
+      macroParameterList=[]
+    }
     this.clear()
     stroke_id=0;
 
     this.setState({
-      count:2
+      count:2,
+      recognizedList: []
     })
   }
 
@@ -643,6 +666,10 @@ class App extends React.Component {
     const macroValue = this.macro.value.trim();
     if(macroValue === ''){
         console.log(this.macro, 'Action cannot be blank');
+        this.clear()
+    }
+    else if(tabFinal.length===0){
+        console.log( 'No Data');
         this.clear()
     }
     else {
@@ -777,7 +804,7 @@ class App extends React.Component {
       }
     }
     else{
-      console.log("No data")
+      console.log("No Data")
     }
 
     this.setState({
@@ -1425,8 +1452,17 @@ class App extends React.Component {
 
   showRecognizedInstructions(){
     var list =""
+
     for(const recognized in this.state.recognizedList){
-      list+=this.state.recognizedList[recognized]+" "
+      if(recognized===(this.state.recognizedList.length-1).toString()){
+        break;
+      }
+      if(this.state.recognizedList[recognized]==='-'  ){
+        list+="and " 
+      }
+      else{
+        list+=this.state.recognizedList[recognized]+" "
+      }
     }
     return list;
   }

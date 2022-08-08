@@ -399,24 +399,42 @@ class App extends React.Component {
         let composedList = checkMacroListAssign[event.gesture.name]
         for(const i in composedList){
           var instruction=composedList[i]
+          let macroList = []
           if(checkListAssign.hasOwnProperty(instruction)){
-            let macroList = checkListAssign[instruction]
+            macroList = checkListAssign[instruction]
+          }
+          else{
+            macroList=instruction
+          }
 
-            let action = macroList[0].split(', ')
-            if(action[0]!=="-"){
-              macroActionList = macroActionList.concat(action)
-              if(macroActionList.length>1){
-                macroActionList=[macroActionList[1]]
-                macroDeviceList=[]
-                macroEnvironmentList=[]
-                macroParameterList=[]
-              }
+          let action = macroList[0].split(', ')
+          if(action[0] && action[0]!=="-"){
+            macroActionList = macroActionList.concat(action)
+            if(macroActionList.length>1){
+              macroActionList=[macroActionList[1]]
+              macroDeviceList=[]
+              macroEnvironmentList=[]
+              macroParameterList=[]
             }
+          }
 
-            let device=macroList[1].split(', ')
-            if(device[0]!=='-'){
-              macroDeviceList = macroDeviceList.concat(device)
-            }
+          if(macroList[1] && macroList[1]!=='-'){
+            let device = macroList[1].split(', ')
+            macroDeviceList = macroDeviceList.concat(device)
+          }
+  
+          if(macroList[2] && macroList[2]!=='-'){
+            let environment = macroList[2].split(', ')
+            macroEnvironmentList = macroEnvironmentList.concat(environment)
+          }
+  
+          if(macroList[3] && macroList[3]!=='-'){
+            let parameter = macroList[3].split(', ')
+            macroParameterList = macroParameterList.concat(parameter)
+          }
+          
+          else{
+            console.log(instruction)
           }
 
           console.log("macroActionList: ", macroActionList)
@@ -721,85 +739,85 @@ class App extends React.Component {
           MacrosList=MacrosList.concat({label:actionValue.toUpperCase(),value:checkList.length})
         }
         else{
-          if(!checkMacroList.includes(actionValue.toUpperCase())){
-            checkList.push(actionValue.toUpperCase());
-          }
-          tab = this.composedInstructions()
-          var i1,i2,i3,i4=[]
-          var check=false
-          if( this.state.instructions[0]){
-            i1=this.state.instructions[0].value
-          }
-          if(typeof this.state.instructions[1]!== 'undefined'){
-            i2=this.state.instructions[1].value
-          }
+            if(!checkMacroList.includes(actionValue.toUpperCase())){
+              checkMacroList.push(actionValue.toUpperCase());
+            }
+            tab = this.composedInstructions()
+            var i1,i2,i3,i4=[]
+            var check=false
+            if( this.state.instructions[0]){
+              i1=this.state.instructions[0].value
+            }
+            if(typeof this.state.instructions[1]!== 'undefined'){
+              i2=this.state.instructions[1].value
+            }
 
-          else{
-            i2=tab
-            check=true
-          }
-          if(!check && typeof this.state.instructions[2]!== 'undefined'){
-            i3=this.state.instructions[2].value
-          }
-          else if(!check && typeof this.state.instructions[2]=== 'undefined'){
-            i3=tab
-            check=true
-          }
+            else{
+              i2=tab
+              check=true
+            }
+            if(!check && typeof this.state.instructions[2]!== 'undefined'){
+              i3=this.state.instructions[2].value
+            }
+            else if(!check && typeof this.state.instructions[2]=== 'undefined'){
+              i3=tab
+              check=true
+            }
 
-          if(!check && typeof this.state.instructions[3]!== 'undefined'){
-            i4=this.state.instructions[3].value
-          }
-          else if(!check && typeof this.state.instructions[3]=== 'undefined'){
-            i4=tab
-          }
+            if(!check && typeof this.state.instructions[3]!== 'undefined'){
+              i4=this.state.instructions[3].value
+            }
+            else if(!check && typeof this.state.instructions[3]=== 'undefined'){
+              i4=tab
+            }
 
-          const table = document.getElementById("TableM")
-          const item = {nameGesture: actionValue.toUpperCase(), instruction1: i1,instruction2: i2,instruction3: i3,instruction4: i4}
-          let row = table.insertRow();
-          let nameGesture = row.insertCell(0);
-          nameGesture.innerHTML = item.nameGesture;
-          let instruction1 = row.insertCell(1);
-          instruction1.innerHTML = item.instruction1;
-          let instruction2 = row.insertCell(2);
-          let instruction3 = row.insertCell(3);
-          let instruction4 = row.insertCell(4);
-          var bool = true
+            const table = document.getElementById("TableM")
+            const item = {nameGesture: actionValue.toUpperCase(), instruction1: i1,instruction2: i2,instruction3: i3,instruction4: i4}
+            let row = table.insertRow();
+            let nameGesture = row.insertCell(0);
+            nameGesture.innerHTML = item.nameGesture;
+            let instruction1 = row.insertCell(1);
+            instruction1.innerHTML = item.instruction1;
+            let instruction2 = row.insertCell(2);
+            let instruction3 = row.insertCell(3);
+            let instruction4 = row.insertCell(4);
+            var bool = true
 
-          if(item.instruction2===[]){
-            instruction2.innerHTML = '-';
-            instruction3.innerHTML = '-';
-            instruction4.innerHTML = '-';
-            bool=false
-          }
-          else{
-            instruction2.innerHTML = item.instruction2;
-          }
-          if(bool){
-            if(item.instruction3!==[]){
+            if(item.instruction2===[]){
+              instruction2.innerHTML = '-';
               instruction3.innerHTML = '-';
               instruction4.innerHTML = '-';
               bool=false
             }
             else{
-              instruction3.innerHTML = item.instruction3;
+              instruction2.innerHTML = item.instruction2;
+            }
+            if(bool){
+              if(item.instruction3!==[]){
+                instruction3.innerHTML = '-';
+                instruction4.innerHTML = '-';
+                bool=false
+              }
+              else{
+                instruction3.innerHTML = item.instruction3;
+              }
+
+            }
+            if(bool){
+              if(item.instruction4!==[]){
+                instruction4.innerHTML = '-';
+              }
+              else{
+                instruction4.innerHTML = item.instruction4;
+              }
             }
 
-          }
-          if(bool){
-            if(item.instruction4!==[]){
-              instruction4.innerHTML = '-';
-            }
-            else{
-              instruction4.innerHTML = item.instruction4;
-            }
-          }
-
-          checkMacroListAssign[actionValue.toUpperCase()] = [i1,i2,i3,i4];
-          if(!checkMacroList.includes(actionValue.toUpperCase()))
-            checkMacroList.push(actionValue.toUpperCase())
-          console.log("checkMacroListAssign in record :", checkMacroListAssign)
-          console.log("checkMacroList in record :", checkMacroList)
-          this.setMacroData()
+            checkMacroListAssign[actionValue.toUpperCase()] = [i1,i2,i3,i4];
+            if(!checkMacroList.includes(actionValue.toUpperCase()))
+              checkMacroList.push(actionValue.toUpperCase())
+            console.log("checkMacroListAssign in record :", checkMacroListAssign)
+            console.log("checkMacroList in record :", checkMacroList)
+            this.setMacroData()
         }
       }
     }
@@ -812,7 +830,8 @@ class App extends React.Component {
       actions:[],
       devices:[],
       environment:[],
-      parameters:[]
+      parameters:[],
+      macros:[]
     })
 
     for(let k=0;k<ActionsList.length;k++){
@@ -1346,16 +1365,47 @@ class App extends React.Component {
       }
     }
     else{
-      this.setState({
-        instructions:this.state.instructions.concat({value:this.state.macros[0].label}) 
-       })
+      var actionAndDevice=true
+      
+      var act = []
+      var dev = []
+      var macrosI =this.composedMacrosInstructions()
+      for(const i in macrosI){
+        console.log("macrosI[i] ",macrosI[i])
+        if(checkList.includes(macrosI[i])){
+          console.log("checkList in macroCommand : ", checkList)
+          var instruct = checkListAssign[macrosI[i]]
+          if( instruct[0]!=='-'){
+            act=act.concat([instruct[0]])
+          }          
+          if(instruct[1]!=='-'){
+            dev=dev.concat([instruct[1]])
+          }
+        }
+      }
+      if(act.length===0 || dev.length===0 ){
+        actionAndDevice=false
+      }
+      if(actionAndDevice){
+        let macrosInstruction = []
+        for(let j in macrosI){
+          macrosInstruction= macrosInstruction.concat({value:macrosI[j]})
+        }
+        this.setState({
+          instructions:this.state.instructions.concat(macrosInstruction) 
+        },function(){console.log(this.state.instructions)})
+      }
+      else{
+        console.log('You have to choose an Action and a Device')
+      }
     }
 
     this.setState({
       actions:[],
       devices:[],
       environment:[],
-      parameters:[]
+      parameters:[],
+      macros:[]
     })
 
     for(let k=0;k<ActionsList.length;k++){
@@ -1424,6 +1474,7 @@ class App extends React.Component {
     for (const i in this.state.macros){
       macro = macro.concat(this.state.macros[i].label)
     }
+    console.log("macro ",macro)
     return macro;
   }
 

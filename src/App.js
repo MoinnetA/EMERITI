@@ -406,8 +406,11 @@ class App extends React.Component {
           else{
             macroList=instruction
           }
-
-          let action = macroList[0].split(', ')
+          console.log(macroList)
+          let action=[]
+          if(macroList.length!==0){
+             action = macroList[0].split(', ')
+          }
           if(action[0] && action[0]!=="-"){
             macroActionList = macroActionList.concat(action)
             if(macroActionList.length>1){
@@ -415,6 +418,10 @@ class App extends React.Component {
               macroDeviceList=[]
               macroEnvironmentList=[]
               macroParameterList=[]
+              this.setState({
+                recognizedList: this.state.recognizedList.concat('-')
+              })      
+
             }
           }
 
@@ -431,11 +438,7 @@ class App extends React.Component {
           if(macroList[3] && macroList[3]!=='-'){
             let parameter = macroList[3].split(', ')
             macroParameterList = macroParameterList.concat(parameter)
-          }
-          
-          else{
-            console.log(instruction)
-          }
+          }          
 
           console.log("macroActionList: ", macroActionList)
           console.log("macroDeviceList: ", macroDeviceList)
@@ -1393,7 +1396,7 @@ class App extends React.Component {
         }
         this.setState({
           instructions:this.state.instructions.concat(macrosInstruction) 
-        },function(){console.log(this.state.instructions)})
+        })
       }
       else{
         console.log('You have to choose an Action and a Device')

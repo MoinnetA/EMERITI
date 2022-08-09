@@ -137,6 +137,7 @@ class App extends React.Component {
       mouseDown: false,
       lastPosition: {x:0, y:0},
       action:"",
+      drawGesture:"",
       macro:"",
       gestureDeleted:"",
       count:2,
@@ -153,11 +154,13 @@ class App extends React.Component {
       intensity_brightness:"0"
     };
     this.canvasRef = createRef(null);
+    this.canvasRef1 = createRef(null);
     this.ctx = createRef(null);
-    this.intervalRef = createRef(null);
+    this.ctx1 = createRef(null);
     // Bind
     this.onGesture = this.onGesture.bind(this);
     this.draw = this.draw.bind(this);
+    this.draw1 = this.draw1.bind(this);
     this.recognize_canvas = this.recognize_canvas.bind(this);
     this.checkInputsRecord = this.checkInputsRecord.bind(this);
     this.checkMacroInputsRecord = this.checkMacroInputsRecord.bind(this);
@@ -274,7 +277,11 @@ class App extends React.Component {
     if (this.canvasRef.current) {
       this.ctx.current = this.canvasRef.current.getContext('2d');
     }
+    if (this.canvasRef1.current) {
+      this.ctx1.current = this.canvasRef1.current.getContext('2d');
+    }
     this.action = document.getElementById('action');
+    this.drawGesture = document.getElementById('drawGesture');
     this.macro = document.getElementById('macro');
     this.gestureDeleted = document.getElementById('gestureDeleted');
     this.macrogestureDeleted = document.getElementById('macrogestureDeleted');
@@ -283,6 +290,25 @@ class App extends React.Component {
     // STEPS 6 and 7
     this.gestureHandler.registerGestures("dynamic", nameListOfGesture);
     // STEPS 5, 7, 8, 10, 11
+
+    this.gestureHandler.addListener('drawGesture', (event) => {
+
+    this.ctx1.current.beginPath();
+    this.ctx1.current.strokeStyle = "black";
+    this.ctx1.current.lineWidth = 7;
+    this.ctx1.current.lineJoin = 'round';
+    
+    var jsonData = event.data
+    var strokes=jsonData.paths[0].strokes
+    for (var i in strokes){
+      var points=strokes[i].points
+      for(var j in points){
+        this.ctx1.current.lineTo(points[j].x-300, points[j].y-100);
+      }
+
+    }
+    this.ctx1.current.stroke();
+    });
     this.gestureHandler.addListener('gesture', (event) => {
       numberOfGestures-=1
       var isNew=false
@@ -646,6 +672,15 @@ class App extends React.Component {
       this.setState({
         lastPosition:{x, y}
       });
+    }
+  }
+  draw1(){
+    const drawGesture = this.drawGesture.value.trim();
+    if(drawGesture === ''){
+        console.log('Name cannot be blank');
+    }
+    else{
+      this.gestureHandler.drawGesture(drawGesture)
     }
   }
 
@@ -1719,7 +1754,19 @@ class App extends React.Component {
               </div>
               <button  type="button" className={"button"} onClick={this.macroCommand}>Macro-Command</button>
             </form>
+            <canvas id="myCanvas1" ref={this.canvasRef1}
+              style={{
+                border: "1px solid #000"}}
+                width={500}
+                height={500}>
 
+            </canvas>
+
+            <label className="custom-field one">
+                  <input className={"textArea"} type="text" placeholder=" " id="drawGesture"/>
+                  <span className="placeholder">Name of the gesture</span>
+                </label>
+            <button type="button" className={"button"} onClick={this.draw1}>draw</button>
             <form >
               <div className="container">
                 <div className="box2">

@@ -345,8 +345,7 @@ class App extends React.Component {
           if(!this.state.recognizedList.includes(macroParameterList[k])){
             this.setState({
               recognizedList: this.state.recognizedList.concat(macroParameterList[k])
-            },function(){
-              console.log("recognizedList: ", this.state.recognizedList)})
+            })
           }
         }
         
@@ -406,7 +405,6 @@ class App extends React.Component {
           else{
             macroList=instruction
           }
-          console.log(macroList)
           let action=[]
           if(macroList.length!==0){
              action = macroList[0].split(', ')
@@ -442,10 +440,39 @@ class App extends React.Component {
 
           console.log("macroActionList: ", macroActionList)
           console.log("macroDeviceList: ", macroDeviceList)
+          console.log("macroEnvironmentList: ", macroEnvironmentList)
+          console.log("macroParameterList: ", macroParameterList)
           console.log("recognizedList: ", this.state.recognizedList)
-          this.setState({
-            recognizedList: this.state.recognizedList.concat(macroActionList,macroDeviceList,macroEnvironmentList,macroParameterList)
-          })
+          var recoList=[]
+          for(let len=this.state.recognizedList.length-1;this.state.recognizedList[len]!=='-' && len>=0;len--){
+            recoList=recoList.concat(this.state.recognizedList[len])
+          }          
+          if(!recoList.includes(macroActionList[0])){
+            this.setState({
+              recognizedList: this.state.recognizedList.concat(macroActionList[0])
+            })
+          }
+          for(let i in macroDeviceList){
+            if(!recoList.includes(macroDeviceList[i])){
+              this.setState({
+                recognizedList: this.state.recognizedList.concat(macroDeviceList[i])
+              })
+            }
+          }
+          for(let j in macroEnvironmentList){
+            if(!recoList.includes(macroEnvironmentList[j])){
+              this.setState({
+                recognizedList: this.state.recognizedList.concat(macroEnvironmentList[j])
+              })
+            }
+          }
+          for(let k in macroParameterList){
+            if(!recoList.includes(macroParameterList[k])){
+              this.setState({
+                recognizedList: this.state.recognizedList.concat(macroParameterList[k])
+              })
+            }
+          }
           if(macroActionList.length>0 && macroDeviceList.length>0){
             for(const macro_action of macroActionList){
               if(macro_action==="Turn On"){
@@ -714,10 +741,10 @@ class App extends React.Component {
       const actionValue = this.action.value.trim();
       this.gestureHandler.addNewGesture(dataStringRecord, actionValue.toLowerCase());
       if(!checkListAssign.hasOwnProperty(actionValue.toUpperCase())) {
-        if(!checkList.includes(actionValue.toUpperCase())){
-          checkList.push(actionValue.toUpperCase());
-        }
-        if(!this.state.instructions[0]){
+        if(!this.state.instructions[0] && !this.state.macros[0]){
+          if(!checkList.includes(actionValue.toUpperCase())){
+            checkList.push(actionValue.toUpperCase());
+          }
           var tab = this.composedInstructions()
           const table = document.getElementById("target")
           const item = {nameGesture: actionValue.toUpperCase(), actionGesture: tab[0],devicesGesture: tab[1],EnvironmentGesture: tab[2],ParametersGesture: tab[3]}
@@ -746,33 +773,51 @@ class App extends React.Component {
               checkMacroList.push(actionValue.toUpperCase());
             }
             tab = this.composedInstructions()
-            var i1,i2,i3,i4=[]
-            var check=false
-            if( this.state.instructions[0]){
-              i1=this.state.instructions[0].value
+            if(tab[0]==="-" && tab[1]==="-" && tab[2]==="-" && tab[3]==="-" ){
+              tab = []
             }
-            if(typeof this.state.instructions[1]!== 'undefined'){
-              i2=this.state.instructions[1].value
+            for(var l in this.state.macros){
+              tab=tab.concat(this.state.macros[l].label)
             }
 
-            else{
-              i2=tab
-              check=true
-            }
-            if(!check && typeof this.state.instructions[2]!== 'undefined'){
-              i3=this.state.instructions[2].value
-            }
-            else if(!check && typeof this.state.instructions[2]=== 'undefined'){
-              i3=tab
-              check=true
-            }
+            var i1=[]
+            var i2=[]
+            var i3=[]
+            var i4=[]
+            for(let m in tab){
+              var check=false
+              if(!i1[0] && !check && typeof this.state.instructions[0]!== 'undefined'){
+                i1=this.state.instructions[0].value
+              }
+              else if(!i1[0] && !check && typeof this.state.instructions[0]=== 'undefined'){
+                i1=tab[m]
+                check=true
+              }
+              if(!i2[0] && !check && typeof this.state.instructions[1]!== 'undefined'){
+                i2=this.state.instructions[1].value
+              }
+              else if(!i2[0] && !check && typeof this.state.instructions[1]=== 'undefined'){
+                i2=tab[m]
+                check=true
+              }
+  
+              if(!i3[0] && !check && typeof this.state.instructions[2]!== 'undefined'){
+                i3=this.state.instructions[2].value
+              }
+              else if(!i3[0] && !check && typeof this.state.instructions[2]=== 'undefined'){
+                i3=tab[m]
+                check=true
+              }
+  
+              if(!i4[0] && !check && typeof this.state.instructions[3]!== 'undefined'){
+                i4=this.state.instructions[3].value
+              }
+              else if(!i4[0] && !check && typeof this.state.instructions[3]=== 'undefined'){
+                i4=tab[m]
+              }
 
-            if(!check && typeof this.state.instructions[3]!== 'undefined'){
-              i4=this.state.instructions[3].value
             }
-            else if(!check && typeof this.state.instructions[3]=== 'undefined'){
-              i4=tab
-            }
+            
 
             const table = document.getElementById("TableM")
             const item = {nameGesture: actionValue.toUpperCase(), instruction1: i1,instruction2: i2,instruction3: i3,instruction4: i4}
@@ -786,7 +831,7 @@ class App extends React.Component {
             let instruction4 = row.insertCell(4);
             var bool = true
 
-            if(item.instruction2===[]){
+            if(i2.length===0){
               instruction2.innerHTML = '-';
               instruction3.innerHTML = '-';
               instruction4.innerHTML = '-';
@@ -795,8 +840,11 @@ class App extends React.Component {
             else{
               instruction2.innerHTML = item.instruction2;
             }
+            console.log(i3)
+            console.log(i3.length===0)
             if(bool){
-              if(item.instruction3!==[]){
+              if(i3.length===0){
+                console.log(bool)
                 instruction3.innerHTML = '-';
                 instruction4.innerHTML = '-';
                 bool=false
@@ -807,7 +855,7 @@ class App extends React.Component {
 
             }
             if(bool){
-              if(item.instruction4!==[]){
+              if(i4.length===0){
                 instruction4.innerHTML = '-';
               }
               else{
@@ -1084,29 +1132,36 @@ class App extends React.Component {
       let instruction2 = row.insertCell(2);
       let instruction3 = row.insertCell(3);
       let instruction4 = row.insertCell(4);
-      var i2 = true
-      if(typeof item.instruction[1]==='undefined'){
-        instruction2.innerHTML = '-';        
-        instruction3.innerHTML = '-';        
-        instruction4.innerHTML = '-';  
-        i2=false
+      var bool = true
+      if(item.instruction[1].length===0){
+        instruction2.innerHTML = '-';
+        instruction3.innerHTML = '-';
+        instruction4.innerHTML = '-';
+        bool=false
       }
       else{
         instruction2.innerHTML = item.instruction[1];
       }
-      if(i2){
-        if(typeof item.instruction[2]==='undefined'){   
-          instruction3.innerHTML = '-';        
-          instruction4.innerHTML = '-';  
-          i2=false      
+      
+      if(bool){
+        if(item.instruction[2].length===0){
+          console.log(bool)
+          instruction3.innerHTML = '-';
+          instruction4.innerHTML = '-';
+          bool=false
         }
         else{
           instruction3.innerHTML = item.instruction[2];
         }
 
       }
-      if(!i2 && typeof item.instruction[3]!=='undefined'){ 
-        instruction4.innerHTML = item.instruction[3];
+      if(bool){
+        if(item.instruction[3].length===0){
+          instruction4.innerHTML = '-';
+        }
+        else{
+          instruction4.innerHTML = item.instruction[3];
+        }
       }
     }
   }
@@ -1508,7 +1563,7 @@ class App extends React.Component {
     var list =""
 
     for(const recognized in this.state.recognizedList){
-      if(recognized===(this.state.recognizedList.length-1).toString()){
+      if(recognized===(this.state.recognizedList.length).toString()){
         break;
       }
       if(this.state.recognizedList[recognized]==='-'  ){

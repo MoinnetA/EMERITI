@@ -293,21 +293,22 @@ class App extends React.Component {
 
     this.gestureHandler.addListener('drawGesture', (event) => {
 
-    this.ctx1.current.beginPath();
-    this.ctx1.current.strokeStyle = "black";
-    this.ctx1.current.lineWidth = 7;
-    this.ctx1.current.lineJoin = 'round';
     
     var jsonData = event.data
     var strokes=jsonData.paths[0].strokes
     for (var i in strokes){
       var points=strokes[i].points
+      this.ctx1.current.stroke();
+      this.ctx1.current.beginPath();
+      this.ctx1.current.strokeStyle = "black";
+      this.ctx1.current.lineWidth = 7;
+      this.ctx1.current.lineJoin = 'round';
       for(var j in points){
-        this.ctx1.current.lineTo(points[j].x-300, points[j].y-100);
+        this.ctx1.current.lineTo(points[j].x, points[j].y);
       }
 
+      this.ctx1.current.stroke();
     }
-    this.ctx1.current.stroke();
     });
     this.gestureHandler.addListener('gesture', (event) => {
       numberOfGestures-=1
@@ -674,6 +675,7 @@ class App extends React.Component {
       });
     }
   }
+  
   draw1(){
     const drawGesture = this.drawGesture.value.trim();
     if(drawGesture === ''){
@@ -682,6 +684,8 @@ class App extends React.Component {
     else{
       this.gestureHandler.drawGesture(drawGesture)
     }
+
+    this.ctx1.current.clearRect(0, 0, this.ctx1.current.canvas.width, this.ctx1.current.canvas.height)
   }
 
   recognize_canvas(){
@@ -875,11 +879,8 @@ class App extends React.Component {
             else{
               instruction2.innerHTML = item.instruction2;
             }
-            console.log(i3)
-            console.log(i3.length===0)
             if(bool){
               if(i3.length===0){
-                console.log(bool)
                 instruction3.innerHTML = '-';
                 instruction4.innerHTML = '-';
                 bool=false

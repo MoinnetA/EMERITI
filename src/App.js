@@ -1027,35 +1027,39 @@ class App extends React.Component {
   }
 
   deleteGesture(){
-    const gestureDeleted=this.gestureDeleted.value.trim();
-    this.gestureHandler.deleteGesture(gestureDeleted.toLowerCase());
-    
+    var ListgestureDeleted=this.gestureDeleted.value.trim();
+    ListgestureDeleted=ListgestureDeleted.split(',')
+    for(let i in ListgestureDeleted){
+      var gestureDeleted =ListgestureDeleted[i]
+      console.log(gestureDeleted)
+      this.gestureHandler.deleteGesture(gestureDeleted.toLowerCase());
+      
+      delete checkListAssign[gestureDeleted.toUpperCase()];
+      var index=checkList.indexOf(gestureDeleted.toUpperCase());
+      if(index>-1){
+        checkList.splice(index,1)
+      }
+    }
     this.clear()
-    delete checkListAssign[gestureDeleted.toUpperCase()];
-    var index=checkList.indexOf(gestureDeleted.toUpperCase());
-    if(index>-1){
-      checkList.splice(index,1)
-    }
-    index=MacrosList.indexOf(gestureDeleted.toUpperCase());
-    if(index>-1){
-      MacrosList.splice(index,1)
-    }
-
     this.setData()
     this.updateCheckListAssign()
     window.location.reload();
   }
 
   deleteMacroGesture(){
-    const macrogestureDeleted=this.macrogestureDeleted.value.trim();
-    this.gestureHandler.deleteGesture(macrogestureDeleted.toLowerCase());
-    
-    this.clear()
-    delete checkMacroListAssign[macrogestureDeleted.toUpperCase()];
-    const index=checkMacroList.indexOf(macrogestureDeleted.toUpperCase());
-    if(index>-1){
-      checkMacroList.splice(index,1)
+    var macroListgestureDeleted=this.macrogestureDeleted.value.trim();
+    macroListgestureDeleted=macroListgestureDeleted.split(',')
+    for(let i in macroListgestureDeleted){
+      var macrogestureDeleted =macroListgestureDeleted[i]
+      this.gestureHandler.deleteGesture(macrogestureDeleted.toLowerCase());
+      
+      delete checkMacroListAssign[macrogestureDeleted.toUpperCase()];
+      const index=checkMacroList.indexOf(macrogestureDeleted.toUpperCase());
+      if(index>-1){
+        checkMacroList.splice(index,1)
+      }
     }
+    this.clear()
     this.setMacroData()
     this.updateCheckMacroListAssign()
     window.location.reload();
@@ -1145,7 +1149,6 @@ class App extends React.Component {
       
       if(bool){
         if(item.instruction[2].length===0){
-          console.log(bool)
           instruction3.innerHTML = '-';
           instruction4.innerHTML = '-';
           bool=false

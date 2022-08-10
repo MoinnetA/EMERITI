@@ -80,7 +80,6 @@ let ActionsList =[
   { label: 'Unmute', value: 8 },
   { label: 'Next', value: 9 }
 ]
-let MacrosList =[]
 
 let DevicesList =[
   { label: 'Air conditioner', value: 1 , disabled: false},
@@ -113,6 +112,7 @@ let ParametersList =[
   { label: 'Volume', value: 6 , disabled: false},
 ]
 
+let MacrosList =[]
 
 const actionsRenderer = (selected, _options) => {
   return selected.length
@@ -364,12 +364,18 @@ class App extends React.Component {
         let macroList = checkListAssign[event.gesture.name]
         let action = macroList[0].split(', ')
         if(action[0]!=="-"){
+          console.log("action[0] : ", action[0])
+          console.log("action : ", action)
+          console.log("macroActionList : ", macroActionList)
           macroActionList = macroActionList.concat(action)
+          console.log("macroActionList1 : ", macroActionList)
           if(macroActionList.length>1){
+            console.log("macroActionList2 : ", macroActionList)
             ActionList=macroActionList[1]
             macroActionList=[macroActionList[0]]
             isNew=true
           }
+          console.log("macroActionList3 : ", macroActionList)
         }
         if(macroList[1]!=='-'){
           let device = macroList[1].split(', ')
@@ -419,12 +425,15 @@ class App extends React.Component {
         }
 
         if(isNew && macroActionList.length>0 && macroDeviceList.length>0){
+          console.log("macroActionList is New : ", macroActionList)
           let timer = 0
           if(macroParameterList.includes("Time")){
             timer = macroParameterList[macroParameterList.indexOf("Time") + 1]*1000
           }
-          setTimeout(() => {
+          // setTimeout(() => {
+            console.log("macroActionList setTimeout : ", macroActionList)
             for(const macro_action of macroActionList){
+              console.log("macro_action : ", macro_action)
               if(macro_action==="Turn On"){
                 this.setState({
                   turn_on: "1"
@@ -513,7 +522,7 @@ class App extends React.Component {
                 this.recognizeProgram(number_program)
               }
             }
-          }, timer);
+          // }, timer);
         }
         else{
           console.log("You must have an Action and a Device")
@@ -817,7 +826,9 @@ class App extends React.Component {
         })
       }
       else {
+        console.log("macroDeviceList[i] : ", macroDeviceList[i])
         let image = document.getElementById(macroDeviceList[i]);
+        console.log("image : ", image)
         image.style.opacity = this.state.turn_on;
       }
     }
@@ -1652,6 +1663,7 @@ class App extends React.Component {
       });
     }
   }
+
   draw1(){
     const drawGesture = this.drawGesture.value.trim();
     if(drawGesture === ''){
@@ -2160,7 +2172,7 @@ class App extends React.Component {
       }
 
       if(bool){
-        if(item.instruction[2].length===0){
+        if(!item.instruction[2]){
           instruction3.innerHTML = '-';
           instruction4.innerHTML = '-';
           bool=false
@@ -2171,7 +2183,7 @@ class App extends React.Component {
 
       }
       if(bool){
-        if(item.instruction[3].length===0){
+        if(!item.instruction[3]){
           instruction4.innerHTML = '-';
         }
         else{

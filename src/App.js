@@ -1,43 +1,58 @@
 import React, {createRef} from 'react';
 import GestureHandler from "quantumleapjs";
-import Air_conditioner from './images/Air_conditioner_on_cold.png';
-import Air_conditioner_hot from './images/Air_conditioner_on_hot.png';
-import Brightness_bathroom from './images/Brightness_bathroom.png';
-import Brightness_children_bedroom from './images/Brightness_children_bedroom.png';
-import Brightness_dining_room from './images/Brightness_diningroom.png';
-import Brightness_kitchen from './images/Brightness_kitchen.png';
-import Brightness_living_room from './images/Brightness_livingroom.png';
-import Brightness_office from './images/Brightness_office.png';
-import Brightness_parent_bedroom from './images/Brightness_parent_bedroom.png';
-import Brightness_washing_room from './images/Brightness_washingroom.png';
-import Computer from './images/Computer_on.png';
-import Fan from './images/Fan_on.png';
+import Air_conditioner_program_1 from './images/Air_conditioner/Air_conditioner_on_cold.png';
+import Air_conditioner_program_2 from './images/Air_conditioner/Air_conditioner_on_hot.png';
+import Brightness_bathroom from './images/Brightness/Brightness_bathroom.png';
+import Brightness_children_bedroom from './images/Brightness/Brightness_children_bedroom.png';
+import Brightness_dining_room from './images/Brightness/Brightness_diningroom.png';
+import Brightness_kitchen from './images/Brightness/Brightness_kitchen.png';
+import Brightness_living_room from './images/Brightness/Brightness_livingroom.png';
+import Brightness_office from './images/Brightness/Brightness_office.png';
+import Brightness_parent_bedroom from './images/Brightness/Brightness_parent_bedroom.png';
+import Brightness_laundry_room from './images/Brightness/Brightness_washingroom.png';
+import Computer from './images/Computer/Computer_on.png';
+import Computer_volume_0 from './images/Computer/Computer_volume_0.png';
+import Computer_volume_1 from './images/Computer/Computer_volume_1.png';
+import Computer_volume_2 from './images/Computer/Computer_volume_2.png';
+import Computer_volume_3 from './images/Computer/Computer_volume_3.png';
+import Computer_muted from './images/Computer/Computer_on_muted.png';
+import Fan from './images/Fan/Fan_on.png';
 import House from './images/House.png';
-import Light_bathroom from './images/Light_bathroom.png';
-import Light_children_bedroom from './images/Light_children_bedroom.png';
-import Light_dining_room from './images/Light_diningroom.png';
-import Light_kitchen from './images/Light_kitchen.png';
-import Light_laundry_room from './images/Light_laundryroom.png';
-import Light_living_room from './images/Light_livingroom.png';
-import Light_office from './images/Light_office.png';
-import Light_parent_bedroom from './images/Light_parent_bedroom.png';
-import Microwave from './images/Microwave.png';
-import Radio from './images/Radio_on.png';
-import Radio_channel_1 from './images/Radio_on_channel_1.png';
-import Radio_channel_2 from './images/Radio_on_channel_2.png';
-import Radio_channel_3 from './images/Radio_on_channel_3.png';
-import Radio_muted from './images/Radio_on_muted.png';
-import Television from './images/Tv_on_channel_1.png';
-import Television_channel_2 from './images/Tv_on_channel_2.png';
-import Television_channel_3 from './images/Tv_on_channel_3.png';
-import Television_channel_4 from './images/Tv_on_channel_4.png';
-import Television_channel_5 from './images/Tv_on_channel_5.png';
-import Television_muted from './images/Tv_on_muted.png';
-import Television_pause from './images/Tv_on_pause.png';
-import Washing_machine from './images/Washing_machine.png';
-import Washing_machine_program_1 from './images/Washing_machine_program_1.png';
-import Washing_machine_program_2 from './images/Washing_machine_program_2.png';
-import Washing_machine_program_3 from './images/Washing_machine_program_3.png';
+import Light_bathroom from './images/Light/Light_bathroom.png';
+import Light_children_bedroom from './images/Light/Light_children_bedroom.png';
+import Light_dining_room from './images/Light/Light_diningroom.png';
+import Light_kitchen from './images/Light/Light_kitchen.png';
+import Light_laundry_room from './images/Light/Light_laundryroom.png';
+import Light_living_room from './images/Light/Light_livingroom.png';
+import Light_office from './images/Light/Light_office.png';
+import Light_parent_bedroom from './images/Light/Light_parent_bedroom.png';
+import Microwave from './images/Microwave/Microwave.png';
+import Radio from './images/Radio/Radio_on.png';
+import Radio_channel_1 from './images/Radio/Radio_on_channel_1.png';
+import Radio_channel_2 from './images/Radio/Radio_on_channel_2.png';
+import Radio_channel_3 from './images/Radio/Radio_on_channel_3.png';
+import Radio_channel_4 from './images/Radio/Radio_on_channel_4.png';
+import Radio_channel_5 from './images/Radio/Radio_on_channel_5.png';
+import Radio_volume_0 from './images/Radio/Radio_volume_0.png';
+import Radio_volume_1 from './images/Radio/Radio_volume_1.png';
+import Radio_volume_2 from './images/Radio/Radio_volume_2.png';
+import Radio_volume_3 from './images/Radio/Radio_volume_3.png';
+import Radio_muted from './images/Radio/Radio_on_muted.png';
+import Television from './images/Television/Television_on_channel_1.png';
+import Television_channel_2 from './images/Television/Television_on_channel_2.png';
+import Television_channel_3 from './images/Television/Television_on_channel_3.png';
+import Television_channel_4 from './images/Television/Television_on_channel_4.png';
+import Television_channel_5 from './images/Television/Television_on_channel_5.png';
+import Television_volume_0 from './images/Television/Television_volume_0.png';
+import Television_volume_1 from './images/Television/Television_volume_1.png';
+import Television_volume_2 from './images/Television/Television_volume_2.png';
+import Television_volume_3 from './images/Television/Television_volume_3.png';
+import Television_muted from './images/Television/Television_muted.png';
+import Television_pause from './images/Television/Television_pause.png';
+import Washing_machine from './images/Washing machine/Washing_machine.png';
+import Washing_machine_program_1 from './images/Washing machine/Washing_machine_program_1.png';
+import Washing_machine_program_2 from './images/Washing machine/Washing_machine_program_2.png';
+import Washing_machine_program_3 from './images/Washing machine/Washing_machine_program_3.png';
 import { MultiSelect } from "react-multi-select-component";
 
 let tabFinal=[];
@@ -61,7 +76,8 @@ let ActionsList =[
   { label: 'Pause', value: 5 },
   { label: 'Play', value: 6 },
   { label: 'Mute', value: 7 },
-  { label: 'Next', value: 8 }
+  { label: 'Unmute', value: 8 },
+  { label: 'Next', value: 9 }
 ]
 let MacrosList =[]
 
@@ -84,7 +100,7 @@ let EnvironmentList =[
   { label: 'Laundry room', value: 5 , disabled: false},
   { label: 'Living room', value: 6 , disabled: false},
   { label: 'Office', value: 7 , disabled: false},
-  { label: 'Parent bedroom', value: 8 , disabled: false},
+  { label: 'Parent bedroom', value: 8 , disabled: false}
 ]
 
 let ParametersList =[
@@ -149,7 +165,24 @@ class App extends React.Component {
       macro_instruction:[],
       instructions:[],
       recognizedList:[],
-      intensity_brightness:"0"
+      television_volume:3,
+      television_muted:false,
+      television_channel:1,
+      radio_volume:3,
+      radio_muted:false,
+      radio_channel:1,
+      computer_volume:3,
+      computer_muted:false,
+      brightness_bathroom:1,
+      brightness_children_bedroom:1,
+      brightness_dining_room:1,
+      brightness_kitchen:1,
+      brightness_living_room:1,
+      brightness_office:1,
+      brightness_parent_bedroom:1,
+      brightness_laundry_room:1,
+      washing_program:1,
+      air_conditioner_program:1
     };
     this.canvasRef = createRef(null);
     this.ctx = createRef(null);
@@ -192,6 +225,15 @@ class App extends React.Component {
     this.showRecognizedInstructions = this.showRecognizedInstructions.bind(this);
     this.recognizeDevice = this.recognizeDevice.bind(this);
     this.recognizeBrightness = this.recognizeBrightness.bind(this);
+    this.recognizeVolume = this.recognizeVolume.bind(this);
+    this.recognizeMute = this.recognizeMute.bind(this);
+    this.recognizeUnmute = this.recognizeUnmute.bind(this);
+    this.recognizeNext = this.recognizeNext.bind(this);
+    this.recognizeIncreaseVolume = this.recognizeIncreaseVolume.bind(this);
+    this.recognizeDecreaseVolume = this.recognizeDecreaseVolume.bind(this);
+    this.recognizeIncreaseBrightness = this.recognizeIncreaseBrightness.bind(this);
+    this.recognizePause = this.recognizePause.bind(this);
+    this.recognizeProgram = this.recognizeProgram.bind(this);
 
     // Timer
     this.timer = null;
@@ -206,6 +248,7 @@ class App extends React.Component {
     localStorage.setItem('checkListAssign', JSON.stringify(checkListAssign));
     localStorage.setItem('checkList', JSON.stringify(checkList));
   }
+
   setMacroData(){
     console.log("checkMacroListAssign for setMacroData:", checkMacroListAssign)
     localStorage.setItem('checkMacroListAssign', JSON.stringify(checkMacroListAssign));
@@ -343,35 +386,101 @@ class App extends React.Component {
           recognizedList: macroActionList.concat(macroDeviceList)
         })
         if(macroActionList.length>0 && macroDeviceList.length>0){
-          for(const macro_action of macroActionList){
-            if(macro_action==="Turn On"){
-              this.setState({
-                turn_on: "1"
-              }, function (){
-                console.log("Turn On")
-              })
-            }
-            else if(macro_action==="Turn Off"){
-              this.setState({
-                turn_on: "0"
-              }, function (){
-                console.log("Turn Off");
-              })
-            }
-            if(macroParameterList.includes("Brightness")){
-              let intensity_brightness = macroParameterList[macroParameterList.indexOf("Brightness") + 1]
-              if(intensity_brightness>10){
-                console.log("Intensity of brightness too high !")
-              }
-              else {
-                let decimal_intensity = (1 - (intensity_brightness / 10).toFixed(1)).toString()
-                this.recognizeBrightness(decimal_intensity)
-              }
-            }
-            else{
-              this.recognizeDevice()
-            }
+          let timer = 0
+          if(macroParameterList.includes("Time")){
+            timer = macroParameterList[macroParameterList.indexOf("Time") + 1]*1000
           }
+          setTimeout(() => {
+            for(const macro_action of macroActionList){
+              if(macro_action==="Turn On"){
+                this.setState({
+                  turn_on: "1"
+                }, function (){
+                  this.recognizeDevice();
+                })
+              }
+              else if(macro_action==="Turn Off"){
+                this.setState({
+                  turn_on: "0"
+                }, function (){
+                  this.recognizeDevice();
+                })
+              }
+              else if(macro_action==="Mute"){
+                this.recognizeMute()
+              }
+              else if(macro_action==="Unmute"){
+                this.recognizeUnmute()
+              }
+              else if(macro_action==="Next"){
+                this.recognizeNext()
+              }
+              else if(macro_action==="Pause"){
+                this.recognizePause(true);
+              }
+              else if(macro_action==="Play"){
+                this.recognizePause(false);
+              }
+              else if(macro_action==="Increase"){
+                if(macroParameterList.includes("Volume")){
+                  let intensity_volume = macroParameterList[macroParameterList.indexOf("Volume") + 1]
+                  this.recognizeIncreaseVolume(parseInt(intensity_volume))
+                }
+                else if(macroParameterList.includes("Brightness")){
+                  let intensity_brightness = macroParameterList[macroParameterList.indexOf("Brightness") + 1]
+                  console.log("intensity_brightness : ", intensity_brightness)
+                  let decimal_brightness = ((intensity_brightness / 10).toFixed(1))
+                  console.log("decimal_brightness : ", decimal_brightness)
+                  this.recognizeIncreaseBrightness(decimal_brightness)
+                }
+                else{
+                  console.log("No parameter to increase !")
+                }
+              }
+              else if(macro_action==="Decrease"){
+                if(macroParameterList.includes("Volume")){
+                  let intensity_volume = macroParameterList[macroParameterList.indexOf("Volume") + 1]
+                  this.recognizeDecreaseVolume(parseInt(intensity_volume))
+                }
+                else if(macroParameterList.includes("Brightness")){
+                  let intensity_brightness = macroParameterList[macroParameterList.indexOf("Brightness") + 1]
+                  console.log("intensity_brightness : ", intensity_brightness)
+                  let decimal_brightness = ((intensity_brightness / 10).toFixed(1))
+                  console.log("decimal_brightness : ", decimal_brightness)
+                  this.recognizeIncreaseBrightness(-decimal_brightness)
+                }
+                else{
+                  console.log("No parameter to decrease !")
+                }
+              }
+              // else if(macro_action==="Turn On" || macro_action==="Turn Off"){
+              //   this.recognizeDevice()
+              // }
+              if(macroParameterList.includes("Brightness") && (macro_action==="Turn On" || macro_action==="Turn Off")){
+                let intensity_brightness = macroParameterList[macroParameterList.indexOf("Brightness") + 1]
+                if(intensity_brightness>10){
+                  console.log("Intensity of brightness too high ! Should be between 0 and 10")
+                }
+                else {
+                  let decimal_brightness = (1 - (intensity_brightness / 10).toFixed(1)).toString()
+                  this.recognizeBrightness(decimal_brightness)
+                }
+              }
+              if(macroParameterList.includes("Volume") && (macro_action==="Turn On" || macro_action==="Turn Off")){
+                let intensity_volume = macroParameterList[macroParameterList.indexOf("Volume") + 1]
+                if(intensity_volume>3){
+                  console.log("Volume too high ! Should be between 0 and 3")
+                }
+                else {
+                  this.recognizeVolume(intensity_volume)
+                }
+              }
+              if(macroParameterList.includes("Program")){
+                let number_program = macroParameterList[macroParameterList.indexOf("Program") + 1]
+                this.recognizeProgram(number_program)
+              }
+            }
+          }, timer);
         }
         else{
           console.log("You must have an Action and a Device")
@@ -447,6 +556,22 @@ class App extends React.Component {
         console.log("Unsupported gesture");
       }
       this.onGesture(event.gesture.type, event.gesture.name);
+      if(this.state.actions.length===0){
+        for(let k=0;k<ActionsList.length;k++){
+          ActionsList[k].disabled=false
+        }
+        for(let j=0;j<DevicesList.length;j++){
+          DevicesList[j].disabled=false
+        }
+      }
+      else {
+        for (let k = 0; k < ActionsList.length; k++) {
+          ActionsList[k].disabled = true
+        }
+        for (let j = 0; j < DevicesList.length; j++) {
+          DevicesList[j].disabled = false
+        }
+      }
     });
 
     // STEP 12
@@ -476,28 +601,147 @@ class App extends React.Component {
   }
 
   recognizeDevice(){
+    console.log("In recognizeDevice")
     for(let i = 0; i<macroDeviceList.length; i++){
       if(macroDeviceList[i]==="Light"){
         if(macroEnvironmentList.length !== 0){
-          for(let j=0; j<macroEnvironmentList.length; j++){
-            let image_light = document.getElementById("Light_"+macroEnvironmentList[j].toLowerCase())
+          for(let environment of macroEnvironmentList){
+            let image_light = document.getElementById("Light_"+environment.toLowerCase())
             image_light.style.opacity = this.state.turn_on;
-            let image_brightness = document.getElementById("Brightness_"+macroEnvironmentList[j].toLowerCase())
-            image_brightness.style.opacity = (1 - parseInt(this.state.turn_on)).toString();
+            let image_brightness = document.getElementById("Brightness_"+environment.toLowerCase())
+            let value_brightness = 1-parseInt(this.state.turn_on)
+            image_brightness.style.opacity = (value_brightness).toString();
+            if(environment==="Bathroom"){
+              this.setState({
+                brightness_bathroom:value_brightness
+              }, function (){
+                console.log("Brightness of "+environment+" : "+ this.state.brightness_bathroom)
+              })
+            }
+            else if(environment==="Children bedroom"){
+              this.setState({
+                brightness_children_bedroom:value_brightness
+              }, function (){
+                console.log("Brightness of "+environment+" : "+ this.state.brightness_children_bedroom)
+              })
+            }
+            else if(environment==="Dining room"){
+              this.setState({
+                brightness_dining_room:value_brightness
+              }, function (){
+                console.log("Brightness of "+environment+" : "+ this.state.brightness_dining_room)
+              })
+            }
+            else if(environment==="Kitchen"){
+              this.setState({
+                brightness_kitchen:value_brightness
+              }, function (){
+                console.log("Brightness of "+environment+" : "+ this.state.brightness_kitchen)
+              })
+            }
+            else if(environment==="Laundry room"){
+              this.setState({
+                brightness_laundry_room:value_brightness
+              }, function (){
+                console.log("Brightness of "+environment+" : "+ this.state.brightness_laundry_room)
+              })
+            }
+            else if(environment==="Living room"){
+              this.setState({
+                brightness_living_room:value_brightness
+              }, function (){
+                console.log("Brightness of "+environment+" : "+ this.state.brightness_living_room)
+              })
+            }
+            else if(environment==="Office"){
+              this.setState({
+                brightness_office:value_brightness
+              }, function (){
+                console.log("Brightness of "+environment+" : "+ this.state.brightness_office)
+              })
+            }
+            else if(environment==="Parent bedroom"){
+              this.setState({
+                brightness_parent_bedroom:value_brightness
+              }, function (){
+                console.log("Brightness of "+environment+" : "+ this.state.brightness_parent_bedroom)
+              })
+            }
           }
         }
         else{
+          let value_brightness = 1-parseInt(this.state.turn_on)
           let all_light = ["Light_bathroom", "Light_children bedroom", "Light_dining room", "Light_kitchen", "Light_laundry room", "Light_living room", "Light_office", "Light_parent bedroom"]
-          let all_brightness = ["Brightness_bathroom", "Brightness_children bedroom", "Brightness_dining room", "Brightness_kitchen", "Brightness_living room", "Brightness_office", "Brightness_parent bedroom", "Brightness_washing room"]
+          let all_brightness = ["Brightness_bathroom", "Brightness_children bedroom", "Brightness_dining room", "Brightness_kitchen", "Brightness_living room", "Brightness_office", "Brightness_parent bedroom", "Brightness_laundry room"]
           for(let k of all_light){
             let image = document.getElementById(k)
             image.style.opacity = this.state.turn_on;
           }
-          for (let l of all_brightness) {
-            let image = document.getElementById(l)
-            image.style.opacity = (1 - parseInt(this.state.turn_on)).toString();
+          for(let l of all_brightness){
+            let image_brightness = document.getElementById(l)
+            image_brightness.style.opacity = value_brightness;
           }
+          this.setState({
+            brightness_bathroom : value_brightness,
+            brightness_children_bedroom : value_brightness,
+            brightness_dining_room : value_brightness,
+            brightness_kitchen : value_brightness,
+            brightness_living_room : value_brightness,
+            brightness_office : value_brightness,
+            brightness_parent_bedroom : value_brightness,
+            brightness_laundry_room : value_brightness
+          }, function (){
+            console.log("Brightness of every environment : ", this.state.brightness_bathroom, this.state.brightness_children_bedroom, this.state.brightness_dining_room, this.state.brightness_kitchen, this.state.brightness_living_room, this.state.brightness_office, this.state.brightness_parent_bedroom, this.state.brightness_laundry_room)
+          })
         }
+      }
+      else if(macroDeviceList[i]==="Television"){
+        let tv_image = document.getElementById("Television_channel_" + (this.state.television_channel).toString());
+        tv_image.style.opacity = this.state.turn_on;
+        let tv_sound = document.getElementById("Television_volume_" + (this.state.television_volume).toString());
+        tv_sound.style.opacity = this.state.turn_on;
+        if(this.state.television_muted===true){
+          let tv_muted = document.getElementById("Television_muted");
+          tv_muted.style.opacity = "0"
+        }
+      }
+      else if(macroDeviceList[i]==="Radio"){
+        let radio_image = document.getElementById("Radio_channel_" + (this.state.radio_channel).toString());
+        radio_image.style.opacity = this.state.turn_on;
+        let radio_sound = document.getElementById("Radio_volume_" + (this.state.radio_volume).toString());
+        radio_sound.style.opacity = this.state.turn_on;
+        if(this.state.radio_muted===true){
+          let radio_muted = document.getElementById("Radio_muted");
+          radio_muted.style.opacity = "0"
+        }
+      }
+      else if(macroDeviceList[i]==="Computer"){
+        let computer_image = document.getElementById("Computer");
+        computer_image.style.opacity = this.state.turn_on;
+        let computer_sound = document.getElementById("Computer_volume_" + (this.state.computer_volume).toString());
+        computer_sound.style.opacity = this.state.turn_on;
+        if(this.state.computer_muted===true){
+          let computer_muted = document.getElementById("Computer_muted");
+          computer_muted.style.opacity = "0"
+        }
+      }
+      else if(macroDeviceList[i]==="Air conditioner"){
+        let old_air_conditioner_image = document.getElementById("Air_conditioner_program_"+this.state.air_conditioner_program);
+        old_air_conditioner_image.style.opacity = "0";
+        let air_conditioner_image = document.getElementById("Air_conditioner_program_1");
+        air_conditioner_image.style.opacity = this.state.turn_on;
+        this.setState({
+          air_conditioner_program:1
+        })
+      }
+      else if(macroDeviceList[i]==="Washing machine"){
+        let old_washing_machine_image = document.getElementById("Washing_machine_program_"+this.state.washing_program);
+        old_washing_machine_image.style.opacity = "0";
+        let washing_machine_image = document.getElementById("Washing_machine_program_1");
+        washing_machine_image.style.opacity = this.state.turn_on;
+        this.setState({
+          washing_program:1
+        })
       }
       else {
         let image = document.getElementById(macroDeviceList[i]);
@@ -507,13 +751,52 @@ class App extends React.Component {
   }
 
   recognizeBrightness(intensity_brightness){
+    console.log("this.state.brightness_children_bedroom1 : ", this.state.brightness_children_bedroom)
     for(let i = 0; i<macroDeviceList.length; i++){
       if(macroDeviceList[i]==="Light"){
         if(macroEnvironmentList.length !== 0){
-          for(let j=0; j<macroEnvironmentList.length; j++){
-            let image_light = document.getElementById("Light_"+macroEnvironmentList[j].toLowerCase())
-            image_light.style.opacity = this.state.turn_on;
-            let image_brightness = document.getElementById("Brightness_"+macroEnvironmentList[j].toLowerCase())
+          for(let environment of macroEnvironmentList){
+            if(environment==="Bathroom"){
+              this.setState({
+                Brightness_bathroom : intensity_brightness
+              })
+            }
+            else if(environment==="Children bedroom"){
+              this.setState({
+                Brightness_children_bedroom : intensity_brightness
+              })
+            }
+            else if(environment==="Dining room"){
+              this.setState({
+                Brightness_dining_room : intensity_brightness
+              })
+            }
+            else if(environment==="Kitchen"){
+              this.setState({
+                Brightness_kitchen : intensity_brightness
+              })
+            }
+            else if(environment==="Living room"){
+              this.setState({
+                Brightness_living_room : intensity_brightness
+              })
+            }
+            else if(environment==="Office"){
+              this.setState({
+                Brightness_office : intensity_brightness
+              })
+            }
+            else if(environment==="Parent bedroom"){
+              this.setState({
+                Brightness_parent_bedroom : intensity_brightness
+              })
+            }
+            else if(environment==="Washing room"){
+              this.setState({
+                Brightness_laundry_room : intensity_brightness
+              })
+            }
+            let image_brightness = document.getElementById("Brightness_"+environment.toLowerCase())
             if(this.state.turn_on==="1"){
               image_brightness.style.opacity = intensity_brightness;
             }
@@ -523,24 +806,735 @@ class App extends React.Component {
           }
         }
         else{
-          let all_light = ["Light_bathroom", "Light_children bedroom", "Light_dining room", "Light_kitchen", "Light_laundry room", "Light_living room", "Light_office", "Light_parent bedroom"]
-          let all_brightness = ["Brightness_bathroom", "Brightness_children_bedroom", "Brightness_dining room", "Brightness_kitchen", "Brightness_living room", "Brightness_office", "Brightness_parent bedroom", "Brightness_washing room"]
-          for(i of all_light){
-            let image = document.getElementById(i)
-            image.style.opacity = this.state.turn_on;
-          }
+          let all_brightness = ["Brightness_bathroom", "Brightness_children bedroom", "Brightness_dining room", "Brightness_kitchen", "Brightness_living room", "Brightness_office", "Brightness_parent bedroom", "Brightness_laundry room"]
           if(this.state.turn_on==="1") {
             for (i of all_brightness) {
               let image = document.getElementById(i)
               image.style.opacity = intensity_brightness;
             }
           }
+          this.setState({
+            brightness_bathroom : intensity_brightness,
+            brightness_children_bedroom : intensity_brightness,
+            brightness_dining_room : intensity_brightness,
+            brightness_kitchen : intensity_brightness,
+            brightness_living_room : intensity_brightness,
+            brightness_office : intensity_brightness,
+            brightness_parent_bedroom : intensity_brightness,
+            brightness_laundry_room : intensity_brightness
+          }, function (){
+            console.log("Brightness of every environment : ", this.state.brightness_bathroom, this.state.brightness_children_bedroom, this.state.brightness_dining_room, this.state.brightness_kitchen, this.state.brightness_living_room, this.state.brightness_office, this.state.brightness_parent_bedroom, this.state.brightness_laundry_room)
+          })
         }
       }
       else {
-        let image = document.getElementById(macroDeviceList[i]);
-        image.style.opacity = this.state.turn_on;
+        console.log("Wrong device")
       }
+    }
+  }
+
+  recognizeVolume(intensity_volume){
+    for(let i = 0; i<macroDeviceList.length; i++) {
+      if (macroDeviceList[i] === "Television") {
+        let old_image_television = document.getElementById("Television_volume_" + (this.state.television_volume).toString())
+        old_image_television.style.opacity = "0"
+        let image_television = document.getElementById("Television_volume_" + intensity_volume.toString())
+        image_television.style.opacity = "1"
+        this.setState({
+          television_volume: parseInt(intensity_volume)
+        }, function () {
+          console.log("television_volume : ", this.state.television_volume)
+        })
+      }
+      else if (macroDeviceList[i] === "Radio") {
+        let old_image_radio = document.getElementById("Radio_volume_" + (this.state.radio_volume).toString())
+        old_image_radio.style.opacity = "0"
+        let image_radio = document.getElementById("Radio_volume_" + intensity_volume.toString())
+        image_radio.style.opacity = "1"
+        this.setState({
+          radio_volume: parseInt(intensity_volume)
+        }, function () {
+          console.log("radio_volume : ", this.state.radio_volume)
+        })
+      }
+      else if (macroDeviceList[i] === "Computer") {
+        let old_image_computer = document.getElementById("Computer_volume_" + (this.state.computer_volume).toString())
+        old_image_computer.style.opacity = "0"
+        let image_computer = document.getElementById("Computer_volume_" + intensity_volume.toString())
+        image_computer.style.opacity = "1"
+        this.setState({
+          computer_volume: parseInt(intensity_volume)
+        }, function () {
+          console.log("computer_volume : ", this.state.computer_volume)
+        })
+      }
+    }
+  }
+
+  recognizeMute(){
+    if(macroDeviceList.includes("Television")){
+      let check_tv_turn_on = document.getElementById("Television_channel_" + (this.state.television_channel).toString())
+      if(check_tv_turn_on.style.opacity === "1") {
+        let old_image_television = document.getElementById("Television_volume_" + (this.state.television_volume).toString())
+        old_image_television.style.opacity = "0"
+        let image_television = document.getElementById("Television_muted")
+        image_television.style.opacity = "1"
+        this.setState({
+          television_muted:true
+        }, function () {
+          console.log("television_volume : ", this.state.television_volume);
+          console.log("television_muted : ", this.state.television_muted);
+        })
+      }
+      else{
+        console.log("Television is not turned on")
+      }
+    }
+    if(macroDeviceList.includes("Radio")){
+      let check_radio_turn_on = document.getElementById("Radio_channel_" + (this.state.radio_channel).toString())
+      if(check_radio_turn_on.style.opacity === "1") {
+        let old_image_radio = document.getElementById("Radio_volume_" + (this.state.radio_volume).toString())
+        old_image_radio.style.opacity = "0"
+        let image_radio = document.getElementById("Radio_muted")
+        image_radio.style.opacity = "1"
+        this.setState({
+          radio_muted:true
+        }, function () {
+          console.log("radio_volume : ", this.state.radio_volume);
+          console.log("radio_muted : ", this.state.radio_muted);
+        })
+      }
+      else{
+        console.log("Radio is not turned on")
+      }
+    }
+    if(macroDeviceList.includes("Computer")){
+      let check_computer_turn_on = document.getElementById("Computer")
+      if(check_computer_turn_on.style.opacity === "1") {
+        let old_image_computer = document.getElementById("Computer_volume_" + (this.state.computer_volume).toString())
+        old_image_computer.style.opacity = "0"
+        let image_computer = document.getElementById("Computer_muted")
+        image_computer.style.opacity = "1"
+        this.setState({
+          computer_muted:true
+        }, function () {
+          console.log("computer_volume : ", this.state.computer_volume);
+          console.log("computer_muted : ", this.state.computer_muted);
+        })
+      }
+      else{
+        console.log("Computer is not turned on")
+      }
+    }
+  }
+
+  recognizeUnmute(){
+    if(macroDeviceList.includes("Television")){
+      if(this.state.television_muted !== true) {
+        console.log("Television was not muted")
+      }
+      else {
+        if(this.state.television_volume!==-1) {
+          let image_television = document.getElementById("Television_volume_" + (this.state.television_volume).toString())
+          image_television.style.opacity = "1"
+        }
+        else{
+          console.log("Television was not turned on")
+        }
+        let old_image_television = document.getElementById("Television_muted")
+        old_image_television.style.opacity = "0"
+        this.setState({
+          television_muted: false
+        }, function () {
+          console.log("television_volume : ", this.state.television_volume);
+          console.log("television_muted : ", this.state.television_muted);
+        })
+      }
+    }
+    if(macroDeviceList.includes("Radio")){
+      if(this.state.radio_muted !== true) {
+        console.log("Radio was not muted")
+      }
+      else {
+        if(this.state.radio_volume!==-1) {
+          let image_radio = document.getElementById("Radio_volume_" + (this.state.radio_volume).toString())
+          image_radio.style.opacity = "1"
+        }
+        else{
+          console.log("Radio was not turned on")
+        }
+        let old_image_radio = document.getElementById("Radio_muted")
+        old_image_radio.style.opacity = "0"
+        this.setState({
+          radio_muted: false
+        }, function () {
+          console.log("radio_volume : ", this.state.radio_volume);
+          console.log("radio_muted : ", this.state.radio_muted);
+        })
+      }
+    }
+    if(macroDeviceList.includes("Computer")){
+      if(this.state.computer_muted !== true) {
+        console.log("Computer was not muted")
+      }
+      else {
+        if(this.state.computer_volume!==-1) {
+          let image_computer = document.getElementById("Computer_volume_" + (this.state.computer_volume).toString())
+          image_computer.style.opacity = "1"
+        }
+        else{
+          console.log("Computer was not turned on")
+        }
+        let old_image_computer = document.getElementById("Computer_muted")
+        old_image_computer.style.opacity = "0"
+        this.setState({
+          computer_muted: false
+        }, function () {
+          console.log("computer_volume : ", this.state.computer_volume);
+          console.log("computer_muted : ", this.state.computer_muted);
+        })
+      }
+    }
+  }
+
+  recognizeNext(){
+    if(macroDeviceList.includes("Television")){
+      let check_tv_turn_on = document.getElementById("Television_channel_" + (this.state.television_channel).toString())
+      if(check_tv_turn_on.style.opacity === "1") {
+        check_tv_turn_on.style.opacity = "0"
+        if(this.state.television_channel===5){
+          this.setState({
+            television_channel: 1
+          }, function () {
+            console.log("television_channel : ", this.state.television_channel);
+          })
+          let next_channel_tv = document.getElementById("Television_channel_1")
+          next_channel_tv.style.opacity = "1"
+        }
+        else{
+          let next_channel_tv = document.getElementById("Television_channel_" + (this.state.television_channel+1).toString())
+          next_channel_tv.style.opacity = "1"
+          this.setState({
+            television_channel: this.state.television_channel+1
+          }, function () {
+            console.log("television_channel : ", this.state.television_channel);
+          })
+        }
+      }
+      else{
+        console.log("Television is not turned on")
+      }
+    }
+    if(macroDeviceList.includes("Radio")){
+      let check_radio_turn_on = document.getElementById("Radio_channel_" + (this.state.radio_channel).toString())
+      if(check_radio_turn_on.style.opacity === "1") {
+        check_radio_turn_on.style.opacity = "0"
+        if(this.state.radio_channel===5){
+          this.setState({
+            radio_channel: 1
+          }, function () {
+            console.log("radio_channel : ", this.state.radio_channel);
+          })
+          let next_channel_radio = document.getElementById("Radio_channel_1")
+          next_channel_radio.style.opacity = "1"
+        }
+        else{
+          let next_channel_radio = document.getElementById("Radio_channel_" + (this.state.radio_channel+1).toString())
+          next_channel_radio.style.opacity = "1"
+          this.setState({
+            radio_channel: this.state.radio_channel+1
+          }, function () {
+            console.log("radio_channel : ", this.state.radio_channel);
+          })
+        }
+      }
+      else{
+        console.log("Radio is not turned on")
+      }
+    }
+  }
+
+  recognizeIncreaseVolume(value_to_increase){
+    if(macroDeviceList.includes("Television")){
+      let value_to_increase_television = value_to_increase
+      let updated_volume = this.state.television_volume+value_to_increase_television
+      if(updated_volume>3){
+        updated_volume=3
+      }
+      let last_tv_volume = document.getElementById("Television_volume_" + this.state.television_volume.toString())
+      last_tv_volume.style.opacity = "0"
+      let tv_volume = document.getElementById("Television_volume_" + updated_volume.toString())
+      tv_volume.style.opacity = "1"
+      this.setState({
+        television_volume: updated_volume
+      }, function () {
+        console.log("television_volume : ", this.state.television_volume);
+      })
+    }
+    if(macroDeviceList.includes("Radio")){
+      let radio = value_to_increase
+      let updated_volume = this.state.radio_volume+radio
+      if(updated_volume>3){
+        updated_volume=3
+      }
+      let last_radio_volume = document.getElementById("Radio_volume_" + this.state.radio_volume.toString())
+      last_radio_volume.style.opacity = "0"
+      let radio_volume = document.getElementById("Radio_volume_" + updated_volume.toString())
+      radio_volume.style.opacity = "1"
+      this.setState({
+        radio_volume: updated_volume
+      }, function () {
+        console.log("radio_volume : ", this.state.radio_volume);
+      })
+    }
+    if(macroDeviceList.includes("Computer")){
+      let value_to_increase_computer = value_to_increase
+      let updated_volume = this.state.computer_volume+value_to_increase_computer
+      if(updated_volume>3){
+        updated_volume=3
+      }
+      let last_computer_volume = document.getElementById("Computer_volume_" + this.state.computer_volume.toString())
+      last_computer_volume.style.opacity = "0"
+      let computer_volume = document.getElementById("Computer_volume_" + updated_volume.toString())
+      computer_volume.style.opacity = "1"
+      this.setState({
+        computer_volume: updated_volume
+      }, function () {
+        console.log("computer_volume : ", this.state.computer_volume);
+      })
+    }
+    if(macroDeviceList.includes("Light")){
+
+    }
+  }
+
+  recognizeDecreaseVolume(value_to_decrease){
+    if(macroDeviceList.includes("Television")){
+      let value_to_increase_television = value_to_decrease
+      let updated_volume = this.state.television_volume-value_to_increase_television
+      if(updated_volume<0){
+        updated_volume = 0
+      }
+      let last_tv_volume = document.getElementById("Television_volume_" + this.state.television_volume.toString())
+      last_tv_volume.style.opacity = "0"
+      let tv_volume = document.getElementById("Television_volume_" + updated_volume.toString())
+      tv_volume.style.opacity = "1"
+      this.setState({
+        television_volume: updated_volume
+      }, function () {
+        console.log("television_volume : ", this.state.television_volume);
+      })
+    }
+    if(macroDeviceList.includes("Radio")){
+      let value_to_increase_radio = value_to_decrease
+      let updated_volume = this.state.radio_volume-value_to_increase_radio
+      if(updated_volume<0){
+        updated_volume = 0
+      }
+      let last_radio_volume = document.getElementById("Radio_volume_" + this.state.radio_volume.toString())
+      last_radio_volume.style.opacity = "0"
+      let radio_volume = document.getElementById("Radio_volume_" + updated_volume.toString())
+      radio_volume.style.opacity = "1"
+      this.setState({
+        radio_volume: updated_volume
+      }, function () {
+        console.log("radio_volume : ", this.state.radio_volume);
+      })
+    }
+    if(macroDeviceList.includes("Computer")){
+      let value_to_increase_computer = value_to_decrease
+      let updated_volume = this.state.computer_volume-value_to_increase_computer
+      if(updated_volume<0){
+        updated_volume = 0
+      }
+      let last_computer_volume = document.getElementById("Computer_volume_" + this.state.computer_volume.toString())
+      last_computer_volume.style.opacity = "0"
+      let computer_volume = document.getElementById("Computer_volume_" + updated_volume.toString())
+      computer_volume.style.opacity = "1"
+      this.setState({
+        computer_volume: updated_volume
+      }, function () {
+        console.log("computer_volume : ", this.state.computer_volume);
+      })
+    }
+  }
+
+  recognizeIncreaseBrightness(value_to_increase){
+    if(macroDeviceList.includes("Light")){
+      if(macroEnvironmentList.length!==0){
+        for(let environment of macroEnvironmentList){
+          console.log("environment : ", environment)
+          if(environment==="Bathroom"){
+            let updated_brightness = this.state.brightness_bathroom-value_to_increase
+            if(updated_brightness<0){
+              updated_brightness=0
+            }
+            else if(updated_brightness>1){
+              updated_brightness=1
+            }
+            let brightness_bathroom = document.getElementById("Brightness_bathroom")
+            brightness_bathroom.style.opacity = updated_brightness.toString()
+            if(updated_brightness>0){
+              let light_bathroom = document.getElementById("Light_bathroom")
+              light_bathroom.style.opacity = "1"
+            }
+            else if(updated_brightness>=1){
+              let light_bathroom = document.getElementById("Light_bathroom")
+              light_bathroom.style.opacity = "0"
+            }
+            this.setState({
+              brightness_bathroom: updated_brightness
+            }, function () {
+              console.log("brightness_bathroom : ", this.state.brightness_bathroom);
+            })
+          }
+          if(environment==="Children bedroom"){
+            let updated_brightness = this.state.brightness_children_bedroom-value_to_increase
+            if(updated_brightness<=0){
+              updated_brightness=0
+            }
+            else if(updated_brightness>1){
+              updated_brightness=1
+            }
+            let brightness_children_bedroom = document.getElementById("Brightness_children bedroom")
+            brightness_children_bedroom.style.opacity = updated_brightness.toString()
+            if(updated_brightness>0){
+              let light_children_bedroom = document.getElementById("Light_children bedroom")
+              light_children_bedroom.style.opacity = "1"
+            }
+            else if(updated_brightness>=1){
+              let light_children_bedroom = document.getElementById("Light_children bedroom")
+              light_children_bedroom.style.opacity = "0"
+            }
+            this.setState({
+              brightness_children_bedroom: updated_brightness
+            }, function () {
+              console.log("brightness_children_bedroom : ", this.state.brightness_children_bedroom);
+            })
+          }
+          if(environment==="Dining room"){
+            let updated_brightness = this.state.brightness_dining_room-value_to_increase
+            if(updated_brightness<=0){
+              updated_brightness=0
+            }
+            else if(updated_brightness>1){
+              updated_brightness=1
+            }
+            let brightness_dining_room = document.getElementById("Brightness_dining room")
+            brightness_dining_room.style.opacity = updated_brightness.toString()
+            if(updated_brightness>0){
+              let light_dining_room = document.getElementById("Light_dining room")
+              light_dining_room.style.opacity = "1"
+            }
+            else if(updated_brightness>=1){
+              let light_dining_room = document.getElementById("Light_dining room")
+              light_dining_room.style.opacity = "0"
+            }
+            this.setState({
+              brightness_dining_room: updated_brightness
+            }, function () {
+              console.log("brightness_dining_room : ", this.state.brightness_dining_room);
+            })
+          }
+          if(environment==="Kitchen"){
+            let updated_brightness = this.state.brightness_kitchen-value_to_increase
+            if(updated_brightness<=0){
+              updated_brightness=0
+            }
+            else if(updated_brightness>1){
+              updated_brightness=1
+            }
+            let brightness_kitchen = document.getElementById("Brightness_kitchen")
+            brightness_kitchen.style.opacity = updated_brightness.toString()
+            if(updated_brightness>0){
+              let light_kitchen = document.getElementById("Light_kitchen")
+              light_kitchen.style.opacity = "1"
+            }
+            else if(updated_brightness>=1){
+              let light_kitchen = document.getElementById("Light_kitchen")
+              light_kitchen.style.opacity = "0"
+            }
+            this.setState({
+              brightness_kitchen: updated_brightness
+            }, function () {
+              console.log("brightness_kitchen : ", this.state.brightness_kitchen);
+            })
+          }
+          if(environment==="Living room"){
+            let updated_brightness = this.state.brightness_living_room-value_to_increase
+            if(updated_brightness<=0){
+              updated_brightness=0
+            }
+            else if(updated_brightness>1){
+              updated_brightness=1
+            }
+            let brightness_living_room = document.getElementById("Brightness_living room")
+            brightness_living_room.style.opacity = updated_brightness.toString()
+            if(updated_brightness>0){
+              let light_living_room = document.getElementById("Light_living room")
+              light_living_room.style.opacity = "1"
+            }
+            else if(updated_brightness>=1){
+              let light_living_room = document.getElementById("Light_living room")
+              light_living_room.style.opacity = "0"
+            }
+            this.setState({
+              brightness_living_room: updated_brightness
+            }, function () {
+              console.log("brightness_living_room : ", this.state.brightness_living_room);
+            })
+          }
+          if(environment==="Office"){
+            let updated_brightness = this.state.brightness_office-value_to_increase
+            if(updated_brightness<=0){
+              updated_brightness=0
+            }
+            else if(updated_brightness>1){
+              updated_brightness=1
+            }
+            let brightness_office = document.getElementById("Brightness_office")
+            brightness_office.style.opacity = updated_brightness.toString()
+            if(updated_brightness>0){
+              let light_office = document.getElementById("Light_office")
+              light_office.style.opacity = "1"
+            }
+            else if(updated_brightness>=1){
+              let light_office = document.getElementById("Light_office")
+              light_office.style.opacity = "0"
+            }
+            this.setState({
+              brightness_office: updated_brightness
+            }, function () {
+              console.log("brightness_office : ", this.state.brightness_office);
+            })
+          }
+          if(environment==="Parent bedroom"){
+            let updated_brightness = this.state.brightness_parent_bedroom-value_to_increase
+            if(updated_brightness<=0){
+              updated_brightness=0
+            }
+            else if(updated_brightness>1){
+              updated_brightness=1
+            }
+            let brightness_parent_bedroom = document.getElementById("Brightness_parent bedroom")
+            brightness_parent_bedroom.style.opacity = updated_brightness.toString()
+            if(updated_brightness>0){
+              let light_parent_bedroom = document.getElementById("Light_parent bedroom")
+              light_parent_bedroom.style.opacity = "1"
+            }
+            else if(updated_brightness>=1){
+              let light_parent_bedroom = document.getElementById("Light_parent bedroom")
+              light_parent_bedroom.style.opacity = "0"
+            }
+            this.setState({
+              brightness_parent_bedroom: updated_brightness
+            }, function () {
+              console.log("brightness_parent_bedroom : ", this.state.brightness_parent_bedroom);
+            })
+          }
+          if(environment==="Laundry room"){
+            let updated_brightness = this.state.brightness_laundry_room-value_to_increase
+            if(updated_brightness<=0){
+              updated_brightness=0
+            }
+            else if(updated_brightness>1){
+              updated_brightness=1
+            }
+            let brightness_laundry_room = document.getElementById("Brightness_laundry room")
+            brightness_laundry_room.style.opacity = updated_brightness.toString()
+            if(updated_brightness>0){
+              let light_laundry_room = document.getElementById("Light_laundry room")
+              light_laundry_room.style.opacity = "1"
+            }
+            else if(updated_brightness>=1){
+              let light_laundry_room = document.getElementById("Light_laundry room")
+              light_laundry_room.style.opacity = "0"
+            }
+            this.setState({
+              brightness_laundry_room: updated_brightness
+            }, function () {
+              console.log("brightness_laundry_room : ", this.state.brightness_laundry_room);
+            })
+          }
+        }
+      }
+      else{
+        let all_light = ["Light_bathroom", "Light_children bedroom", "Light_dining room", "Light_kitchen", "Light_laundry room", "Light_living room", "Light_office", "Light_parent bedroom"]
+        for(let k of all_light){
+          let image = document.getElementById(k)
+          image.style.opacity = "1";
+        }
+
+        let updated_brightness_bathroom = this.state.brightness_bathroom-value_to_increase
+        if(updated_brightness_bathroom<=0){
+          updated_brightness_bathroom=0
+        }
+        else if(updated_brightness_bathroom>=1){
+          updated_brightness_bathroom=1
+          let light_turn_off = document.getElementById("Light_bathroom")
+          light_turn_off.style.opacity = "0";
+        }
+        let brightness_environment = document.getElementById("Brightness_bathroom")
+        brightness_environment.style.opacity = updated_brightness_bathroom.toString()
+
+
+        let updated_brightness_children_bedroom = this.state.brightness_children_bedroom-value_to_increase
+        if(updated_brightness_children_bedroom<=0){
+          updated_brightness_children_bedroom=0
+        }
+        else if(updated_brightness_children_bedroom>=1){
+          updated_brightness_children_bedroom=1
+          let light_turn_off = document.getElementById("Light_children bedroom")
+          light_turn_off.style.opacity = "0";
+        }
+        let brightness_children_bedroom = document.getElementById("Brightness_children bedroom")
+        brightness_children_bedroom.style.opacity = updated_brightness_children_bedroom.toString()
+
+
+        let updated_brightness_dining_room = this.state.brightness_dining_room-value_to_increase
+        if(updated_brightness_dining_room<=0){
+          updated_brightness_dining_room=0
+        }
+        else if(updated_brightness_dining_room>=1){
+          updated_brightness_dining_room=1
+          let light_turn_off = document.getElementById("Light_dining room")
+          light_turn_off.style.opacity = "0";
+        }
+        let brightness_dining_room = document.getElementById("Brightness_dining room")
+        brightness_dining_room.style.opacity = updated_brightness_dining_room.toString()
+
+
+        let updated_brightness_kitchen = this.state.brightness_kitchen-value_to_increase
+        if(updated_brightness_kitchen<=0){
+          updated_brightness_kitchen=0
+        }
+        else if(updated_brightness_kitchen>=1){
+          updated_brightness_kitchen=1
+          let light_turn_off = document.getElementById("Light_kitchen")
+          light_turn_off.style.opacity = "0";
+        }
+        let brightness_kitchen = document.getElementById("Brightness_kitchen")
+        brightness_kitchen.style.opacity = updated_brightness_kitchen.toString()
+
+
+        let updated_brightness_living_room = this.state.brightness_living_room-value_to_increase
+        if(updated_brightness_living_room<=0){
+          updated_brightness_living_room=0
+        }
+        else if(updated_brightness_living_room>=1){
+          updated_brightness_living_room=1
+          let light_turn_off = document.getElementById("Light_living room")
+          light_turn_off.style.opacity = "0";
+        }
+        let brightness_living_room = document.getElementById("Brightness_living room")
+        brightness_living_room.style.opacity = updated_brightness_living_room.toString()
+
+
+        let updated_brightness_office = this.state.brightness_office-value_to_increase
+        if(updated_brightness_office<=0){
+          updated_brightness_office=0
+        }
+        else if(updated_brightness_office>=1){
+          updated_brightness_office=1
+          let light_turn_off = document.getElementById("Light_office")
+          light_turn_off.style.opacity = "0";
+        }
+        let brightness_office = document.getElementById("Brightness_office")
+        brightness_office.style.opacity = updated_brightness_office.toString()
+
+
+        let updated_brightness_parent_bedroom = this.state.brightness_parent_bedroom-value_to_increase
+        if(updated_brightness_parent_bedroom<=0){
+          updated_brightness_parent_bedroom=0
+        }
+        else if(updated_brightness_parent_bedroom>=1){
+          updated_brightness_parent_bedroom=1
+          let light_turn_off = document.getElementById("Light_parent bedroom")
+          light_turn_off.style.opacity = "0";
+        }
+        let brightness_parent_bedroom = document.getElementById("Brightness_parent bedroom")
+        brightness_parent_bedroom.style.opacity = updated_brightness_parent_bedroom.toString()
+
+
+        let updated_brightness_laundry_room = this.state.brightness_laundry_room-value_to_increase
+        if(updated_brightness_laundry_room<=0){
+          updated_brightness_laundry_room=0
+        }
+        else if(updated_brightness_laundry_room>=1){
+          updated_brightness_laundry_room=1
+          let light_turn_off = document.getElementById("Light_laundry room")
+          light_turn_off.style.opacity = "0";
+        }
+        let brightness_laundry_room = document.getElementById("Brightness_laundry room")
+        brightness_laundry_room.style.opacity = updated_brightness_laundry_room.toString()
+
+        this.setState({
+          brightness_bathroom : updated_brightness_bathroom,
+          brightness_children_bedroom : updated_brightness_children_bedroom,
+          brightness_dining_room : updated_brightness_dining_room,
+          brightness_kitchen : updated_brightness_kitchen,
+          brightness_living_room : updated_brightness_living_room,
+          brightness_office : updated_brightness_office,
+          brightness_parent_bedroom : updated_brightness_parent_bedroom,
+          brightness_laundry_room : updated_brightness_laundry_room
+        }, function (){
+          console.log("Brightness of every environment : ", this.state.brightness_bathroom, this.state.brightness_children_bedroom, this.state.brightness_dining_room, this.state.brightness_kitchen, this.state.brightness_living_room, this.state.brightness_office, this.state.brightness_parent_bedroom, this.state.brightness_laundry_room)
+        })
+      }
+    }
+  }
+
+  recognizePause(isPause){
+    if(macroDeviceList.includes("Television"))
+      if(isPause) {
+        let tv_pause = document.getElementById("Television_pause")
+        tv_pause.style.opacity = "1"
+      }
+      else{
+        let tv_pause = document.getElementById("Television_pause")
+        tv_pause.style.opacity = "0"
+      }
+    else{
+      console.log("There is not Television as device")
+    }
+  }
+
+  recognizeProgram(number_program){
+    console.log("In recognizeProgram")
+    if(macroDeviceList.includes("Washing machine")){
+      let number_washing = 1
+      if(number_program>3){
+        number_washing=3
+      }
+      else{
+        number_washing = number_program
+      }
+      console.log("second")
+      console.log("this.state.washing_program.toString() : ", this.state.washing_program.toString())
+      let old_program = document.getElementById("Washing_machine_program_"+this.state.washing_program.toString())
+      old_program.style.opacity = "0"
+      console.log("number_washing.toString() : ", number_washing.toString())
+      let new_program = document.getElementById("Washing_machine_program_"+number_washing.toString())
+      new_program.style.opacity = "1"
+      this.setState({
+        washing_program:number_washing
+      })
+    }
+    if(macroDeviceList.includes("Air conditioner")){
+      let number_air_conditioner = 1
+      if(number_program>2){
+        number_air_conditioner=2
+      }
+      else{
+        number_air_conditioner = number_program
+      }
+      let old_program = document.getElementById("Air_conditioner_program_"+this.state.air_conditioner_program.toString())
+      old_program.style.opacity = "0"
+      let new_program = document.getElementById("Air_conditioner_program_"+number_air_conditioner.toString())
+      new_program.style.opacity = "1"
+      this.setState({
+        air_conditioner_program:number_air_conditioner
+      })
     }
   }
 
@@ -614,7 +1608,6 @@ class App extends React.Component {
     })
   }
 
-
   checkInputsRecord(){
     const actionValue = this.action.value.trim();
     if(actionValue === ''){
@@ -639,6 +1632,7 @@ class App extends React.Component {
       return dataStringRecord;
     }
   }
+
   checkMacroInputsRecord(){
     const macroValue = this.macro.value.trim();
     if(macroValue === ''){
@@ -799,7 +1793,6 @@ class App extends React.Component {
     nameListOfGesture = checkList.concat(checkMacroList)
   }
 
-  
   macroCommand(){
     var dataStringRecord = this.checkMacroInputsRecord();
     if(typeof dataStringRecord!=='undefined'){
@@ -1074,7 +2067,9 @@ class App extends React.Component {
   }
 
   dynamicActionsList(event){
-    if(!event[0]){
+    // if(!event[0]){
+    console.log("this.state.actions.length1 : ", this.state.actions.length)
+    if(this.state.actions.length===0){
       for(let k=0;k<ActionsList.length;k++){
         ActionsList[k].disabled=false
       }
@@ -1091,10 +2086,10 @@ class App extends React.Component {
       }
 
       for(let i = 0; i<event.length; i++){
-        if(event[i].label==="Increase" || event[i].label==="Dicrease"){
+        if(event[i].label==="Increase" || event[i].label==="Decrease"){
           for(let j=0;j<DevicesList.length;j++){
             let label =DevicesList[j].label
-            if(label==="Micro-waves" || label==="Fan" ){
+            if(label==="Microwave" || label==="Fan" ){
               DevicesList[j].disabled=true
             }
           }
@@ -1102,7 +2097,7 @@ class App extends React.Component {
         if(event[i].label==="Pause" || event[i].label==="Play"){
           for(let j=0;j<DevicesList.length;j++){
             let label =DevicesList[j].label
-            if(label==="Computer" || label==="Micro-waves" || label==="Washing machine" || label==="Radio" || label==="Air Conditionner" || label==="Fan" ){
+            if(label==="Computer" || label==="Microwave" || label==="Washing machine" || label==="Radio" || label==="Air conditioner" || label==="Fan" ){
               DevicesList[j].disabled=true
             }
           }
@@ -1110,7 +2105,7 @@ class App extends React.Component {
         if(event[i].label==="Mute" ){
           for(let j=0;j<DevicesList.length;j++){
             let label =DevicesList[j].label
-            if(label==="Micro-waves" || label==="Washing machine" || label==="Air Conditionner" || label==="Fan" ){
+            if(label==="Micro-waves" || label==="Washing machine" || label==="Air conditioner" || label==="Fan" ){
               DevicesList[j].disabled=true
             }
           }
@@ -1118,7 +2113,7 @@ class App extends React.Component {
         if(event[i].label==="Next" ){
           for(let j=0;j<DevicesList.length;j++){
             let label =DevicesList[j].label
-            if(label==="Micro-waves" || label==="Computer" || label==="Fan" ){
+            if(label==="Microwave" || label==="Computer" || label==="Fan" ){
               DevicesList[j].disabled=true
             }
           }
@@ -1214,7 +2209,7 @@ class App extends React.Component {
             }
           }
         }
-        if(label==="Air Conditionner"){
+        if(label==="Air conditionner"){
           for(let i=0;i<EnvironmentList.length;i++){
             if(EnvironmentList[i].label!=="Children bedroom"){
               EnvironmentList[i].disabled=true
@@ -1391,6 +2386,7 @@ class App extends React.Component {
     var basicInstruction = [a,d,e,p]
     return basicInstruction;
   }
+
   composedMacrosInstructions(){
 
     let macro=[]
@@ -1453,23 +2449,29 @@ class App extends React.Component {
           <div className="box2">
             <h1 className={"h1"} style={{textAlign: "center"}}>Smart home</h1>
             <img className="overlay" style={{maxWidth:'100%'}} src={House} alt={"HOUSE"}/>
-            <img className="overlay" style={{opacity:"0"}} src={Air_conditioner} id="Air conditioner" alt={"Air_conditioner_cold"}/>
-            <img className="overlay" style={{opacity:"0"}} src={Air_conditioner_hot} id="Air_conditioner_hot" alt={"Air_conditioner_hot"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Air_conditioner_program_1} id="Air_conditioner_program_1" alt={"Air_conditioner_cold"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Air_conditioner_program_2} id="Air_conditioner_program_2" alt={"Air_conditioner_hot"}/>
             <img className="overlay" style={{opacity:"1"}} src={Brightness_kitchen} id="Brightness_kitchen" alt={"Brightness_kitchen"}/>
             <img className="overlay" style={{opacity:"1"}} src={Brightness_bathroom} id="Brightness_bathroom" alt={"Brightness_bathroom"}/>
             <img className="overlay" style={{opacity:"1"}} src={Brightness_children_bedroom} id="Brightness_children bedroom" alt={"Brightness_children_bedroom"}/>
-            <img className="overlay" style={{opacity:"1"}} src={Brightness_living_room} id="Brightness_living room" alt={"Brightness_livingroom"}/>
-            <img className="overlay" style={{opacity:"1"}} src={Brightness_dining_room} id="Brightness_dining room" alt={"Brightness_diningroom"}/>
+            <img className="overlay" style={{opacity:"1"}} src={Brightness_living_room} id="Brightness_living room" alt={"Brightness_living_room"}/>
+            <img className="overlay" style={{opacity:"1"}} src={Brightness_dining_room} id="Brightness_dining room" alt={"Brightness_dining_room"}/>
             <img className="overlay" style={{opacity:"1"}} src={Brightness_parent_bedroom} id="Brightness_parent bedroom" alt={"Brightness_parent_bedroom"}/>
-            <img className="overlay" style={{opacity:"1"}} src={Brightness_washing_room} id="Brightness_washing room" alt={"Brightness_washingroom"}/>
+            <img className="overlay" style={{opacity:"1"}} src={Brightness_laundry_room} id="Brightness_laundry room" alt={"Brightness_laundry_room"}/>
             <img className="overlay" style={{opacity:"1"}} src={Brightness_office} id="Brightness_office" alt={"Brightness_office"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Computer} id="Computer" alt={"Computer"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Computer_volume_0} id="Computer_volume_0" alt={"Computer_volume_0"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Computer_volume_1} id="Computer_volume_1" alt={"Computer_volume_1"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Computer_volume_2} id="Computer_volume_2" alt={"Computer_volume_2"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Computer_volume_3} id="Computer_volume_3" alt={"Computer_volume_3"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Computer_muted} id="Computer_muted" alt={"Computer_muted"}/>
             <img className="overlay" style={{opacity:"0"}} src={Fan} id="Fan" alt={"Fan"}/>
             <img className="overlay" style={{opacity:"0"}} src={Light_bathroom} id="Light_bathroom" alt={"Light_bathroom"}/>
             <img className="overlay" style={{opacity:"0"}} src={Light_children_bedroom} id="Light_children bedroom" alt={"Light_children_bedroom"}/>
-            <img className="overlay" style={{opacity:"0"}} src={Light_dining_room} id="Light_dining room" alt={"Light_diningroom"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Light_dining_room} id="Light_dining room" alt={"Light_dining_room"}/>
             <img className="overlay" style={{opacity:"0"}} src={Light_kitchen} id="Light_kitchen" alt={"Light_kitchen"}/>
-            <img className="overlay" style={{opacity:"0"}} src={Light_laundry_room} id="Light_laundry room" alt={"Light_laundryroom"}/>
-            <img className="overlay" style={{opacity:"0"}} src={Light_living_room} id="Light_living room" alt={"Light_livingroom"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Light_laundry_room} id="Light_laundry room" alt={"Light_laundry_room"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Light_living_room} id="Light_living room" alt={"Light_living_room"}/>
             <img className="overlay" style={{opacity:"0"}} src={Light_office} id="Light_office" alt={"Light_office"}/>
             <img className="overlay" style={{opacity:"0"}} src={Light_parent_bedroom} id="Light_parent bedroom" alt={"Light_parent_bedroom"}/>
             <img className="overlay" style={{opacity:"0"}} src={Microwave} id="Microwave" alt={"Microwave"}/>
@@ -1477,19 +2479,28 @@ class App extends React.Component {
             <img className="overlay" style={{opacity:"0"}} src={Radio_channel_1} id="Radio_channel_1" alt={"Radio_channel_1"}/>
             <img className="overlay" style={{opacity:"0"}} src={Radio_channel_2} id="Radio_channel_2" alt={"Radio_channel_2"}/>
             <img className="overlay" style={{opacity:"0"}} src={Radio_channel_3} id="Radio_channel_3" alt={"Radio_channel_3"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Radio_channel_4} id="Radio_channel_4" alt={"Radio_channel_4"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Radio_channel_5} id="Radio_channel_5" alt={"Radio_channel_5"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Radio_volume_0} id="Radio_volume_0" alt={"Radio_volume_0"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Radio_volume_1} id="Radio_volume_1" alt={"Radio_volume_1"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Radio_volume_2} id="Radio_volume_2" alt={"Radio_volume_2"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Radio_volume_3} id="Radio_volume_3" alt={"Radio_volume_3"}/>
             <img className="overlay" style={{opacity:"0"}} src={Radio_muted} id="Radio_muted" alt={"Radio_muted"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Television} id="Television_channel_1" alt={"Television"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Television_channel_2} id="Television_channel_2" alt={"Television_channel_2"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Television_channel_3} id="Television_channel_3" alt={"Television_channel_3"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Television_channel_4} id="Television_channel_4" alt={"Television_channel_4"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Television_channel_5} id="Television_channel_5" alt={"Television_channel_5"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Television_volume_0} id="Television_volume_0" alt={"Television_volume_0"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Television_volume_1} id="Television_volume_1" alt={"Television_volume_1"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Television_volume_2} id="Television_volume_2" alt={"Television_volume_2"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Television_volume_3} id="Television_volume_3" alt={"Television_volume_3"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Television_muted} id="Television_muted" alt={"Television_muted"}/>
+            <img className="overlay" style={{opacity:"0"}} src={Television_pause} id="Television_pause" alt={"Television_pause"}/>
             <img className="overlay" style={{opacity:"0"}} src={Washing_machine} id="Washing machine" alt={"Washing_machine"}/>
             <img className="overlay" style={{opacity:"0"}} src={Washing_machine_program_1} id="Washing_machine_program_1" alt={"Washing_machine_program_1"}/>
             <img className="overlay" style={{opacity:"0"}} src={Washing_machine_program_2} id="Washing_machine_program_2" alt={"Washing_machine_program_2"}/>
             <img className="overlay" style={{opacity:"0"}} src={Washing_machine_program_3} id="Washing_machine_program_3" alt={"Washing_machine_program_3"}/>
-            <img className="overlay" style={{opacity:"0"}} src={Computer} id="Computer" alt={"Computer"}/>
-            <img className="overlay" style={{opacity:"0"}} src={Television} id="Television" alt={"Television"}/>
-            <img className="overlay" style={{opacity:"0"}} src={Television_channel_2} id="Television_channel_2" alt={"Television_channel_2"}/>
-            <img className="overlay" style={{opacity:"0"}} src={Television_channel_3} id="Television_channel_3" alt={"Television_channel_3"}/>
-            <img className="overlay" style={{opacity:"0"}} src={Television_channel_4} id="Television_channel_4" alt={"Television_channel_4"}/>
-            <img className="overlay" style={{opacity:"0"}} src={Television_channel_5} id="Television_channel_4" alt={"Television_channel_4"}/>
-            <img className="overlay" style={{opacity:"0"}} src={Television_muted} id="Television_muted" alt={"Television_muted"}/>
-            <img className="overlay" style={{opacity:"0"}} src={Television_pause} id="Television_pause" alt={"Television_pause"}/>
           </div>     
         </div>
         <div className={"instructions"}>  Instruction : {this.showInstructions()}</div> 
@@ -1499,7 +2510,7 @@ class App extends React.Component {
             <div className={"time before next gesture"}>Timer : {this.fmt(this.state.count)}</div>
 
             <button className={"button"} onClick={this.recognize_canvas}>Recognize</button>
-            <button className={"button"} onClick={this.clear}>Clear</button>
+            <button className={"button"} onClick={this.clear}>Reset</button>
             <button className={"button"} onClick={this.add_instruction}>Add Instruction</button>
 
             <form className={"container"}>
@@ -1569,7 +2580,7 @@ class App extends React.Component {
                   valueRenderer={MacroRenderer}
                   hasSelectAll={false}/>
               </div>
-              <button  type="button" className={"button"} onClick={this.macroCommand}>Macro-Command</button>
+              <button  type="button" className={"button"} onClick={this.macroCommand}>Create Macro-Command</button>
             </form>
 
             <form >

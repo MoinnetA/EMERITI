@@ -1816,20 +1816,29 @@ class App extends React.Component {
             var i2=[]
             var i3=[]
             var i4=[]
-            for(let m in tab){
+            if(!checkList.includes(tab[0].toUpperCase())){
+
+              var array = []
+              for(var it in tab){
+                if(tab[it]!=='-'){
+                  array=array.concat(tab[it])
+                }
+              }
+              tab=array
+              console.log("tab 000 ",tab)
               var check=false
               if(!i1[0] && !check && typeof this.state.instructions[0]!== 'undefined'){
                 i1=this.state.instructions[0].value
               }
               else if(!i1[0] && !check && typeof this.state.instructions[0]=== 'undefined'){
-                i1=tab[m]
+                i1=tab
                 check=true
               }
               if(!i2[0] && !check && typeof this.state.instructions[1]!== 'undefined'){
                 i2=this.state.instructions[1].value
               }
               else if(!i2[0] && !check && typeof this.state.instructions[1]=== 'undefined'){
-                i2=tab[m]
+                i2=tab
                 check=true
               }
 
@@ -1837,7 +1846,7 @@ class App extends React.Component {
                 i3=this.state.instructions[2].value
               }
               else if(!i3[0] && !check && typeof this.state.instructions[2]=== 'undefined'){
-                i3=tab[m]
+                i3=tab
                 check=true
               }
 
@@ -1845,12 +1854,52 @@ class App extends React.Component {
                 i4=this.state.instructions[3].value
               }
               else if(!i4[0] && !check && typeof this.state.instructions[3]=== 'undefined'){
-                i4=tab[m]
+                i4=tab
+              }
+
+            }
+            else{
+              console.log("tab ",tab)
+              for(let m in tab){
+                check=false
+                if(!i1[0] && !check && typeof this.state.instructions[0]!== 'undefined'){
+                  i1=this.state.instructions[0].value
+                }
+                else if(!i1[0] && !check && typeof this.state.instructions[0]=== 'undefined'){
+                  i1=tab[m]
+                  check=true
+                }
+                if(!i2[0] && !check && typeof this.state.instructions[1]!== 'undefined'){
+                  i2=this.state.instructions[1].value
+                }
+                else if(!i2[0] && !check && typeof this.state.instructions[1]=== 'undefined'){
+                  i2=tab[m]
+                  check=true
+                }
+  
+                if(!i3[0] && !check && typeof this.state.instructions[2]!== 'undefined'){
+                  i3=this.state.instructions[2].value
+                }
+                else if(!i3[0] && !check && typeof this.state.instructions[2]=== 'undefined'){
+                  i3=tab[m]
+                  check=true
+                }
+  
+                if(!i4[0] && !check && typeof this.state.instructions[3]!== 'undefined'){
+                  i4=this.state.instructions[3].value
+                }
+                else if(!i4[0] && !check && typeof this.state.instructions[3]=== 'undefined'){
+                  i4=tab[m]
+                }
+  
               }
 
             }
 
-
+            console.log('i1 ',i1)
+            console.log('i2 ',i2)
+            console.log('i3 ',i3)
+            console.log('i4 ',i4)
             const table = document.getElementById("TableM")
             const item = {nameGesture: actionValue.toUpperCase(), instruction1: i1,instruction2: i2,instruction3: i3,instruction4: i4}
             let row = table.insertRow();

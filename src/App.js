@@ -494,7 +494,6 @@ class App extends React.Component {
           console.log("You must have an Action and a Device")
         }
         if(isNew){
-          console.log("lqidjfhgfjgh")
           macroActionList=[ActionList]
           macroDeviceList=[]
           macroEnvironmentList=[]
@@ -1988,14 +1987,28 @@ class App extends React.Component {
               }
             }
             var isCorrect=true
-            if(checkList.includes(i1.toUpperCase())){
+            console.log(typeof i1 === "string" )
+            console.log(i1 )
+            if(typeof i1 === "string" && checkList.includes(i1.toUpperCase())){
               var recognizedMacro= checkListAssign[i1.toUpperCase()]
               if(recognizedMacro[0]==='-' || recognizedMacro[1]==='-'){
                 isCorrect=false
               }
             }
-            if(checkList.includes(i2.toUpperCase())){
+            if(typeof i2 === "string" && checkList.includes(i2.toUpperCase())){
               recognizedMacro= checkListAssign[i2.toUpperCase()]
+              if(recognizedMacro[0]==='-' || recognizedMacro[1]==='-'){
+                isCorrect=false
+              }
+            }
+            if(typeof i3 === "string" && checkList.includes(i3.toUpperCase())){
+              recognizedMacro= checkListAssign[i3.toUpperCase()]
+              if(recognizedMacro[0]==='-' || recognizedMacro[1]==='-'){
+                isCorrect=false
+              }
+            }
+            if(typeof i4 === "string" && checkList.includes(i4.toUpperCase())){
+              recognizedMacro= checkListAssign[i4.toUpperCase()]
               if(recognizedMacro[0]==='-' || recognizedMacro[1]==='-'){
                 isCorrect=false
               }

@@ -360,6 +360,7 @@ class App extends React.Component {
     });
     this.gestureHandler.addListener('gesture', (event) => {
       numberOfGestures-=1
+      console.log("number ",numberOfGestures)
       var isNew=false
       if(numberOfGestures===0){
         isNew=true
@@ -370,18 +371,42 @@ class App extends React.Component {
         let macroList = checkListAssign[event.gesture.name]
         let action = macroList[0].split(', ')
         if(action[0]!=="-"){
-          console.log("action[0] : ", action[0])
-          console.log("action : ", action)
-          console.log("macroActionList : ", macroActionList)
           macroActionList = macroActionList.concat(action)
           console.log("macroActionList1 : ", macroActionList)
           if(macroActionList.length>1){
-            console.log("macroActionList2 : ", macroActionList)
-            ActionList=macroActionList[1]
-            macroActionList=[macroActionList[0]]
+            if(macroActionList[1]){
+              macroActionList=[macroActionList[1]]
+              macroDeviceList=[]
+              this.setState({
+                recognizedList:this.state.recognizedList.concat("-")
+              })
+            }
             isNew=true
           }
-          console.log("macroActionList3 : ", macroActionList)
+          else if(isNew){
+            var recognizList=[]
+            for(let len=this.state.recognizedList.length-1;this.state.recognizedList[len]!=='-' && len>=0;len--){
+              recognizList=recognizList.concat(this.state.recognizedList[len])
+            }
+
+            var OldMacro= macroActionList.concat(macroDeviceList,macroEnvironmentList,macroParameterList)
+            for(var i in OldMacro){
+              if(recognizList.length>0 && !recognizList[i].includes(OldMacro[i])){
+                this.setState({
+                  recognizedList:this.state.recognizedList.concat(OldMacro[i])
+                })
+              }
+            }
+            if(macroActionList[1]){
+              macroActionList=[macroActionList[1]]
+              this.setState({
+                recognizedList:this.state.recognizedList.concat("-")
+              })
+            }
+            macroDeviceList=[]
+            macroEnvironmentList=[]
+            macroParameterList=[]
+          }
         }
         if(macroList[1]!=='-'){
           let device = macroList[1].split(', ')
@@ -403,17 +428,15 @@ class App extends React.Component {
         console.log("macroEnvironmentList : ", macroEnvironmentList)
         console.log("macroParameterList : ", macroParameterList)
 
-        if(!this.state.recognizedList.includes(macroActionList[0])){
+        if(!macroActionList.includes(macroActionList[1])){
           this.setState({
             recognizedList: this.state.recognizedList.concat(macroActionList[0])
           })
         }
         for(let i in macroDeviceList){
-          if(!this.state.recognizedList.includes(macroDeviceList[i])){
             this.setState({
               recognizedList: this.state.recognizedList.concat(macroDeviceList[i])
             })
-          }
         }
         for(let j in macroEnvironmentList){
           if(!this.state.recognizedList.includes(macroEnvironmentList[j])){
@@ -437,7 +460,6 @@ class App extends React.Component {
             timer = macroParameterList[macroParameterList.indexOf("Time") + 1]*1000
           }
           // setTimeout(() => {
-            console.log("macroActionList setTimeout : ", macroActionList)
             for(const macro_action of macroActionList){
               console.log("macro_action : ", macro_action)
               if(macro_action==="Turn On"){
@@ -689,7 +711,6 @@ class App extends React.Component {
   }
 
   recognizeDevice(){
-    console.log("In recognizeDevice")
     for(let i = 0; i<macroDeviceList.length; i++){
       if(macroDeviceList[i]==="Light"){
         if(macroEnvironmentList.length !== 0){
@@ -2653,10 +2674,10 @@ class App extends React.Component {
     var list =""
 
     for(const recognized in this.state.recognizedList){
-      if(recognized===(this.state.recognizedList.length).toString()){
+      if(recognized===(this.state.recognizedList.length-1).toString() && this.state.recognizedList[recognized]==='-'){
         break;
       }
-      if(this.state.recognizedList[recognized]==='-'  ){
+      if(this.state.recognizedList[recognized]==='-' ){
         list+="and "
       }
       else{

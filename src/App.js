@@ -192,6 +192,7 @@ class App extends React.Component {
     this.ctx1 = createRef(null);
     // Bind
     this.onGesture = this.onGesture.bind(this);
+    this.display = this.display.bind(this);
     this.draw = this.draw.bind(this);
     this.draw1 = this.draw1.bind(this);
     this.recognize_canvas = this.recognize_canvas.bind(this);
@@ -212,7 +213,7 @@ class App extends React.Component {
     this.clearDataSet = this.clearDataSet.bind(this);
     this.deleteGesture = this.deleteGesture.bind(this);
     this.deleteMacroGesture = this.deleteMacroGesture.bind(this);
-    this.macroCommand = this.macroCommand.bind(this);
+    //this.macroCommand = this.macroCommand.bind(this);
     this.ModifyActionsList = this.ModifyActionsList.bind(this);
     this.ModifyDevicesList = this.ModifyDevicesList.bind(this);
     this.ModifyEnvironmentList = this.ModifyEnvironmentList.bind(this);
@@ -224,6 +225,7 @@ class App extends React.Component {
     this.toggleTable = this.toggleTable.bind(this);
     this.toggleCITable = this.toggleCITable.bind(this);
     this.toggleNumber = this.toggleNumber.bind(this);
+    this.toggleCanvasgesture = this.toggleCanvasgesture.bind(this);
     this.composedInstructions = this.composedInstructions.bind(this);
     this.showInstructions = this.showInstructions.bind(this);
     this.showRecognizedInstructions = this.showRecognizedInstructions.bind(this);
@@ -303,6 +305,10 @@ class App extends React.Component {
     else{
       checkMacroList = checkMacroListData
     }
+
+    for(let i=0;i<checkMacroList.length;i++) {
+      MacrosList = MacrosList.concat({label: checkMacroList[i], value: i})
+    }
   }
 
   componentDidMount() {
@@ -346,12 +352,17 @@ class App extends React.Component {
     var strokes=jsonData.paths[0].strokes
     for (var i in strokes){
       var points=strokes[i].points
+      this.ctx1.current.stroke();
+      this.ctx1.current.beginPath();
+      this.ctx1.current.strokeStyle = "black";
+      this.ctx1.current.lineWidth = 7;
+      this.ctx1.current.lineJoin = 'round';
       for(var j in points){
-        this.ctx1.current.lineTo(points[j].x-300, points[j].y-100);
+        this.ctx1.current.lineTo(points[j].x, points[j].y);
       }
 
+      this.ctx1.current.stroke();
     }
-    this.ctx1.current.stroke();
     });
     this.gestureHandler.addListener('gesture', (event) => {
       numberOfGestures-=1
@@ -364,20 +375,54 @@ class App extends React.Component {
         console.log("NOW, IT'S %s", event.gesture.name)
         let macroList = checkListAssign[event.gesture.name]
         let action = macroList[0].split(', ')
+        var newaction
         if(action[0]!=="-"){
-          console.log("action[0] : ", action[0])
-          console.log("action : ", action)
-          console.log("macroActionList : ", macroActionList)
           macroActionList = macroActionList.concat(action)
-          console.log("macroActionList1 : ", macroActionList)
           if(macroActionList.length>1){
-            console.log("macroActionList2 : ", macroActionList)
-            ActionList=macroActionList[1]
-            macroActionList=[macroActionList[0]]
-            isNew=true
+            if(macroActionList[1]){
+              newaction = macroActionList[1]
+              macroActionList = [macroActionList[0]]
+
+              this.display()
+
+              macroActionList=[newaction]
+              macroDeviceList=[]
+              macroEnvironmentList=[]
+              macroParameterList=[]
+              this.setState({
+                recognizedList:this.state.recognizedList.concat("-")
+              })
+              isNew=true
+            }
           }
-          console.log("macroActionList3 : ", macroActionList)
+          else if(isNew){
+            var recognizList=[]
+            for(let len=this.state.recognizedList.length;this.state.recognizedList[len]!=='-' && len>=0;len--){
+              recognizList=recognizList.concat(this.state.recognizedList[len])
+            }
+
+            var OldMacro= macroActionList.concat(macroDeviceList,macroEnvironmentList,macroParameterList)
+            for(var i in OldMacro){
+              if(recognizList===[]){
+                if(!recognizList[i].includes(OldMacro[i])){
+                  this.setState({
+                    recognizedList:this.state.recognizedList.concat(OldMacro[i])
+                  })
+                }
+              }
+            }
+            if(macroActionList[1]){
+              macroActionList=[macroActionList[1]]
+              this.setState({
+                recognizedList:this.state.recognizedList.concat("-")
+              })
+            }
+            macroDeviceList=[]
+            macroEnvironmentList=[]
+            macroParameterList=[]
+          }
         }
+
         if(macroList[1]!=='-'){
           let device = macroList[1].split(', ')
           macroDeviceList = macroDeviceList.concat(device)
@@ -398,32 +443,44 @@ class App extends React.Component {
         console.log("macroEnvironmentList : ", macroEnvironmentList)
         console.log("macroParameterList : ", macroParameterList)
 
-        if(!this.state.recognizedList.includes(macroActionList[0])){
+        recognizList=[]
+        for(let len=this.state.recognizedList.length;this.state.recognizedList[len]!=='-' && len>=0;len--){
+          recognizList=recognizList.concat(this.state.recognizedList[len])
+        }
+        console.log("this.state.recognizedList1",this.state.recognizedList)
+        if(typeof recognizList==='undefined'){
           this.setState({
             recognizedList: this.state.recognizedList.concat(macroActionList[0])
           })
         }
+        else if(!recognizList.includes(macroActionList[0])){
+          this.setState({
+            recognizedList: this.state.recognizedList.concat(macroActionList[0])
+          })
+        }
+
         for(let i in macroDeviceList){
-          if(!this.state.recognizedList.includes(macroDeviceList[i])){
+          if(!recognizList.includes(macroDeviceList[i])){
             this.setState({
               recognizedList: this.state.recognizedList.concat(macroDeviceList[i])
             })
           }
         }
         for(let j in macroEnvironmentList){
-          if(!this.state.recognizedList.includes(macroEnvironmentList[j])){
+          if(!recognizList.includes(macroEnvironmentList[j])){
             this.setState({
               recognizedList: this.state.recognizedList.concat(macroEnvironmentList[j])
             })
           }
         }
         for(let k in macroParameterList){
-          if(!this.state.recognizedList.includes(macroParameterList[k])){
+          if(!recognizList.includes(macroParameterList[k])){
             this.setState({
               recognizedList: this.state.recognizedList.concat(macroParameterList[k])
             })
           }
         }
+        console.log("this.state.recognizedList2",this.state.recognizedList)
 
         if(isNew && macroActionList.length>0 && macroDeviceList.length>0){
           console.log("macroActionList is New : ", macroActionList)
@@ -432,101 +489,7 @@ class App extends React.Component {
             timer = macroParameterList[macroParameterList.indexOf("Time") + 1]*1000
           }
           // setTimeout(() => {
-            console.log("macroActionList setTimeout : ", macroActionList)
-            for(const macro_action of macroActionList){
-              console.log("macro_action : ", macro_action)
-              if(macro_action==="Turn On"){
-                this.setState({
-                  turn_on: "1"
-                }, function (){
-                  this.recognizeDevice();
-                })
-              }
-              else if(macro_action==="Turn Off"){
-                this.setState({
-                  turn_on: "0"
-                }, function (){
-                  this.recognizeDevice();
-                })
-              }
-              else if(macro_action==="Mute"){
-                this.recognizeMute()
-              }
-              else if(macro_action==="Unmute"){
-                this.recognizeUnmute()
-              }
-              else if(macro_action==="Next"){
-                this.recognizeNext()
-              }
-              else if(macro_action==="Pause"){
-                this.recognizePause(true);
-              }
-              else if(macro_action==="Play"){
-                this.recognizePause(false);
-              }
-              else if(macro_action==="Increase"){
-                if(macroParameterList.includes("Volume")){
-                  let intensity_volume = macroParameterList[macroParameterList.indexOf("Volume") + 1]
-                  this.recognizeIncreaseVolume(parseInt(intensity_volume))
-                }
-                else if(macroParameterList.includes("Brightness")){
-                  let intensity_brightness = macroParameterList[macroParameterList.indexOf("Brightness") + 1]
-                  console.log("intensity_brightness : ", intensity_brightness)
-                  let decimal_brightness = ((intensity_brightness / 10).toFixed(1))
-                  console.log("decimal_brightness : ", decimal_brightness)
-                  this.recognizeIncreaseBrightness(decimal_brightness)
-                }
-                else{
-                  console.log("No parameter to increase !")
-                }
-              }
-              else if(macro_action==="Decrease"){
-                if(macroParameterList.includes("Volume")){
-                  let intensity_volume = macroParameterList[macroParameterList.indexOf("Volume") + 1]
-                  this.recognizeDecreaseVolume(parseInt(intensity_volume))
-                }
-                else if(macroParameterList.includes("Brightness")){
-                  let intensity_brightness = macroParameterList[macroParameterList.indexOf("Brightness") + 1]
-                  console.log("intensity_brightness : ", intensity_brightness)
-                  let decimal_brightness = ((intensity_brightness / 10).toFixed(1))
-                  console.log("decimal_brightness : ", decimal_brightness)
-                  this.recognizeIncreaseBrightness(-decimal_brightness)
-                }
-                else{
-                  console.log("No parameter to decrease !")
-                }
-              }
-              // else if(macro_action==="Turn On" || macro_action==="Turn Off"){
-              //   this.recognizeDevice()
-              // }
-              if(macroParameterList.includes("Brightness") && (macro_action==="Turn On" || macro_action==="Turn Off")){
-                let intensity_brightness = macroParameterList[macroParameterList.indexOf("Brightness") + 1]
-                if(intensity_brightness>10){
-                  console.log("Intensity of brightness too high ! Should be between 0 and 10")
-                }
-                else {
-                  let decimal_brightness = (1 - (intensity_brightness / 10).toFixed(1)).toString()
-                  this.recognizeBrightness(decimal_brightness)
-                }
-              }
-              if(macroParameterList.includes("Volume") && (macro_action==="Turn On" || macro_action==="Turn Off")){
-                let intensity_volume = macroParameterList[macroParameterList.indexOf("Volume") + 1]
-                if(intensity_volume>3){
-                  console.log("Volume too high ! Should be between 0 and 3")
-                }
-                else {
-                  this.recognizeVolume(intensity_volume)
-                }
-              }
-              if(macroParameterList.includes("Program")){
-                let number_program = macroParameterList[macroParameterList.indexOf("Program") + 1]
-                this.recognizeProgram(number_program)
-              }
-              if(macroParameterList.includes("Channel")){
-                let number_channel = macroParameterList[macroParameterList.indexOf("Channel") + 1]
-                this.recognizeChannel(number_channel)
-              }
-            }
+            this.display()
           // }, timer);
         }
         else{
@@ -685,6 +648,107 @@ class App extends React.Component {
         this.setState({ name: '/', type: '/', image: '' });
       }
     }, 100);
+  }
+
+  display(){
+
+  // setTimeout(() => {
+    console.log("macroActionList setTimeout : ", macroActionList)
+    for(const macro_action of macroActionList){
+      console.log("macro_action : ", macro_action)
+      if(macro_action==="Turn On"){
+        this.setState({
+          turn_on: "1"
+        }, function (){
+          this.recognizeDevice();
+        })
+      }
+      else if(macro_action==="Turn Off"){
+        this.setState({
+          turn_on: "0"
+        }, function (){
+          this.recognizeDevice();
+        })
+      }
+      else if(macro_action==="Mute"){
+        this.recognizeMute()
+      }
+      else if(macro_action==="Unmute"){
+        this.recognizeUnmute()
+      }
+      else if(macro_action==="Next"){
+        this.recognizeNext()
+      }
+      else if(macro_action==="Pause"){
+        this.recognizePause(true);
+      }
+      else if(macro_action==="Play"){
+        this.recognizePause(false);
+      }
+      else if(macro_action==="Increase"){
+        if(macroParameterList.includes("Volume")){
+          let intensity_volume = macroParameterList[macroParameterList.indexOf("Volume") + 1]
+          this.recognizeIncreaseVolume(parseInt(intensity_volume))
+        }
+        else if(macroParameterList.includes("Brightness")){
+          let intensity_brightness = macroParameterList[macroParameterList.indexOf("Brightness") + 1]
+          console.log("intensity_brightness : ", intensity_brightness)
+          let decimal_brightness = ((intensity_brightness / 10).toFixed(1))
+          console.log("decimal_brightness : ", decimal_brightness)
+          this.recognizeIncreaseBrightness(decimal_brightness)
+        }
+        else{
+          console.log("No parameter to increase !")
+        }
+      }
+      else if(macro_action==="Decrease"){
+        if(macroParameterList.includes("Volume")){
+          let intensity_volume = macroParameterList[macroParameterList.indexOf("Volume") + 1]
+          this.recognizeDecreaseVolume(parseInt(intensity_volume))
+        }
+        else if(macroParameterList.includes("Brightness")){
+          let intensity_brightness = macroParameterList[macroParameterList.indexOf("Brightness") + 1]
+          console.log("intensity_brightness : ", intensity_brightness)
+          let decimal_brightness = ((intensity_brightness / 10).toFixed(1))
+          console.log("decimal_brightness : ", decimal_brightness)
+          this.recognizeIncreaseBrightness(-decimal_brightness)
+        }
+        else{
+          console.log("No parameter to decrease !")
+        }
+      }
+      // else if(macro_action==="Turn On" || macro_action==="Turn Off"){
+      //   this.recognizeDevice()
+      // }
+      if(macroParameterList.includes("Brightness") && (macro_action==="Turn On" || macro_action==="Turn Off")){
+        let intensity_brightness = macroParameterList[macroParameterList.indexOf("Brightness") + 1]
+        if(intensity_brightness>10){
+          console.log("Intensity of brightness too high ! Should be between 0 and 10")
+        }
+        else {
+          let decimal_brightness = (1 - (intensity_brightness / 10).toFixed(1)).toString()
+          this.recognizeBrightness(decimal_brightness)
+        }
+      }
+      if(macroParameterList.includes("Volume") && (macro_action==="Turn On" || macro_action==="Turn Off")){
+        let intensity_volume = macroParameterList[macroParameterList.indexOf("Volume") + 1]
+        if(intensity_volume>3){
+          console.log("Volume too high ! Should be between 0 and 3")
+        }
+        else {
+          this.recognizeVolume(intensity_volume)
+        }
+      }
+      if(macroParameterList.includes("Program")){
+        let number_program = macroParameterList[macroParameterList.indexOf("Program") + 1]
+        this.recognizeProgram(number_program)
+      }
+      if(macroParameterList.includes("Channel")){
+        let number_channel = macroParameterList[macroParameterList.indexOf("Channel") + 1]
+        this.recognizeChannel(number_channel)
+      }
+    }
+// }, timer);
   }
 
   recognizeDevice(){
@@ -1713,6 +1777,8 @@ class App extends React.Component {
     else{
       this.gestureHandler.drawGesture(drawGesture)
     }
+
+    this.ctx1.current.clearRect(0, 0, this.ctx1.current.canvas.width, this.ctx1.current.canvas.height)
   }
 
   recognize_canvas(){
@@ -1850,20 +1916,29 @@ class App extends React.Component {
             var i2=[]
             var i3=[]
             var i4=[]
-            for(let m in tab){
+            if(!checkList.includes(tab[0].toUpperCase())){
+
+              var array = []
+              for(var it in tab){
+                if(tab[it]!=='-'){
+                  array=array.concat(tab[it])
+                }
+              }
+              tab=array
+              console.log("tab 000 ",tab)
               var check=false
               if(!i1[0] && !check && typeof this.state.instructions[0]!== 'undefined'){
                 i1=this.state.instructions[0].value
               }
               else if(!i1[0] && !check && typeof this.state.instructions[0]=== 'undefined'){
-                i1=tab[m]
+                i1=tab
                 check=true
               }
               if(!i2[0] && !check && typeof this.state.instructions[1]!== 'undefined'){
                 i2=this.state.instructions[1].value
               }
               else if(!i2[0] && !check && typeof this.state.instructions[1]=== 'undefined'){
-                i2=tab[m]
+                i2=tab
                 check=true
               }
 
@@ -1871,7 +1946,7 @@ class App extends React.Component {
                 i3=this.state.instructions[2].value
               }
               else if(!i3[0] && !check && typeof this.state.instructions[2]=== 'undefined'){
-                i3=tab[m]
+                i3=tab
                 check=true
               }
 
@@ -1879,11 +1954,47 @@ class App extends React.Component {
                 i4=this.state.instructions[3].value
               }
               else if(!i4[0] && !check && typeof this.state.instructions[3]=== 'undefined'){
-                i4=tab[m]
+                i4=tab
               }
 
             }
+            else{
+              console.log("tab ",tab)
+              for(let m in tab){
+                check=false
+                if(!i1[0] && !check && typeof this.state.instructions[0]!== 'undefined'){
+                  i1=this.state.instructions[0].value
+                }
+                else if(!i1[0] && !check && typeof this.state.instructions[0]=== 'undefined'){
+                  i1=tab[m]
+                  check=true
+                }
+                if(!i2[0] && !check && typeof this.state.instructions[1]!== 'undefined'){
+                  i2=this.state.instructions[1].value
+                }
+                else if(!i2[0] && !check && typeof this.state.instructions[1]=== 'undefined'){
+                  i2=tab[m]
+                  check=true
+                }
 
+                if(!i3[0] && !check && typeof this.state.instructions[2]!== 'undefined'){
+                  i3=this.state.instructions[2].value
+                }
+                else if(!i3[0] && !check && typeof this.state.instructions[2]=== 'undefined'){
+                  i3=tab[m]
+                  check=true
+                }
+
+                if(!i4[0] && !check && typeof this.state.instructions[3]!== 'undefined'){
+                  i4=this.state.instructions[3].value
+                }
+                else if(!i4[0] && !check && typeof this.state.instructions[3]=== 'undefined'){
+                  i4=tab[m]
+                }
+
+              }
+
+            }
 
             const table = document.getElementById("TableM")
             const item = {nameGesture: actionValue.toUpperCase(), instruction1: i1,instruction2: i2,instruction3: i3,instruction4: i4}
@@ -1906,11 +2017,8 @@ class App extends React.Component {
             else{
               instruction2.innerHTML = item.instruction2;
             }
-            console.log(i3)
-            console.log(i3.length===0)
             if(bool){
               if(i3.length===0){
-                console.log(bool)
                 instruction3.innerHTML = '-';
                 instruction4.innerHTML = '-';
                 bool=false
@@ -1935,6 +2043,7 @@ class App extends React.Component {
             console.log("checkMacroListAssign in record :", checkMacroListAssign)
             console.log("checkMacroList in record :", checkMacroList)
             this.setMacroData()
+            MacrosList=MacrosList.concat({label:actionValue.toUpperCase(),value:checkMacroList.length})
         }
       }
     }
@@ -1963,7 +2072,7 @@ class App extends React.Component {
     nameListOfGesture = checkList.concat(checkMacroList)
   }
 
-  macroCommand(){
+  /*macroCommand(){
     var dataStringRecord = this.checkMacroInputsRecord();
     if(typeof dataStringRecord!=='undefined'){
       const macroValue = this.macro.value.trim();
@@ -2052,7 +2161,7 @@ class App extends React.Component {
       console.log("No Data")
     }
     
-  }
+  }*/
 
   clear(){
     this.ctx.current.clearRect(0, 0, this.ctx.current.canvas.width, this.ctx.current.canvas.height)
@@ -2595,6 +2704,14 @@ class App extends React.Component {
       element.style.display = "none";
     }
   }
+  toggleCanvasgesture(){
+    var element= document.getElementById("Canvasgesture")
+    if (element.style.display === "none") {
+      element.style.display = "block";
+    } else {
+      element.style.display = "none";
+    }
+  }
 
   toggleNumber(){
     var element= document.getElementById("Numbers")
@@ -2768,10 +2885,10 @@ class App extends React.Component {
     var list =""
 
     for(const recognized in this.state.recognizedList){
-      if(recognized===(this.state.recognizedList.length).toString()){
+      if(recognized===(this.state.recognizedList.length-1).toString() && this.state.recognizedList[recognized]==='-'){
         break;
       }
-      if(this.state.recognizedList[recognized]==='-'  ){
+      if(this.state.recognizedList[recognized]==='-'){
         list+="and "
       }
       else{
@@ -2920,12 +3037,12 @@ class App extends React.Component {
             </form>
 
             <form className={"container"}>
-              <div className={"box"}>
+              {/* <div className={"box"}>
                 <label className="custom-field one">
                   <input className={"textArea"} type="text" placeholder=" " id="macro"/>
                   <span className="placeholder">Name of the composed instruction</span>
                 </label>
-              </div>
+              </div> */}
               <div className={"list"}>
                 <MultiSelect options={MacrosList}
                   value={this.state.macros}
@@ -2935,21 +3052,27 @@ class App extends React.Component {
                   valueRenderer={MacroRenderer}
                   hasSelectAll={false}/>
               </div>
-              <button  type="button" className={"button"} onClick={this.macroCommand}>Create Macro-Command</button>
+              {/* <button  type="button" className={"button"} onClick={this.macroCommand}>Create Macro-Command</button> */}
             </form>
-            <canvas id="myCanvas1" ref={this.canvasRef1}
-              style={{
-                border: "1px solid #000"}}
-                width={500}
-                height={500}>
-
-            </canvas>
-
-            <label className="custom-field one">
-              <input className={"textArea"} type="text" placeholder=" " id="drawGesture"/>
-              <span className="placeholder">Name of the gesture</span>
-            </label>
-            <button type="button" className={"button"} onClick={this.draw1}>draw</button>
+            <div className="container">
+              <div className="box2">
+                <button type="button" className={"triangle-down"} onClick={this.toggleCanvasgesture}></button>
+                <h1>Draw a gesture</h1>
+                <div id="Canvasgesture">
+                  <label className="custom-field one">
+                    <input className={"textArea"} type="text" placeholder=" " id="drawGesture"/>
+                    <span className="placeholder">Name of the gesture</span>
+                  </label>
+                  <button type="button" className={"button"} onClick={this.draw1}>draw</button>
+                  <canvas id="myCanvas1" ref={this.canvasRef1}
+                    style={{
+                      border: "1px solid #000"}}
+                      width={500}
+                      height={500}>
+                  </canvas>
+                </div>
+              </div>
+            </div>
             <form >
               <div className="container">
                 <div className="box2">

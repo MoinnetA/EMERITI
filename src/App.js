@@ -375,17 +375,16 @@ class App extends React.Component {
         console.log("NOW, IT'S %s", event.gesture.name)
         let macroList = checkListAssign[event.gesture.name]
         let action = macroList[0].split(', ')
-        var newaction
         if(action[0]!=="-"){
           macroActionList = macroActionList.concat(action)
           if(macroActionList.length>1){
             if(macroActionList[1]){
-              newaction = macroActionList[1]
+              ActionList = macroActionList[1]              
               macroActionList = [macroActionList[0]]
 
               this.display()
 
-              macroActionList=[newaction]
+              macroActionList=[ActionList]              
               macroDeviceList=[]
               macroEnvironmentList=[]
               macroParameterList=[]
@@ -496,13 +495,11 @@ class App extends React.Component {
           console.log("You must have an Action and a Device")
         }
         if(isNew){
+          console.log("lqidjfhgfjgh")
           macroActionList=[ActionList]
           macroDeviceList=[]
           macroEnvironmentList=[]
           macroParameterList=[]
-          this.setState({
-            recognizedList: this.state.recognizedList.concat('-')
-          })
         }
       }
       else if(checkMacroListAssign.hasOwnProperty(event.gesture.name)){
@@ -1757,8 +1754,8 @@ class App extends React.Component {
         "t": Date.now(),
       };
       tabFinal[stroke_id].push(objectCoord);
-      this.ctx.current.moveTo(this.state.lastPosition.x-10, this.state.lastPosition.y-67);
-      this.ctx.current.lineTo(x-10, y-67);
+      this.ctx.current.moveTo(this.state.lastPosition.x-10, this.state.lastPosition.y-120);
+      this.ctx.current.lineTo(x-10, y-120);
       this.ctx.current.closePath();
       this.ctx.current.stroke();
       this.setState({

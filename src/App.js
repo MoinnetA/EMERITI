@@ -306,7 +306,7 @@ class App extends React.Component {
     }
 
     for(let i=0;i<checkMacroList.length;i++) {
-      MacrosList = MacrosList.concat({label: checkMacroList[i], value: i})
+      MacrosList = MacrosList.concat({label: checkMacroList[i], value: checkList+i})
     }
   }
 
@@ -1953,7 +1953,6 @@ class App extends React.Component {
 
             }
             else{
-              console.log("tab ",tab)
               for(let m in tab){
                 check=false
                 if(!i1[0] && !check && typeof this.state.instructions[0]!== 'undefined'){
@@ -1987,57 +1986,73 @@ class App extends React.Component {
                 }
 
               }
-
             }
-
-            const table = document.getElementById("TableM")
-            const item = {nameGesture: actionValue.toUpperCase(), instruction1: i1,instruction2: i2,instruction3: i3,instruction4: i4}
-            let row = table.insertRow();
-            let nameGesture = row.insertCell(0);
-            nameGesture.innerHTML = item.nameGesture;
-            let instruction1 = row.insertCell(1);
-            instruction1.innerHTML = item.instruction1;
-            let instruction2 = row.insertCell(2);
-            let instruction3 = row.insertCell(3);
-            let instruction4 = row.insertCell(4);
-            var bool = true
-
-            if(i2.length===0){
-              instruction2.innerHTML = '-';
-              instruction3.innerHTML = '-';
-              instruction4.innerHTML = '-';
-              bool=false
+            var isCorrect=true
+            if(checkList.includes(i1.toUpperCase())){
+              var recognizedMacro= checkListAssign[i1.toUpperCase()]
+              if(recognizedMacro[0]==='-' || recognizedMacro[1]==='-'){
+                isCorrect=false
+              }
             }
-            else{
-              instruction2.innerHTML = item.instruction2;
+            if(checkList.includes(i2.toUpperCase())){
+              recognizedMacro= checkListAssign[i2.toUpperCase()]
+              if(recognizedMacro[0]==='-' || recognizedMacro[1]==='-'){
+                isCorrect=false
+              }
             }
-            if(bool){
-              if(i3.length===0){
+            if(isCorrect){
+              const table = document.getElementById("TableM")
+              const item = {nameGesture: actionValue.toUpperCase(), instruction1: i1,instruction2: i2,instruction3: i3,instruction4: i4}
+              let row = table.insertRow();
+              let nameGesture = row.insertCell(0);
+              nameGesture.innerHTML = item.nameGesture;
+              let instruction1 = row.insertCell(1);
+              instruction1.innerHTML = item.instruction1;
+              let instruction2 = row.insertCell(2);
+              let instruction3 = row.insertCell(3);
+              let instruction4 = row.insertCell(4);
+              var bool = true
+
+              if(i2.length===0){
+                instruction2.innerHTML = '-';
                 instruction3.innerHTML = '-';
                 instruction4.innerHTML = '-';
                 bool=false
               }
               else{
-                instruction3.innerHTML = item.instruction3;
+                instruction2.innerHTML = item.instruction2;
+              }
+              if(bool){
+                if(i3.length===0){
+                  instruction3.innerHTML = '-';
+                  instruction4.innerHTML = '-';
+                  bool=false
+                }
+                else{
+                  instruction3.innerHTML = item.instruction3;
+                }
+
+              }
+              if(bool){
+                if(i4.length===0){
+                  instruction4.innerHTML = '-';
+                }
+                else{
+                  instruction4.innerHTML = item.instruction4;
+                }
               }
 
+              checkMacroListAssign[actionValue.toUpperCase()] = [i1,i2,i3,i4];
+              if(!checkMacroList.includes(actionValue.toUpperCase()))
+                checkMacroList.push(actionValue.toUpperCase())
+              console.log("checkMacroListAssign in record :", checkMacroListAssign)
+              console.log("checkMacroList in record :", checkMacroList)
+              this.setMacroData()
+              MacrosList=MacrosList.concat({label:actionValue.toUpperCase(),value:checkMacroList.length})
             }
-            if(bool){
-              if(i4.length===0){
-                instruction4.innerHTML = '-';
-              }
-              else{
-                instruction4.innerHTML = item.instruction4;
-              }
+            else{
+              console.log('You have to choose an Action and a Device')
             }
-
-            checkMacroListAssign[actionValue.toUpperCase()] = [i1,i2,i3,i4];
-            if(!checkMacroList.includes(actionValue.toUpperCase()))
-              checkMacroList.push(actionValue.toUpperCase())
-            console.log("checkMacroListAssign in record :", checkMacroListAssign)
-            console.log("checkMacroList in record :", checkMacroList)
-            this.setMacroData()
-            MacrosList=MacrosList.concat({label:actionValue.toUpperCase(),value:checkMacroList.length})
         }
       }
       else{

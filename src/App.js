@@ -70,15 +70,15 @@ let macroParameterList=[]
 let numberOfGestures=0
 
 let ActionsList =[
-  { label: 'Turn On', value: 1 },
-  { label: 'Turn Off', value: 2 },
-  { label: 'Increase', value: 3 },
-  { label: 'Decrease', value: 4 },
-  { label: 'Pause', value: 5 },
-  { label: 'Play', value: 6 },
-  { label: 'Mute', value: 7 },
-  { label: 'Unmute', value: 8 },
-  { label: 'Next', value: 9 }
+  { label: 'Turn On', value: 1 , disabled: false},
+  { label: 'Turn Off', value: 2 , disabled: false},
+  { label: 'Increase', value: 3 , disabled: false},
+  { label: 'Decrease', value: 4 , disabled: false},
+  { label: 'Pause', value: 5 , disabled: false},
+  { label: 'Play', value: 6 , disabled: false},
+  { label: 'Mute', value: 7 , disabled: false},
+  { label: 'Unmute', value: 8 , disabled: false},
+  { label: 'Next', value: 9 , disabled: false}
 ]
 
 let DevicesList =[
@@ -238,6 +238,7 @@ class App extends React.Component {
     this.recognizeIncreaseBrightness = this.recognizeIncreaseBrightness.bind(this);
     this.recognizePause = this.recognizePause.bind(this);
     this.recognizeProgram = this.recognizeProgram.bind(this);
+    this.recognizeChannel = this.recognizeChannel.bind(this);
 
     // Timer
     this.timer = null;
@@ -520,6 +521,10 @@ class App extends React.Component {
               if(macroParameterList.includes("Program")){
                 let number_program = macroParameterList[macroParameterList.indexOf("Program") + 1]
                 this.recognizeProgram(number_program)
+              }
+              if(macroParameterList.includes("Channel")){
+                let number_channel = macroParameterList[macroParameterList.indexOf("Channel") + 1]
+                this.recognizeChannel(number_channel)
               }
             }
           // }, timer);
@@ -1258,11 +1263,11 @@ class App extends React.Component {
             }
             let brightness_bathroom = document.getElementById("Brightness_bathroom")
             brightness_bathroom.style.opacity = updated_brightness.toString()
-            if(updated_brightness>0){
+            if(updated_brightness>=0 && updated_brightness<1){
               let light_bathroom = document.getElementById("Light_bathroom")
               light_bathroom.style.opacity = "1"
             }
-            else if(updated_brightness>=1){
+            else if(updated_brightness===1){
               let light_bathroom = document.getElementById("Light_bathroom")
               light_bathroom.style.opacity = "0"
             }
@@ -1282,11 +1287,11 @@ class App extends React.Component {
             }
             let brightness_children_bedroom = document.getElementById("Brightness_children bedroom")
             brightness_children_bedroom.style.opacity = updated_brightness.toString()
-            if(updated_brightness>0){
+            if(updated_brightness>=0 && updated_brightness<1){
               let light_children_bedroom = document.getElementById("Light_children bedroom")
               light_children_bedroom.style.opacity = "1"
             }
-            else if(updated_brightness>=1){
+            else if(updated_brightness===1){
               let light_children_bedroom = document.getElementById("Light_children bedroom")
               light_children_bedroom.style.opacity = "0"
             }
@@ -1306,11 +1311,11 @@ class App extends React.Component {
             }
             let brightness_dining_room = document.getElementById("Brightness_dining room")
             brightness_dining_room.style.opacity = updated_brightness.toString()
-            if(updated_brightness>0){
+            if(updated_brightness>=0 && updated_brightness<1){
               let light_dining_room = document.getElementById("Light_dining room")
               light_dining_room.style.opacity = "1"
             }
-            else if(updated_brightness>=1){
+            else if(updated_brightness===1){
               let light_dining_room = document.getElementById("Light_dining room")
               light_dining_room.style.opacity = "0"
             }
@@ -1330,11 +1335,11 @@ class App extends React.Component {
             }
             let brightness_kitchen = document.getElementById("Brightness_kitchen")
             brightness_kitchen.style.opacity = updated_brightness.toString()
-            if(updated_brightness>0){
+            if(updated_brightness>=0 && updated_brightness<1){
               let light_kitchen = document.getElementById("Light_kitchen")
               light_kitchen.style.opacity = "1"
             }
-            else if(updated_brightness>=1){
+            else if(updated_brightness===1){
               let light_kitchen = document.getElementById("Light_kitchen")
               light_kitchen.style.opacity = "0"
             }
@@ -1354,11 +1359,11 @@ class App extends React.Component {
             }
             let brightness_living_room = document.getElementById("Brightness_living room")
             brightness_living_room.style.opacity = updated_brightness.toString()
-            if(updated_brightness>0){
+            if(updated_brightness>=0 && updated_brightness<1){
               let light_living_room = document.getElementById("Light_living room")
               light_living_room.style.opacity = "1"
             }
-            else if(updated_brightness>=1){
+            else if(updated_brightness===1){
               let light_living_room = document.getElementById("Light_living room")
               light_living_room.style.opacity = "0"
             }
@@ -1378,11 +1383,11 @@ class App extends React.Component {
             }
             let brightness_office = document.getElementById("Brightness_office")
             brightness_office.style.opacity = updated_brightness.toString()
-            if(updated_brightness>0){
+            if(updated_brightness>=0 && updated_brightness<1){
               let light_office = document.getElementById("Light_office")
               light_office.style.opacity = "1"
             }
-            else if(updated_brightness>=1){
+            else if(updated_brightness===1){
               let light_office = document.getElementById("Light_office")
               light_office.style.opacity = "0"
             }
@@ -1402,11 +1407,11 @@ class App extends React.Component {
             }
             let brightness_parent_bedroom = document.getElementById("Brightness_parent bedroom")
             brightness_parent_bedroom.style.opacity = updated_brightness.toString()
-            if(updated_brightness>0){
+            if(updated_brightness>=0 && updated_brightness<1){
               let light_parent_bedroom = document.getElementById("Light_parent bedroom")
               light_parent_bedroom.style.opacity = "1"
             }
-            else if(updated_brightness>=1){
+            else if(updated_brightness===1){
               let light_parent_bedroom = document.getElementById("Light_parent bedroom")
               light_parent_bedroom.style.opacity = "0"
             }
@@ -1426,11 +1431,11 @@ class App extends React.Component {
             }
             let brightness_laundry_room = document.getElementById("Brightness_laundry room")
             brightness_laundry_room.style.opacity = updated_brightness.toString()
-            if(updated_brightness>0){
+            if(updated_brightness>=0 && updated_brightness<1){
               let light_laundry_room = document.getElementById("Light_laundry room")
               light_laundry_room.style.opacity = "1"
             }
-            else if(updated_brightness>=1){
+            else if(updated_brightness===1){
               let light_laundry_room = document.getElementById("Light_laundry room")
               light_laundry_room.style.opacity = "0"
             }
@@ -1580,6 +1585,42 @@ class App extends React.Component {
       }
     else{
       console.log("There is not Television as device")
+    }
+  }
+
+  recognizeChannel(number_channel){
+    console.log("In recognizeChannel")
+    if(macroDeviceList.includes("Television")){
+      let number_television = 1
+      if(number_channel>5){
+        number_television=5
+      }
+      else{
+        number_television = number_channel
+      }
+      let old_program = document.getElementById("Television_channel_"+this.state.television_channel.toString())
+      old_program.style.opacity = "0"
+      let new_program = document.getElementById("Television_channel_"+number_television.toString())
+      new_program.style.opacity = "1"
+      this.setState({
+        television_channel:number_television
+      })
+    }
+    if(macroDeviceList.includes("Radio")){
+      let number_radio = 1
+      if(number_channel>5){
+        number_radio=5
+      }
+      else{
+        number_radio = number_channel
+      }
+      let old_program = document.getElementById("Radio_channel_"+this.state.radio_channel.toString())
+      old_program.style.opacity = "0"
+      let new_program = document.getElementById("Radio_channel_"+number_radio.toString())
+      new_program.style.opacity = "1"
+      this.setState({
+        radio_channel:number_radio
+      })
     }
   }
 
@@ -2228,32 +2269,68 @@ class App extends React.Component {
         if(event[i].label==="Increase" || event[i].label==="Decrease"){
           for(let j=0;j<DevicesList.length;j++){
             let label =DevicesList[j].label
-            if(label==="Microwave" || label==="Fan" ){
+            if(label==="Microwave" || label==="Fan" || label==="Washing machine" || label==="Air conditioner"){
               DevicesList[j].disabled=true
+            }
+          }
+          for(let j=0;j<ParametersList.length;j++){
+            let label=ParametersList[j].label
+            if(label==="Brightness" || label==="Volume"){
+              ParametersList[j].disabled=false
+            }
+            else{
+              ParametersList[j].disabled=true
             }
           }
         }
         if(event[i].label==="Pause" || event[i].label==="Play"){
           for(let j=0;j<DevicesList.length;j++){
             let label =DevicesList[j].label
-            if(label==="Computer" || label==="Microwave" || label==="Washing machine" || label==="Radio" || label==="Air conditioner" || label==="Fan" ){
+            if(label==="Computer" || label==="Microwave" || label==="Washing machine" || label==="Radio" || label==="Air conditioner" || label==="Fan" || label==="Light"){
               DevicesList[j].disabled=true
             }
           }
+          for(let j=0;j<ParametersList.length;j++){
+            let label =ParametersList[j].label
+            if(label==="Time"){
+              ParametersList[j].disabled=false
+            }
+            else{
+              ParametersList[j].disabled=true
+            }
+          }
         }
-        if(event[i].label==="Mute" ){
+        if(event[i].label==="Mute" || event[i].label==="Unmute"){
           for(let j=0;j<DevicesList.length;j++){
             let label =DevicesList[j].label
-            if(label==="Micro-waves" || label==="Washing machine" || label==="Air conditioner" || label==="Fan" ){
+            if(label==="Washing machine" || label==="Air conditioner" || label==="Fan" || label==="Light" || label==="Microwave" ){
               DevicesList[j].disabled=true
+            }
+          }
+          for(let j=0;j<ParametersList.length;j++){
+            let label =ParametersList[j].label
+            if(label==="Time"){
+              ParametersList[j].disabled=false
+            }
+            else{
+              ParametersList[j].disabled=true
             }
           }
         }
         if(event[i].label==="Next" ){
           for(let j=0;j<DevicesList.length;j++){
             let label =DevicesList[j].label
-            if(label==="Microwave" || label==="Computer" || label==="Fan" ){
+            if(label==="Microwave" || label==="Computer" || label==="Fan" || label==="Air conditioner" || label==="Light" || label==="Washing machine" ){
               DevicesList[j].disabled=true
+            }
+          }
+          for(let j=0;j<ParametersList.length;j++){
+            let label =ParametersList[j].label
+            if(label==="Program" || label==="Channel" || label==="Time"){
+              ParametersList[j].disabled=false
+            }
+            else{
+              ParametersList[j].disabled=true
             }
           }
         }
@@ -2268,107 +2345,205 @@ class App extends React.Component {
   }
 
   dynamicDevicesList(event){
-    if(!event[0]){
-      for(let j=0;j<EnvironmentList.length;j++){
-        EnvironmentList[j].disabled=false
-      }
-      for(let j=0;j<ParametersList.length;j++){
-        ParametersList[j].disabled=false
-      }
-    }
-    else{
-      for(let j=0;j<EnvironmentList.length;j++){
-        EnvironmentList[j].disabled=false
-      }
-      for(let j=0;j<ParametersList.length;j++){
-        ParametersList[j].disabled=false
-      }
-    }
 
     for(let j=0;j<event.length;j++){
       let label =event[j].label
       if(event[j].disabled!==true){
-        if(label==="Micro-waves"){
+        if(label==="Microwave"){
           for(let i=0;i<EnvironmentList.length;i++){
-            if(EnvironmentList[i].label!=="Kitchen"){
+            if(EnvironmentList[i].label==="Kitchen"){
+              EnvironmentList[i].disabled=false
+            }
+            else{
               EnvironmentList[i].disabled=true
             }
           }
           for(let i=0;i<ParametersList.length;i++){
-            if(ParametersList[i].label==="Speed" || ParametersList[i].label==="Volume" || ParametersList[i].label==="Channel"|| ParametersList[i].label==="Brightness"){
+            if(ParametersList[i].label==="Time") {
+              ParametersList[i].disabled=false
+            }
+            else{
               ParametersList[i].disabled=true
+            }
+          }
+          for(let i=0;i<ActionsList.length;i++){
+            if(ActionsList[i].label==="Turn On" || ActionsList[i].label==="Turn Off") {
+              ActionsList[i].disabled = false
+            }
+            else{
+              ActionsList[i].disabled = true
             }
           }
         }
         if(label==="Washing machine"){
           for(let i=0;i<EnvironmentList.length;i++){
-            if(EnvironmentList[i].label!=="Laundry room"){
+            if(EnvironmentList[i].label==="Laundry room"){
+              EnvironmentList[i].disabled=false
+            }
+            else{
               EnvironmentList[i].disabled=true
             }
           }
           for(let i=0;i<ParametersList.length;i++){
-            if(ParametersList[i].label==="Speed" || ParametersList[i].label==="Volume" || ParametersList[i].label==="Channel"|| ParametersList[i].label==="Brightness"){
+            if(ParametersList[i].label==="Time" || ParametersList[i].label==="Program"){
+              ParametersList[i].disabled=false
+            }
+            else{
               ParametersList[i].disabled=true
+            }
+          }
+          for(let i=0;i<ActionsList.length;i++){
+            if(ActionsList[i].label==="Turn On" || ActionsList[i].label==="Turn Off") {
+              ActionsList[i].disabled = false
+            }
+            else{
+              ActionsList[i].disabled = true
             }
           }
         }
         if(label==="Computer"){
           for(let i=0;i<EnvironmentList.length;i++){
-            if(EnvironmentList[i].label!=="Office"){
+            if(EnvironmentList[i].label==="Office"){
+              EnvironmentList[i].disabled=false
+            }
+            else{
               EnvironmentList[i].disabled=true
             }
           }
           for(let i=0;i<ParametersList.length;i++){
-            if(ParametersList[i].label==="Speed" || ParametersList[i].label==="Time" || ParametersList[i].label==="Channel"|| ParametersList[i].label==="Program"){
+            if(ParametersList[i].label==="Time" || ParametersList[i].label==="Volume"){
+              ParametersList[i].disabled=false
+            }
+            else{
               ParametersList[i].disabled=true
+            }
+          }
+          for(let i=0;i<ActionsList.length;i++){
+            if(ActionsList[i].label==="Turn On" || ActionsList[i].label==="Turn Off" || ActionsList[i].label==="Increase" || ActionsList[i].label==="Decrease" || ActionsList[i].label==="Mute" || ActionsList[i].label==="Unmute") {
+              ActionsList[i].disabled = false
+            }
+            else{
+              ActionsList[i].disabled = true
             }
           }
         }
         if(label==="Television"){
           for(let i=0;i<EnvironmentList.length;i++){
-            if(EnvironmentList[i].label!=="Living room"){
+            if(EnvironmentList[i].label==="Living room"){
+              EnvironmentList[i].disabled=false
+            }
+            else{
               EnvironmentList[i].disabled=true
             }
           }
           for(let i=0;i<ParametersList.length;i++){
-            if(ParametersList[i].label==="Speed" || ParametersList[i].label==="Time"|| ParametersList[i].label==="Program" ){
+            if(ParametersList[i].label==="Time" || ParametersList[i].label==="Volume" || ParametersList[i].label==="Channel"){
+              ParametersList[i].disabled=false
+            }
+            else{
               ParametersList[i].disabled=true
             }
+          }
+          for(let i=0;i<ActionsList.length;i++){
+            ActionsList[i].disabled = false
           }
         }
         if(label==="Radio"){
           for(let i=0;i<EnvironmentList.length;i++){
-            if(EnvironmentList[i].label!=="Parent's bedroom"){
+            if(EnvironmentList[i].label==="Parent bedroom"){
+              EnvironmentList[i].disabled=false
+            }
+            else{
               EnvironmentList[i].disabled=true
             }
           }
           for(let i=0;i<ParametersList.length;i++){
-            if(ParametersList[i].label==="Speed" || ParametersList[i].label==="Time"|| ParametersList[i].label==="Program" || ParametersList[i].label==="Brightness" ){
+            if(ParametersList[i].label==="Time" || ParametersList[i].label==="Volume" || ParametersList[i].label==="Channel"){
+              ParametersList[i].disabled=false
+            }
+            else{
               ParametersList[i].disabled=true
+            }
+          }
+          for(let i=0;i<ActionsList.length;i++){
+            if(ActionsList[i].label==="Turn On" || ActionsList[i].label==="Turn Off" || ActionsList[i].label==="Increase" || ActionsList[i].label==="Decrease" || ActionsList[i].label==="Mute" || ActionsList[i].label==="Unmute" || ActionsList[i].label==="Next") {
+              ActionsList[i].disabled = false
+            }
+            else{
+              ActionsList[i].disabled = true
             }
           }
         }
-        if(label==="Air conditionner"){
+        if(label==="Air conditioner"){
           for(let i=0;i<EnvironmentList.length;i++){
-            if(EnvironmentList[i].label!=="Children bedroom"){
+            if(EnvironmentList[i].label==="Children bedroom"){
+              EnvironmentList[i].disabled=false
+            }
+            else{
               EnvironmentList[i].disabled=true
             }
           }
           for(let i=0;i<ParametersList.length;i++){
-            if(ParametersList[i].label!=="Program"){
+            if(ParametersList[i].label==="Time" || ParametersList[i].label==="Program"){
+              ParametersList[i].disabled=false
+            }
+            else{
               ParametersList[i].disabled=true
+            }
+          }
+          for(let i=0;i<ActionsList.length;i++){
+            if(ActionsList[i].label==="Turn On" || ActionsList[i].label==="Turn Off") {
+              ActionsList[i].disabled = false
+            }
+            else{
+              ActionsList[i].disabled = true
             }
           }
         }
         if(label==="Fan"){
           for(let i=0;i<EnvironmentList.length;i++){
-            if(EnvironmentList[i].label!=="Living room"){
+            if(EnvironmentList[i].label==="Living room"){
+              EnvironmentList[i].disabled=false
+            }
+            else{
               EnvironmentList[i].disabled=true
             }
           }
           for(let i=0;i<ParametersList.length;i++){
-            if(!ParametersList[i].label==="Program" || !ParametersList[i].label==="Speed"){
+            if(ParametersList[i].label==="Time"){
+              ParametersList[i].disabled=false
+            }
+            else{
               ParametersList[i].disabled=true
+            }
+          }
+          for(let i=0;i<ActionsList.length;i++){
+            if(ActionsList[i].label==="Turn On" || ActionsList[i].label==="Turn Off") {
+              ActionsList[i].disabled = false
+            }
+            else{
+              ActionsList[i].disabled = true
+            }
+          }
+        }
+        if(label==="Light"){
+          for(let i=0;i<EnvironmentList.length;i++){
+            EnvironmentList[i].disabled=false
+          }
+          for(let i=0;i<ParametersList.length;i++){
+            if(ParametersList[i].label==="Time" || ParametersList[i].label==="Brightness"){
+              ParametersList[i].disabled=false
+            }
+            else{
+              ParametersList[i].disabled=true
+            }
+          }
+          for(let i=0;i<ActionsList.length;i++){
+            if(ActionsList[i].label==="Turn On" || ActionsList[i].label==="Turn Off" || ActionsList[i].label==="Increase" || ActionsList[i].label==="Decrease") {
+              ActionsList[i].disabled = false
+            }
+            else{
+              ActionsList[i].disabled = true
             }
           }
         }
@@ -2610,6 +2785,7 @@ class App extends React.Component {
     return (
       
       <div className="App">
+        <h1 className={"h1"} style={{textAlign: "center"}}> EMERITI </h1>
         <div className="container">
           <div className="box">
             <h1 className={"h1"} style={{textAlign: "center"}}>Drawing area</h1>
@@ -2684,7 +2860,7 @@ class App extends React.Component {
         </div>
         <div className={"instructions"}>  Instruction : {this.showInstructions()}</div> 
         <div className={"instructions"}>  Recognized Instruction : {this.showRecognizedInstructions()}</div> 
-        <div className="container2">
+        <div className="container">
           <div className="box3">
             <div className={"time before next gesture"}>Timer : {this.fmt(this.state.count)}</div>
 

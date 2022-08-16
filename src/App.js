@@ -2206,36 +2206,29 @@ class App extends React.Component {
       let instruction2 = row.insertCell(2);
       let instruction3 = row.insertCell(3);
       let instruction4 = row.insertCell(4);
-      var bool = true
-      if(item.instruction[1].length===0){
+
+      if(item.instruction2===[]){
         instruction2.innerHTML = '-';
         instruction3.innerHTML = '-';
         instruction4.innerHTML = '-';
-        bool=false
       }
       else{
         instruction2.innerHTML = item.instruction[1];
       }
-
-      if(bool){
-        if(!item.instruction[2]){
+        if(typeof item.instruction3==='undefined'){
           instruction3.innerHTML = '-';
-          instruction4.innerHTML = '-';
-          bool=false
         }
         else{
           instruction3.innerHTML = item.instruction[2];
         }
-
-      }
-      if(bool){
-        if(!item.instruction[3]){
+        
+        if(typeof item.instruction4==='undefined'){
           instruction4.innerHTML = '-';
         }
         else{
           instruction4.innerHTML = item.instruction[3];
         }
-      }
+      
     }
   }
 
@@ -2814,7 +2807,7 @@ class App extends React.Component {
           </div>
           <div className="box2">
             <h1 className={"h1"} style={{textAlign: "center"}}>Smart home</h1>
-            <img className="overlay" style={{maxWidth:'100%'}} src={House} alt={"HOUSE"}/>
+            <img className="overlay" style={{opacity:"1"}} src={House} alt={"HOUSE"}/>
             <img className="overlay" style={{opacity:"0"}} src={Air_conditioner_program_1} id="Air_conditioner_program_1" alt={"Air_conditioner_cold"}/>
             <img className="overlay" style={{opacity:"0"}} src={Air_conditioner_program_2} id="Air_conditioner_program_2" alt={"Air_conditioner_hot"}/>
             <img className="overlay" style={{opacity:"1"}} src={Brightness_kitchen} id="Brightness_kitchen" alt={"Brightness_kitchen"}/>
@@ -2870,6 +2863,7 @@ class App extends React.Component {
           </div>
         </div>
         <div className={"instructions"}>  Instruction : {this.showInstructions()}</div> 
+        <div className={"box"}></div>
         <div className={"instructions"}>  Recognized Instruction : {this.showRecognizedInstructions()}</div> 
         <div className="container">
           <div className="box3">

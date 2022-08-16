@@ -456,7 +456,7 @@ class App extends React.Component {
         else if(!recognizList.includes(macroActionList[0])){
           this.setState({
             recognizedList: this.state.recognizedList.concat(macroActionList[0])
-          })
+          })        
         }
 
         for(let i in macroDeviceList){
@@ -481,7 +481,7 @@ class App extends React.Component {
           }
         }
         console.log("this.state.recognizedList2",this.state.recognizedList)
-
+        
         if(isNew && macroActionList.length>0 && macroDeviceList.length>0){
           console.log("macroActionList is New : ", macroActionList)
           let timer = 0
@@ -653,7 +653,6 @@ class App extends React.Component {
   display(){
 
   // setTimeout(() => {
-    console.log("macroActionList setTimeout : ", macroActionList)
     for(const macro_action of macroActionList){
       console.log("macro_action : ", macro_action)
       if(macro_action==="Turn On"){
@@ -752,7 +751,6 @@ class App extends React.Component {
   }
 
   recognizeDevice(){
-    console.log("In recognizeDevice")
     for(let i = 0; i<macroDeviceList.length; i++){
       if(macroDeviceList[i]==="Light"){
         if(macroEnvironmentList.length !== 0){

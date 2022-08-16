@@ -304,6 +304,10 @@ class App extends React.Component {
     else{
       checkMacroList = checkMacroListData
     }
+
+    for(let i=0;i<checkMacroList.length;i++) {
+      MacrosList = MacrosList.concat({label: checkMacroList[i], value: i})
+    }
   }
 
   componentDidMount() {
@@ -370,13 +374,16 @@ class App extends React.Component {
         console.log("NOW, IT'S %s", event.gesture.name)
         let macroList = checkListAssign[event.gesture.name]
         let action = macroList[0].split(', ')
+        var newaction
         if(action[0]!=="-"){
           macroActionList = macroActionList.concat(action)
           if(macroActionList.length>1){
             if(macroActionList[1]){
-              var newaction = macroActionList[1]
+              newaction = macroActionList[1]
               macroActionList = [macroActionList[0]]
+              
               this.display()
+
               macroActionList=[newaction]
               macroDeviceList=[]
               macroEnvironmentList=[]
@@ -389,16 +396,18 @@ class App extends React.Component {
           }
           else if(isNew){
             var recognizList=[]
-            for(let len=this.state.recognizedList.length-1;this.state.recognizedList[len]!=='-' && len>=0;len--){
+            for(let len=this.state.recognizedList.length;this.state.recognizedList[len]!=='-' && len>=0;len--){
               recognizList=recognizList.concat(this.state.recognizedList[len])
             }
 
             var OldMacro= macroActionList.concat(macroDeviceList,macroEnvironmentList,macroParameterList)
             for(var i in OldMacro){
-              if(recognizList.length>0 && !recognizList[i].includes(OldMacro[i])){
-                this.setState({
-                  recognizedList:this.state.recognizedList.concat(OldMacro[i])
-                })
+              if(recognizList===[]){
+                if(!recognizList[i].includes(OldMacro[i])){
+                  this.setState({
+                    recognizedList:this.state.recognizedList.concat(OldMacro[i])
+                  })
+                }
               }
             }
             if(macroActionList[1]){
@@ -412,6 +421,7 @@ class App extends React.Component {
             macroParameterList=[]
           }
         }
+
         if(macroList[1]!=='-'){
           let device = macroList[1].split(', ')
           macroDeviceList = macroDeviceList.concat(device)
@@ -432,30 +442,44 @@ class App extends React.Component {
         console.log("macroEnvironmentList : ", macroEnvironmentList)
         console.log("macroParameterList : ", macroParameterList)
 
-        if(!macroActionList.includes(macroActionList[1])){
+        recognizList=[]
+        for(let len=this.state.recognizedList.length;this.state.recognizedList[len]!=='-' && len>=0;len--){
+          recognizList=recognizList.concat(this.state.recognizedList[len])
+        }
+        console.log("this.state.recognizedList1",this.state.recognizedList)
+        if(typeof recognizList==='undefined'){
           this.setState({
             recognizedList: this.state.recognizedList.concat(macroActionList[0])
           })
         }
+        else if(!recognizList.includes(macroActionList[0])){
+          this.setState({
+            recognizedList: this.state.recognizedList.concat(macroActionList[0])
+          })        
+        }
+
         for(let i in macroDeviceList){
+          if(!recognizList.includes(macroDeviceList[i])){
             this.setState({
               recognizedList: this.state.recognizedList.concat(macroDeviceList[i])
             })
+          }
         }
         for(let j in macroEnvironmentList){
-          if(!this.state.recognizedList.includes(macroEnvironmentList[j])){
+          if(!recognizList.includes(macroEnvironmentList[j])){
             this.setState({
               recognizedList: this.state.recognizedList.concat(macroEnvironmentList[j])
             })
           }
         }
         for(let k in macroParameterList){
-          if(!this.state.recognizedList.includes(macroParameterList[k])){
+          if(!recognizList.includes(macroParameterList[k])){
             this.setState({
               recognizedList: this.state.recognizedList.concat(macroParameterList[k])
             })
           }
         }
+        console.log("this.state.recognizedList2",this.state.recognizedList)
         
         if(isNew && macroActionList.length>0 && macroDeviceList.length>0){
           console.log("macroActionList is New : ", macroActionList)
@@ -626,7 +650,7 @@ class App extends React.Component {
   }
 
   display(){
-    console.log("je suis iciiiiii")
+
     for(const macro_action of macroActionList){
       console.log("macro_action : ", macro_action)
       if(macro_action==="Turn On"){

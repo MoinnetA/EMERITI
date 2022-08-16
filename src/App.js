@@ -107,9 +107,8 @@ let ParametersList =[
   { label: 'Brightness', value: 1 , disabled: false},
   { label: 'Channel', value: 2 , disabled: false},
   { label: 'Program', value: 3 , disabled: false},
-  { label: 'Speed', value: 4 , disabled: false},
-  { label: 'Time', value: 5 , disabled: false},
-  { label: 'Volume', value: 6 , disabled: false},
+  { label: 'Time', value: 4 , disabled: false},
+  { label: 'Volume', value: 5 , disabled: false},
 ]
 
 let MacrosList =[]
@@ -1757,8 +1756,8 @@ class App extends React.Component {
         "t": Date.now(),
       };
       tabFinal[stroke_id].push(objectCoord);
-      this.ctx.current.moveTo(this.state.lastPosition.x-10, this.state.lastPosition.y-67);
-      this.ctx.current.lineTo(x-10, y-67);
+      this.ctx.current.moveTo(this.state.lastPosition.x-10, this.state.lastPosition.y-120);
+      this.ctx.current.lineTo(x-10, y-120);
       this.ctx.current.closePath();
       this.ctx.current.stroke();
       this.setState({

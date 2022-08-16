@@ -200,6 +200,7 @@ class App extends React.Component {
     this.checkMacroInputsRecord = this.checkMacroInputsRecord.bind(this);
     this.record = this.record.bind(this);
     this.clear = this.clear.bind(this);
+    this.clearCanvas = this.clearCanvas.bind(this);
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
     this.onMouseMove = this.onMouseMove.bind(this);
@@ -213,7 +214,6 @@ class App extends React.Component {
     this.clearDataSet = this.clearDataSet.bind(this);
     this.deleteGesture = this.deleteGesture.bind(this);
     this.deleteMacroGesture = this.deleteMacroGesture.bind(this);
-    //this.macroCommand = this.macroCommand.bind(this);
     this.ModifyActionsList = this.ModifyActionsList.bind(this);
     this.ModifyDevicesList = this.ModifyDevicesList.bind(this);
     this.ModifyEnvironmentList = this.ModifyEnvironmentList.bind(this);
@@ -1781,7 +1781,7 @@ class App extends React.Component {
     this.gestureHandler.registerGestures("dynamic", nameListOfGesture);
     if(tabFinal.length!==0) {
       gestureList.push(tabFinal)
-      this.clear()
+      this.clearCanvas()
     }
     numberOfGestures = gestureList.length
 
@@ -1816,11 +1816,11 @@ class App extends React.Component {
     const actionValue = this.action.value.trim();
     if(actionValue === ''){
         console.log('Action cannot be blank');
-        this.clear()
+        this.clearCanvas()
     }
     else if(tabFinal.length===0){
         console.log( 'No Data');
-        this.clear()
+        this.clearCanvas()
     }
     else {
       var dataGestureRecord = {
@@ -1832,7 +1832,7 @@ class App extends React.Component {
       tabFinal.forEach((stroke, strokeId) => {dataGestureRecord.paths[0].strokes.push({"id": strokeId, "points": stroke})})
       var dataStringRecord = JSON.stringify(dataGestureRecord);
       tabFinal = [];
-      this.clear()
+      this.clearCanvas()
       return dataStringRecord;
     }
   }
@@ -1841,11 +1841,11 @@ class App extends React.Component {
     const macroValue = this.macro.value.trim();
     if(macroValue === ''){
         console.log(this.macro, 'Action cannot be blank');
-        this.clear()
+        this.clearCanvas()
     }
     else if(tabFinal.length===0){
         console.log( 'No Data');
-        this.clear()
+        this.clearCanvas()
     }
     else {
       var dataGestureRecord = {
@@ -1857,7 +1857,7 @@ class App extends React.Component {
       tabFinal.forEach((stroke, strokeId) => {dataGestureRecord.paths[0].strokes.push({"id": strokeId, "points": stroke})})
       var dataStringRecord = JSON.stringify(dataGestureRecord);
       tabFinal = [];
-      this.clear()
+      this.clearCanvas()
       return dataStringRecord;
     }
   }
@@ -1867,7 +1867,7 @@ class App extends React.Component {
     if(typeof dataStringRecord!=='undefined'){
       const actionValue = this.action.value.trim();
       this.gestureHandler.addNewGesture(dataStringRecord, actionValue.toLowerCase());
-      if(!checkListAssign.hasOwnProperty(actionValue.toUpperCase())) {
+      if(!checkListAssign.hasOwnProperty(actionValue.toUpperCase()) && !checkMacroListAssign.hasOwnProperty(actionValue.toUpperCase())) {
         if(!this.state.instructions[0] && !this.state.macros[0]){
           if(!checkList.includes(actionValue.toUpperCase())){
             checkList.push(actionValue.toUpperCase());
@@ -2041,127 +2041,29 @@ class App extends React.Component {
             MacrosList=MacrosList.concat({label:actionValue.toUpperCase(),value:checkMacroList.length})
         }
       }
+      else{
+        console.log("the name of the gesture already exists.")
+      }
     }
     else{
       console.log("No Data")
     }
 
     this.setState({
-      instructions:[],
-      actions:[],
-      devices:[],
-      environment:[],
-      parameters:[],
-      macros:[]
+      instructions:[]
     })
-
-    for(let k=0;k<ActionsList.length;k++){
-      ActionsList[k].disabled=false
-    }
-    for(let k=0;k<EnvironmentList.length;k++){
-      EnvironmentList[k].disabled=false
-    }
-    for(let k=0;k<ParametersList.length;k++){
-      ParametersList[k].disabled=false
-    }
     nameListOfGesture = checkList.concat(checkMacroList)
+    this.clearCanvas()
   }
 
-  /*macroCommand(){
-    var dataStringRecord = this.checkMacroInputsRecord();
-    if(typeof dataStringRecord!=='undefined'){
-      const macroValue = this.macro.value.trim();
-      this.gestureHandler.addNewGesture(dataStringRecord, macroValue.toLowerCase());
-
-      var tableau = this.composedMacrosInstructions()
-      var actionAndDevice=true
-
-
-      var act = []
-      var dev = []
-      for(const i in tableau){
-        if(checkList.includes(tableau[i])){
-          console.log("checkList in macroCommand : ", checkList)
-          var instruct = checkListAssign[tableau[i]]
-          if(instruct[0]!=='-'){
-            act=act.concat([instruct[0]])
-          }
-          if(instruct[1]!=='-'){
-            dev=dev.concat([instruct[1]])
-          }
-        }
-      }
-      if(act===[] || dev===[]){
-        actionAndDevice=false
-      }
-      console.log("actionAndDevice in macroCommand : ", actionAndDevice)
-      if (actionAndDevice){
-        if(!checkMacroList.includes(macroValue.toUpperCase())){
-          checkMacroList.push(macroValue.toUpperCase());
-        }
-        if(!checkMacroListAssign.hasOwnProperty(macroValue.toUpperCase())) {      
-          const item = {nameGesture: macroValue.toUpperCase(), instruction1: tableau[0],instruction2: tableau[1],instruction3: tableau[2],instruction4:tableau[3]}
-          const table = document.getElementById("TableM")
-          let row = table.insertRow();
-          let nameGesture = row.insertCell(0);
-          nameGesture.innerHTML = item.nameGesture;
-          let instruction1 = row.insertCell(1);
-          instruction1.innerHTML = item.instruction1;
-          let instruction2 = row.insertCell(2);
-          let instruction3 = row.insertCell(3);
-          let instruction4 = row.insertCell(4);
-          var i2 = true
-          if(typeof item.instruction2==='undefined'){
-            instruction2.innerHTML = '-';        
-            instruction3.innerHTML = '-';        
-            instruction4.innerHTML = '-';  
-            i2=false
-          }
-          else{
-            instruction2.innerHTML = item.instruction2;
-          }
-          if(i2){
-            if(typeof item.instruction3==='undefined'){   
-              instruction3.innerHTML = '-';        
-              instruction4.innerHTML = '-';  
-              i2=false      
-            }
-            else{
-              instruction3.innerHTML = item.instruction3;
-            }
-    
-          }
-          if(!i2 && typeof item.instruction4!=='undefined'){   
-            instruction4.innerHTML = item.instruction4;
-          }
-          else{      
-            instruction4.innerHTML = '-'; 
-          }
-        }
-        checkMacroListAssign[macroValue.toUpperCase()] = tableau;
-        if(!checkMacroList.includes(macroValue.toUpperCase()))
-          checkMacroList.push(macroValue.toUpperCase())
-        console.log("checkMacroListAssign:", checkMacroListAssign)
-        console.log("checkMacroList:", checkMacroList)
-        this.setMacroData()
-        this.setState({
-          macros:[]
-        })
-      }
-      else{
-        console.log("The macro command must have an Action and a Device")
-      }
-    }
-    else{
-      console.log("No Data")
-    }
-    
-  }*/
-
-  clear(){
+  clearCanvas(){
     this.ctx.current.clearRect(0, 0, this.ctx.current.canvas.width, this.ctx.current.canvas.height)
     stroke_id = 0;
     tabFinal=[]
+  }
+
+  clear(){
+    this.clearCanvas()
     this.setState({
       count:2,
       instructions:[],
@@ -2351,8 +2253,6 @@ class App extends React.Component {
   }
 
   dynamicActionsList(event){
-    // if(!event[0]){
-    console.log("this.state.actions.length1 : ", this.state.actions.length)
     if(this.state.actions.length===0){
       for(let k=0;k<ActionsList.length;k++){
         ActionsList[k].disabled=false

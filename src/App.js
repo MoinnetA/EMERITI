@@ -192,6 +192,7 @@ class App extends React.Component {
     this.ctx1 = createRef(null);
     // Bind
     this.onGesture = this.onGesture.bind(this);
+    this.display = this.display.bind(this);
     this.draw = this.draw.bind(this);
     this.draw1 = this.draw1.bind(this);
     this.recognize_canvas = this.recognize_canvas.bind(this);
@@ -360,7 +361,6 @@ class App extends React.Component {
     });
     this.gestureHandler.addListener('gesture', (event) => {
       numberOfGestures-=1
-      console.log("number ",numberOfGestures)
       var isNew=false
       if(numberOfGestures===0){
         isNew=true
@@ -372,16 +372,20 @@ class App extends React.Component {
         let action = macroList[0].split(', ')
         if(action[0]!=="-"){
           macroActionList = macroActionList.concat(action)
-          console.log("macroActionList1 : ", macroActionList)
           if(macroActionList.length>1){
             if(macroActionList[1]){
-              macroActionList=[macroActionList[1]]
+              var newaction = macroActionList[1]
+              macroActionList = [macroActionList[0]]
+              this.display()
+              macroActionList=[newaction]
               macroDeviceList=[]
+              macroEnvironmentList=[]
+              macroParameterList=[]
               this.setState({
                 recognizedList:this.state.recognizedList.concat("-")
               })
+              isNew=true
             }
-            isNew=true
           }
           else if(isNew){
             var recognizList=[]
@@ -452,7 +456,7 @@ class App extends React.Component {
             })
           }
         }
-
+        
         if(isNew && macroActionList.length>0 && macroDeviceList.length>0){
           console.log("macroActionList is New : ", macroActionList)
           let timer = 0
@@ -460,96 +464,7 @@ class App extends React.Component {
             timer = macroParameterList[macroParameterList.indexOf("Time") + 1]*1000
           }
           // setTimeout(() => {
-            for(const macro_action of macroActionList){
-              console.log("macro_action : ", macro_action)
-              if(macro_action==="Turn On"){
-                this.setState({
-                  turn_on: "1"
-                }, function (){
-                  this.recognizeDevice();
-                })
-              }
-              else if(macro_action==="Turn Off"){
-                this.setState({
-                  turn_on: "0"
-                }, function (){
-                  this.recognizeDevice();
-                })
-              }
-              else if(macro_action==="Mute"){
-                this.recognizeMute()
-              }
-              else if(macro_action==="Unmute"){
-                this.recognizeUnmute()
-              }
-              else if(macro_action==="Next"){
-                this.recognizeNext()
-              }
-              else if(macro_action==="Pause"){
-                this.recognizePause(true);
-              }
-              else if(macro_action==="Play"){
-                this.recognizePause(false);
-              }
-              else if(macro_action==="Increase"){
-                if(macroParameterList.includes("Volume")){
-                  let intensity_volume = macroParameterList[macroParameterList.indexOf("Volume") + 1]
-                  this.recognizeIncreaseVolume(parseInt(intensity_volume))
-                }
-                else if(macroParameterList.includes("Brightness")){
-                  let intensity_brightness = macroParameterList[macroParameterList.indexOf("Brightness") + 1]
-                  console.log("intensity_brightness : ", intensity_brightness)
-                  let decimal_brightness = ((intensity_brightness / 10).toFixed(1))
-                  console.log("decimal_brightness : ", decimal_brightness)
-                  this.recognizeIncreaseBrightness(decimal_brightness)
-                }
-                else{
-                  console.log("No parameter to increase !")
-                }
-              }
-              else if(macro_action==="Decrease"){
-                if(macroParameterList.includes("Volume")){
-                  let intensity_volume = macroParameterList[macroParameterList.indexOf("Volume") + 1]
-                  this.recognizeDecreaseVolume(parseInt(intensity_volume))
-                }
-                else if(macroParameterList.includes("Brightness")){
-                  let intensity_brightness = macroParameterList[macroParameterList.indexOf("Brightness") + 1]
-                  console.log("intensity_brightness : ", intensity_brightness)
-                  let decimal_brightness = ((intensity_brightness / 10).toFixed(1))
-                  console.log("decimal_brightness : ", decimal_brightness)
-                  this.recognizeIncreaseBrightness(-decimal_brightness)
-                }
-                else{
-                  console.log("No parameter to decrease !")
-                }
-              }
-              // else if(macro_action==="Turn On" || macro_action==="Turn Off"){
-              //   this.recognizeDevice()
-              // }
-              if(macroParameterList.includes("Brightness") && (macro_action==="Turn On" || macro_action==="Turn Off")){
-                let intensity_brightness = macroParameterList[macroParameterList.indexOf("Brightness") + 1]
-                if(intensity_brightness>10){
-                  console.log("Intensity of brightness too high ! Should be between 0 and 10")
-                }
-                else {
-                  let decimal_brightness = (1 - (intensity_brightness / 10).toFixed(1)).toString()
-                  this.recognizeBrightness(decimal_brightness)
-                }
-              }
-              if(macroParameterList.includes("Volume") && (macro_action==="Turn On" || macro_action==="Turn Off")){
-                let intensity_volume = macroParameterList[macroParameterList.indexOf("Volume") + 1]
-                if(intensity_volume>3){
-                  console.log("Volume too high ! Should be between 0 and 3")
-                }
-                else {
-                  this.recognizeVolume(intensity_volume)
-                }
-              }
-              if(macroParameterList.includes("Program")){
-                let number_program = macroParameterList[macroParameterList.indexOf("Program") + 1]
-                this.recognizeProgram(number_program)
-              }
-            }
+            this.display()
           // }, timer);
         }
         else{
@@ -708,6 +623,100 @@ class App extends React.Component {
         this.setState({ name: '/', type: '/', image: '' });
       }
     }, 100);
+  }
+
+  display(){
+    console.log("je suis iciiiiii")
+    for(const macro_action of macroActionList){
+      console.log("macro_action : ", macro_action)
+      if(macro_action==="Turn On"){
+        this.setState({
+          turn_on: "1"
+        }, function (){
+          this.recognizeDevice();
+        })
+      }
+      else if(macro_action==="Turn Off"){
+        this.setState({
+          turn_on: "0"
+        }, function (){
+          this.recognizeDevice();
+        })
+      }
+      else if(macro_action==="Mute"){
+        this.recognizeMute()
+      }
+      else if(macro_action==="Unmute"){
+        this.recognizeUnmute()
+      }
+      else if(macro_action==="Next"){
+        this.recognizeNext()
+      }
+      else if(macro_action==="Pause"){
+        this.recognizePause(true);
+      }
+      else if(macro_action==="Play"){
+        this.recognizePause(false);
+      }
+      else if(macro_action==="Increase"){
+        if(macroParameterList.includes("Volume")){
+          let intensity_volume = macroParameterList[macroParameterList.indexOf("Volume") + 1]
+          this.recognizeIncreaseVolume(parseInt(intensity_volume))
+        }
+        else if(macroParameterList.includes("Brightness")){
+          let intensity_brightness = macroParameterList[macroParameterList.indexOf("Brightness") + 1]
+          console.log("intensity_brightness : ", intensity_brightness)
+          let decimal_brightness = ((intensity_brightness / 10).toFixed(1))
+          console.log("decimal_brightness : ", decimal_brightness)
+          this.recognizeIncreaseBrightness(decimal_brightness)
+        }
+        else{
+          console.log("No parameter to increase !")
+        }
+      }
+      else if(macro_action==="Decrease"){
+        if(macroParameterList.includes("Volume")){
+          let intensity_volume = macroParameterList[macroParameterList.indexOf("Volume") + 1]
+          this.recognizeDecreaseVolume(parseInt(intensity_volume))
+        }
+        else if(macroParameterList.includes("Brightness")){
+          let intensity_brightness = macroParameterList[macroParameterList.indexOf("Brightness") + 1]
+          console.log("intensity_brightness : ", intensity_brightness)
+          let decimal_brightness = ((intensity_brightness / 10).toFixed(1))
+          console.log("decimal_brightness : ", decimal_brightness)
+          this.recognizeIncreaseBrightness(-decimal_brightness)
+        }
+        else{
+          console.log("No parameter to decrease !")
+        }
+      }
+      // else if(macro_action==="Turn On" || macro_action==="Turn Off"){
+      //   this.recognizeDevice()
+      // }
+      if(macroParameterList.includes("Brightness") && (macro_action==="Turn On" || macro_action==="Turn Off")){
+        let intensity_brightness = macroParameterList[macroParameterList.indexOf("Brightness") + 1]
+        if(intensity_brightness>10){
+          console.log("Intensity of brightness too high ! Should be between 0 and 10")
+        }
+        else {
+          let decimal_brightness = (1 - (intensity_brightness / 10).toFixed(1)).toString()
+          this.recognizeBrightness(decimal_brightness)
+        }
+      }
+      if(macroParameterList.includes("Volume") && (macro_action==="Turn On" || macro_action==="Turn Off")){
+        let intensity_volume = macroParameterList[macroParameterList.indexOf("Volume") + 1]
+        if(intensity_volume>3){
+          console.log("Volume too high ! Should be between 0 and 3")
+        }
+        else {
+          this.recognizeVolume(intensity_volume)
+        }
+      }
+      if(macroParameterList.includes("Program")){
+        let number_program = macroParameterList[macroParameterList.indexOf("Program") + 1]
+        this.recognizeProgram(number_program)
+      }
+    }
   }
 
   recognizeDevice(){
@@ -1711,6 +1720,7 @@ class App extends React.Component {
       this.clear()
     }
     numberOfGestures = gestureList.length
+    
 
     for(const gest of gestureList) {
       var dataGesture = {
@@ -2677,7 +2687,7 @@ class App extends React.Component {
       if(recognized===(this.state.recognizedList.length-1).toString() && this.state.recognizedList[recognized]==='-'){
         break;
       }
-      if(this.state.recognizedList[recognized]==='-' ){
+      if(this.state.recognizedList[recognized]==='-'){
         list+="and "
       }
       else{

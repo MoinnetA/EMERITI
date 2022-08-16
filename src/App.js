@@ -212,7 +212,7 @@ class App extends React.Component {
     this.clearDataSet = this.clearDataSet.bind(this);
     this.deleteGesture = this.deleteGesture.bind(this);
     this.deleteMacroGesture = this.deleteMacroGesture.bind(this);
-    this.macroCommand = this.macroCommand.bind(this);
+    //this.macroCommand = this.macroCommand.bind(this);
     this.ModifyActionsList = this.ModifyActionsList.bind(this);
     this.ModifyDevicesList = this.ModifyDevicesList.bind(this);
     this.ModifyEnvironmentList = this.ModifyEnvironmentList.bind(this);
@@ -224,6 +224,7 @@ class App extends React.Component {
     this.toggleTable = this.toggleTable.bind(this);
     this.toggleCITable = this.toggleCITable.bind(this);
     this.toggleNumber = this.toggleNumber.bind(this);
+    this.toggleCanvasgesture = this.toggleCanvasgesture.bind(this);
     this.composedInstructions = this.composedInstructions.bind(this);
     this.showInstructions = this.showInstructions.bind(this);
     this.showRecognizedInstructions = this.showRecognizedInstructions.bind(this);
@@ -1803,6 +1804,7 @@ class App extends React.Component {
         else{
             if(!checkMacroList.includes(actionValue.toUpperCase())){
               checkMacroList.push(actionValue.toUpperCase());
+              
             }
             tab = this.composedInstructions()
             if(tab[0]==="-" && tab[1]==="-" && tab[2]==="-" && tab[3]==="-" ){
@@ -1895,11 +1897,7 @@ class App extends React.Component {
               }
 
             }
-
-            console.log('i1 ',i1)
-            console.log('i2 ',i2)
-            console.log('i3 ',i3)
-            console.log('i4 ',i4)
+            
             const table = document.getElementById("TableM")
             const item = {nameGesture: actionValue.toUpperCase(), instruction1: i1,instruction2: i2,instruction3: i3,instruction4: i4}
             let row = table.insertRow();
@@ -1947,6 +1945,7 @@ class App extends React.Component {
             console.log("checkMacroListAssign in record :", checkMacroListAssign)
             console.log("checkMacroList in record :", checkMacroList)
             this.setMacroData()
+            MacrosList=MacrosList.concat({label:actionValue.toUpperCase(),value:checkMacroList.length})
         }
       }
     }
@@ -1975,7 +1974,7 @@ class App extends React.Component {
     nameListOfGesture = checkList.concat(checkMacroList)
   }
 
-  macroCommand(){
+  /*macroCommand(){
     var dataStringRecord = this.checkMacroInputsRecord();
     if(typeof dataStringRecord!=='undefined'){
       const macroValue = this.macro.value.trim();
@@ -2064,7 +2063,7 @@ class App extends React.Component {
       console.log("No Data")
     }
     
-  }
+  }*/
 
   clear(){
     this.ctx.current.clearRect(0, 0, this.ctx.current.canvas.width, this.ctx.current.canvas.height)
@@ -2473,6 +2472,14 @@ class App extends React.Component {
       element.style.display = "none";
     }
   }
+  toggleCanvasgesture(){
+    var element= document.getElementById("Canvasgesture")
+    if (element.style.display === "none") {
+      element.style.display = "block";
+    } else {
+      element.style.display = "none";
+    }
+  }
 
   toggleNumber(){
     var element= document.getElementById("Numbers")
@@ -2797,12 +2804,12 @@ class App extends React.Component {
             </form>
 
             <form className={"container"}>
-              <div className={"box"}>
+              {/* <div className={"box"}>
                 <label className="custom-field one">
                   <input className={"textArea"} type="text" placeholder=" " id="macro"/>
                   <span className="placeholder">Name of the composed instruction</span>
                 </label>
-              </div>
+              </div> */}
               <div className={"list"}>
                 <MultiSelect options={MacrosList}
                   value={this.state.macros}
@@ -2812,21 +2819,27 @@ class App extends React.Component {
                   valueRenderer={MacroRenderer}
                   hasSelectAll={false}/>
               </div>
-              <button  type="button" className={"button"} onClick={this.macroCommand}>Create Macro-Command</button>
+              {/* <button  type="button" className={"button"} onClick={this.macroCommand}>Create Macro-Command</button> */}
             </form>
-            <canvas id="myCanvas1" ref={this.canvasRef1}
-              style={{
-                border: "1px solid #000"}}
-                width={500}
-                height={500}>
-
-            </canvas>
-
-            <label className="custom-field one">
-              <input className={"textArea"} type="text" placeholder=" " id="drawGesture"/>
-              <span className="placeholder">Name of the gesture</span>
-            </label>
-            <button type="button" className={"button"} onClick={this.draw1}>draw</button>
+            <div className="container">
+              <div className="box2">
+                <button type="button" className={"triangle-down"} onClick={this.toggleCanvasgesture}></button>
+                <h1>Draw a gesture</h1>
+                <div id="Canvasgesture">
+                  <label className="custom-field one">
+                    <input className={"textArea"} type="text" placeholder=" " id="drawGesture"/>
+                    <span className="placeholder">Name of the gesture</span>
+                  </label>
+                  <button type="button" className={"button"} onClick={this.draw1}>draw</button>
+                  <canvas id="myCanvas1" ref={this.canvasRef1}
+                    style={{
+                      border: "1px solid #000"}}
+                      width={500}
+                      height={500}>
+                  </canvas>
+                </div>
+              </div>
+            </div>
             <form >
               <div className="container">
                 <div className="box2">

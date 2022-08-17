@@ -194,6 +194,7 @@ class App extends React.Component {
     this.display = this.display.bind(this);
     this.draw = this.draw.bind(this);
     this.draw1 = this.draw1.bind(this);
+    this.draw2 = this.draw2.bind(this);
     this.recognize_canvas = this.recognize_canvas.bind(this);
     this.checkInputsRecord = this.checkInputsRecord.bind(this);
     this.checkMacroInputsRecord = this.checkMacroInputsRecord.bind(this);
@@ -211,6 +212,7 @@ class App extends React.Component {
     this.updateCheckMacroListAssign = this.updateCheckMacroListAssign.bind(this);
     this.clearDataSet = this.clearDataSet.bind(this);
     this.deleteGesture = this.deleteGesture.bind(this);
+    this.deleteGesture2 = this.deleteGesture2.bind(this);
     this.deleteMacroGesture = this.deleteMacroGesture.bind(this);
     //this.macroCommand = this.macroCommand.bind(this);
     this.ModifyActionsList = this.ModifyActionsList.bind(this);
@@ -1748,8 +1750,8 @@ class App extends React.Component {
       this.ctx.current.lineWidth = 7;
       this.ctx.current.lineJoin = 'round';
       var objectCoord ={
-        "x": x,
-        "y": y,
+        "x": x-10,
+        "y": y-120,
         "t": Date.now(),
       };
       tabFinal[stroke_id].push(objectCoord);
@@ -1764,7 +1766,19 @@ class App extends React.Component {
   }
 
   draw1(){
-    const drawGesture = this.drawGesture.value.trim();
+    const drawGesture = this.drawGesture.value.trim().toLowerCase();
+    console.log("drawGesture : ", drawGesture)
+    if(drawGesture === ''){
+        console.log('Name cannot be blank');
+    }
+    else{
+      this.gestureHandler.drawGesture(drawGesture)
+    }
+
+    this.ctx1.current.clearRect(0, 0, this.ctx1.current.canvas.width, this.ctx1.current.canvas.height)
+  }
+
+  draw2(drawGesture){
     if(drawGesture === ''){
         console.log('Name cannot be blank');
     }
@@ -1885,6 +1899,14 @@ class App extends React.Component {
           EnvironmentGesture.innerHTML = item.EnvironmentGesture;
           let ParametersGesture = row.insertCell(4);
           ParametersGesture.innerHTML = item.ParametersGesture;
+          let cellInstruction = row.insertCell(5);
+          cellInstruction.innerHTML = '<button class="btn btn-primary btn-xs my-xs-btn" type="button">Display</button>';
+          cellInstruction.addEventListener("click", () => {this.draw2(item.nameGesture.toLowerCase())})
+          row.appendChild(cellInstruction);
+          let deleteGesture = row.insertCell(-1);
+          deleteGesture.innerHTML = '<button class="btn btn-primary btn-xs my-xs-btn" type="button">Delete</button>';
+          deleteGesture.addEventListener("click", () => {this.deleteGesture2(item.nameGesture.toLowerCase())})
+          row.appendChild(deleteGesture);
 
           checkListAssign[actionValue.toUpperCase()] = tab;
           if(!checkList.includes(actionValue.toUpperCase()))
@@ -2000,6 +2022,14 @@ class App extends React.Component {
             let instruction2 = row.insertCell(2);
             let instruction3 = row.insertCell(3);
             let instruction4 = row.insertCell(4);
+            let cellInstruction = row.insertCell(5);
+            cellInstruction.innerHTML = '<button class="btn btn-primary btn-xs my-xs-btn" type="button">Display</button>';
+            cellInstruction.addEventListener("click", () => {this.draw2(item.nameGesture.toLowerCase())})
+            row.appendChild(cellInstruction);
+            let deleteGesture = row.insertCell(-1);
+            deleteGesture.innerHTML = '<button class="btn btn-primary btn-xs my-xs-btn" type="button">Delete</button>';
+            deleteGesture.addEventListener("click", () => {this.deleteMacroGesture(item.nameGesture.toLowerCase())})
+            row.appendChild(deleteGesture);
             var bool = true
 
             if(i2.length===0){
@@ -2211,26 +2241,139 @@ class App extends React.Component {
     this.clear()
     this.setData()
     this.updateCheckListAssign()
-    window.location.reload();
+    //window.location.reload();
   }
 
-  deleteMacroGesture(){
-    var macroListgestureDeleted=this.macrogestureDeleted.value.trim();
-    macroListgestureDeleted=macroListgestureDeleted.split(',')
-    for(let i in macroListgestureDeleted){
-      var macrogestureDeleted =macroListgestureDeleted[i]
-      this.gestureHandler.deleteGesture(macrogestureDeleted.toLowerCase());
+  deleteGesture2(gestureDeleted){
+    console.log(gestureDeleted)
+    this.gestureHandler.deleteGesture(gestureDeleted.toLowerCase());
 
-      delete checkMacroListAssign[macrogestureDeleted.toUpperCase()];
-      const index=checkMacroList.indexOf(macrogestureDeleted.toUpperCase());
-      if(index>-1){
-        checkMacroList.splice(index,1)
-      }
+    delete checkListAssign[gestureDeleted.toUpperCase()];
+    var index=checkList.indexOf(gestureDeleted.toUpperCase());
+    if(index>-1){
+      checkList.splice(index,1)
+    }
+    this.clear()
+    this.setData()
+
+    let table = document.getElementById("target");
+    table.innerHTML = ""
+    let tblBody = document.createElement("tbody");
+
+    // creating all cells
+    for (var i = 0; i < 1; i++) {
+      // creates a table row
+      let row = document.createElement("tr");
+
+      let cell1 = document.createElement("th");
+      let cellText1 = document.createTextNode("Name of gesture");
+      cell1.appendChild(cellText1);
+
+      let cell2 = document.createElement("th");
+      let cellText2 = document.createTextNode("Actions");
+      cell2.appendChild(cellText2);
+
+      let cell3 = document.createElement("th");
+      let cellText3 = document.createTextNode("Devices");
+      cell3.appendChild(cellText3);
+
+      let cell4 = document.createElement("th");
+      let cellText4 = document.createTextNode("Environments");
+      cell4.appendChild(cellText4);
+
+      let cell5 = document.createElement("th");
+      let cellText5 = document.createTextNode("Parameters");
+      cell5.appendChild(cellText5);
+
+      let cell6 = document.createElement("th");
+      let cellText6 = document.createTextNode("Display");
+      cell6.appendChild(cellText6);
+
+      let cell7 = document.createElement("th");
+      let cellText7 = document.createTextNode("Delete");
+      cell7.appendChild(cellText7);
+
+
+      row.appendChild(cell1);
+      row.appendChild(cell2);
+      row.appendChild(cell3);
+      row.appendChild(cell4);
+      row.appendChild(cell5);
+      row.appendChild(cell6);
+      row.appendChild(cell7);
+
+
+      // add the row to the end of the table body
+      tblBody.appendChild(row);
+    }
+    table.appendChild(tblBody);
+    this.updateCheckListAssign()
+    //window.location.reload();
+  }
+
+  deleteMacroGesture(macrogestureDeleted){
+    this.gestureHandler.deleteGesture(macrogestureDeleted.toLowerCase());
+    delete checkMacroListAssign[macrogestureDeleted.toUpperCase()];
+    const index=checkMacroList.indexOf(macrogestureDeleted.toUpperCase());
+    if(index>-1){
+      checkMacroList.splice(index,1)
     }
     this.clear()
     this.setMacroData()
+
+    let table = document.getElementById("TableM");
+    table.innerHTML = ""
+    let tblBody = document.createElement("tbody");
+
+    // creating all cells
+    for (let i = 0; i < 1; i++) {
+      // creates a table row
+      let row = document.createElement("tr");
+
+      let cell1 = document.createElement("th");
+      let cellText1 = document.createTextNode("Name of composed instruction");
+      cell1.appendChild(cellText1);
+
+      let cell2 = document.createElement("th");
+      let cellText2 = document.createTextNode("First instruction");
+      cell2.appendChild(cellText2);
+
+      let cell3 = document.createElement("th");
+      let cellText3 = document.createTextNode("Second instruction");
+      cell3.appendChild(cellText3);
+
+      let cell4 = document.createElement("th");
+      let cellText4 = document.createTextNode("Third instruction");
+      cell4.appendChild(cellText4);
+
+      let cell5 = document.createElement("th");
+      let cellText5 = document.createTextNode("Fourth instruction");
+      cell5.appendChild(cellText5);
+
+      let cell6 = document.createElement("th");
+      let cellText6 = document.createTextNode("Display");
+      cell6.appendChild(cellText6);
+
+      let cell7 = document.createElement("th");
+      let cellText7 = document.createTextNode("Delete");
+      cell7.appendChild(cellText7);
+
+
+      row.appendChild(cell1);
+      row.appendChild(cell2);
+      row.appendChild(cell3);
+      row.appendChild(cell4);
+      row.appendChild(cell5);
+      row.appendChild(cell6);
+      row.appendChild(cell7);
+
+
+      // add the row to the end of the table body
+      tblBody.appendChild(row);
+    }
+    table.appendChild(tblBody);
+
     this.updateCheckMacroListAssign()
-    window.location.reload();
   }
 
   onMouseDown(e){
@@ -2276,7 +2419,8 @@ class App extends React.Component {
 
   updateCheckListAssign(){
     const table = document.getElementById("target")
-    for(const i in checkListAssign){
+    console.log("table : ", table)
+    for(let i in checkListAssign){
       const item = { nameGesture: i, actionGesture: checkListAssign[i] }
       let row = table.insertRow();
       let nameGesture = row.insertCell(0);
@@ -2289,6 +2433,14 @@ class App extends React.Component {
       EnvironmentGesture.innerHTML = item.actionGesture[2];
       let ParametersGesture = row.insertCell(4);
       ParametersGesture.innerHTML = item.actionGesture[3];
+      let displayGesture = row.insertCell(5);
+      displayGesture.innerHTML = '<button class="btn btn-primary btn-xs my-xs-btn" type="button">Display</button>';
+      displayGesture.addEventListener("click", () => {this.draw2(item.nameGesture.toLowerCase())})
+      row.appendChild(displayGesture);
+      let deleteGesture = row.insertCell(-1);
+      deleteGesture.innerHTML = '<button class="btn btn-primary btn-xs my-xs-btn" type="button">Delete</button>';
+      deleteGesture.addEventListener("click", () => {this.deleteGesture2(item.nameGesture.toLowerCase())})
+      row.appendChild(deleteGesture);
     }
   }
 
@@ -2304,6 +2456,14 @@ class App extends React.Component {
       let instruction2 = row.insertCell(2);
       let instruction3 = row.insertCell(3);
       let instruction4 = row.insertCell(4);
+      let displayGesture = row.insertCell(5);
+      displayGesture.innerHTML = '<button class="btn btn-primary btn-xs my-xs-btn" type="button">Display</button>';
+      displayGesture.addEventListener("click", () => {console.log("item.nameGesture : ", item.nameGesture); this.draw2(item.nameGesture.toLowerCase())})
+      row.appendChild(displayGesture);
+      let deleteGesture = row.insertCell(-1);
+      deleteGesture.innerHTML = '<button class="btn btn-primary btn-xs my-xs-btn" type="button">Delete</button>';
+      deleteGesture.addEventListener("click", () => {this.deleteMacroGesture(item.nameGesture.toLowerCase())})
+      row.appendChild(deleteGesture);
       var bool = true
       if(item.instruction[1].length===0){
         instruction2.innerHTML = '-';
@@ -2892,6 +3052,7 @@ class App extends React.Component {
     return list;
   }
 
+
   render() {
     return (
       
@@ -2914,7 +3075,7 @@ class App extends React.Component {
           </div>
           <div className="box2">
             <h1 className={"h1"} style={{textAlign: "center"}}>Smart home</h1>
-            <img className="overlay" style={{maxWidth:'100%'}} src={House} alt={"HOUSE"}/>
+            <img className="overlay" style={{opacity:"1"}} src={House} alt={"HOUSE"}/>
             <img className="overlay" style={{opacity:"0"}} src={Air_conditioner_program_1} id="Air_conditioner_program_1" alt={"Air_conditioner_cold"}/>
             <img className="overlay" style={{opacity:"0"}} src={Air_conditioner_program_2} id="Air_conditioner_program_2" alt={"Air_conditioner_hot"}/>
             <img className="overlay" style={{opacity:"1"}} src={Brightness_kitchen} id="Brightness_kitchen" alt={"Brightness_kitchen"}/>
@@ -2978,6 +3139,7 @@ class App extends React.Component {
             <button className={"button"} onClick={this.recognize_canvas}>Recognize</button>
             <button className={"button"} onClick={this.clear}>Reset</button>
             <button className={"button"} onClick={this.add_instruction}>Add Instruction</button>
+            <button className={"button"} onClick={this.clearDataSet}>Clear Dataset</button>
 
             <form className={"container"}>
               <div className={"box"}>
@@ -3048,37 +3210,15 @@ class App extends React.Component {
               </div>
               {/* <button  type="button" className={"button"} onClick={this.macroCommand}>Create Macro-Command</button> */}
             </form>
-            <div className="container">
-              <div className="box2">
-                <button type="button" className={"triangle-down"} onClick={this.toggleCanvasgesture}></button>
-                <h1>Draw a gesture</h1>
-                <div id="Canvasgesture">
-                  <label className="custom-field one">
-                    <input className={"textArea"} type="text" placeholder=" " id="drawGesture"/>
-                    <span className="placeholder">Name of the gesture</span>
-                  </label>
-                  <button type="button" className={"button"} onClick={this.draw1}>draw</button>
-                  <canvas id="myCanvas1" ref={this.canvasRef1}
-                    style={{
-                      border: "1px solid #000"}}
-                      width={500}
-                      height={500}>
-                  </canvas>
-                </div>
-              </div>
-            </div>
+          </div>
+        </div>
+          <div className="container2">
             <form >
-              <div className="container">
-                <div className="box2">
-                  <button type="button" className={"triangle-down"} onClick={this.toggleTable}></button>
+              <div className="container2">
+                <div className="box4">
+                  <button type="button" className={"arrow down"} onClick={this.toggleTable}></button>
                   <h1>Table of gestures</h1>
                   <div id ="TableOfGestures">
-                    <label className="custom-field one">
-                      <input className={"textArea"} type="text" placeholder=" " id="gestureDeleted"/>
-                      <span className="placeholder">Name of the gesture to delete</span>
-                    </label>
-                    <button type="button" className={"button"} onClick={this.deleteGesture}>Delete</button>
-                    <button className={"button"} onClick={this.clearDataSet}>Clear Dataset</button>
                     <table className={"content-table"} id={"target"}>
                       <tbody>
                         <tr>
@@ -3087,20 +3227,21 @@ class App extends React.Component {
                           <th>Devices</th>
                           <th>Environments</th>
                           <th>Parameters</th>
+                          <th>Display</th>
+                          <th>Delete</th>
                         </tr>
                       </tbody>
                     </table>
                   </div>
                 </div>
-                <div className="box2">
-                  <button type="button" className={"triangle-down"} onClick={this.toggleCITable}></button>
+                <div className="box4">
+                  <a className="arrow-icon">
+                    <span className="left-bar"></span>
+                    <span className="right-bar"></span>
+                  </a>
+                  <button type="button" className={"arrow down"} onClick={this.toggleCITable}></button>
                   <h1>Table of composed instruction</h1>
                   <div id ="TableOfMacros">
-                    <label className="custom-field one">
-                      <input className={"textArea"} type="text" placeholder=" " id="macrogestureDeleted"/>
-                      <span className="placeholder">Name of the instruction to delete</span>
-                    </label>
-                    <button type="button" className={"button"} onClick={this.deleteMacroGesture}>Delete</button>
                     <table className={"content-table"} id={"TableM"}>
                       <tbody>
                         <tr>
@@ -3109,6 +3250,8 @@ class App extends React.Component {
                           <th>Second instruction</th>
                           <th>Third instruction</th>
                           <th>Fourth instruction</th>
+                          <th>Display</th>
+                          <th>Delete</th>
                         </tr>
                       </tbody>
                     </table>
@@ -3116,6 +3259,60 @@ class App extends React.Component {
                 </div>
               </div>
             </form>
+          {/*<div className="box3">*/}
+            {/*<button type="button" className={"arrow down"} onClick={this.toggleTable}></button>*/}
+            {/*<h1>Table of gestures</h1>*/}
+            {/*<div id ="TableOfGestures">*/}
+            {/*  <table className={"content-table"} id={"target"}>*/}
+            {/*    <tbody>*/}
+            {/*      <tr>*/}
+            {/*        <th>Name of gesture</th>*/}
+            {/*        <th>Actions</th>*/}
+            {/*        <th>Devices</th>*/}
+            {/*        <th>Environments</th>*/}
+            {/*        <th>Parameters</th>*/}
+            {/*        <th>Display</th>*/}
+            {/*        <th>Delete</th>*/}
+            {/*      </tr>*/}
+            {/*    </tbody>*/}
+            {/*  </table>*/}
+            {/*</div>*/}
+
+            {/*<a className="arrow-icon">*/}
+            {/*  <span className="left-bar"></span>*/}
+            {/*  <span className="right-bar"></span>*/}
+            {/*</a>*/}
+            {/*<button type="button" className={"arrow down"} onClick={this.toggleCITable}></button>*/}
+            {/*<h1>Table of composed instruction</h1>*/}
+            {/*<div id ="TableOfMacros">*/}
+            {/*  <table className={"content-table"} id={"TableM"}>*/}
+            {/*    <tbody>*/}
+            {/*      <tr>*/}
+            {/*        <th>Name of composed instruction</th>*/}
+            {/*        <th>First instruction</th>*/}
+            {/*        <th>Second instruction</th>*/}
+            {/*        <th>Third instruction</th>*/}
+            {/*        <th>Fourth instruction</th>*/}
+            {/*        <th>Display</th>*/}
+            {/*        <th>Delete</th>*/}
+            {/*      </tr>*/}
+            {/*    </tbody>*/}
+            {/*  </table>*/}
+            {/*</div>*/}
+          {/*</div>*/}
+      </div>
+      <div className="container">
+        <div className="box2">
+          <button type="button" className={"arrow down"} onClick={this.toggleCanvasgesture}></button>
+          <h1>Draw a gesture</h1>
+          <div id="Canvasgesture">
+            <canvas id="myCanvas1" ref={this.canvasRef1}
+              style={{
+                border: "1px solid #000"}}
+                width={500}
+                height={500}>
+            </canvas>
+          </div>
         </div>
       </div>
   </div>

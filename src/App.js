@@ -2759,6 +2759,13 @@ class App extends React.Component {
   }
 
   toggleTable(){
+    let button = document.getElementById("buttonTableGestures")
+    if (button.className==="arrow down"){
+      button.className="arrow up";
+    }
+    else{
+      button.className="arrow down";
+    }
     var element= document.getElementById("TableOfGestures")
     if (element.style.display === "none") {
       element.style.display = "block";
@@ -2768,6 +2775,13 @@ class App extends React.Component {
   }
 
   toggleCITable(){
+    let button = document.getElementById("buttonComposed")
+    if (button.className==="arrow down"){
+      button.className="arrow up";
+    }
+    else{
+      button.className="arrow down";
+    }
     var element= document.getElementById("TableOfMacros")
     if (element.style.display === "none") {
       element.style.display = "block";
@@ -2776,6 +2790,13 @@ class App extends React.Component {
     }
   }
   toggleCanvasgesture(){
+    let button = document.getElementById("buttonDisplay")
+    if (button.className==="arrow down"){
+      button.className="arrow up";
+    }
+    else{
+      button.className="arrow down";
+    }
     var element= document.getElementById("Canvasgesture")
     if (element.style.display === "none") {
       element.style.display = "block";
@@ -3132,7 +3153,7 @@ class App extends React.Component {
             <form >
               <div className="container2">
                 <div className="box4">
-                  <button type="button" className={"arrow down"} onClick={this.toggleTable}></button>
+                  <button id="buttonTableGestures" type="button" className={"arrow down"} onClick={this.toggleTable}></button>
                   <h1>Table of gestures</h1>
                   <div id ="TableOfGestures">
                     <table className={"content-table"} id={"target"}>
@@ -3151,11 +3172,7 @@ class App extends React.Component {
                   </div>
                 </div>
                 <div className="box4">
-                  <a className="arrow-icon">
-                    <span className="left-bar"></span>
-                    <span className="right-bar"></span>
-                  </a>
-                  <button type="button" className={"arrow down"} onClick={this.toggleCITable}></button>
+                  <button id="buttonComposed" type="button" className={"arrow down"} onClick={this.toggleCITable}></button>
                   <h1>Table of composed instruction</h1>
                   <div id ="TableOfMacros">
                     <table className={"content-table"} id={"TableM"}>
@@ -3178,7 +3195,7 @@ class App extends React.Component {
           </div>
           <div className="container">
             <div className="box2">
-              <button type="button" className={"arrow down"} onClick={this.toggleCanvasgesture}></button>
+              <button id="buttonDisplay" type="button" className={"arrow down"} onClick={this.toggleCanvasgesture}></button>
               <h1>Draw a gesture</h1>
               <div id="Canvasgesture">
                 <canvas id="myCanvas1" ref={this.canvasRef1}

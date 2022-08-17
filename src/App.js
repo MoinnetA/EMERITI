@@ -416,10 +416,10 @@ class App extends React.Component {
               this.setState({
                 recognizedList:this.state.recognizedList.concat("-")
               })
+              macroDeviceList=[]
+              macroEnvironmentList=[]
+              macroParameterList=[]
             }
-            macroDeviceList=[]
-            macroEnvironmentList=[]
-            macroParameterList=[]
           }
         }
 
@@ -447,7 +447,6 @@ class App extends React.Component {
         for(let len=this.state.recognizedList.length;this.state.recognizedList[len]!=='-' && len>=0;len--){
           recognizList=recognizList.concat(this.state.recognizedList[len])
         }
-        console.log("this.state.recognizedList1",this.state.recognizedList)
         if(typeof recognizList==='undefined'){
           this.setState({
             recognizedList: this.state.recognizedList.concat(macroActionList[0])
@@ -480,10 +479,8 @@ class App extends React.Component {
             })
           }
         }
-        console.log("this.state.recognizedList2",this.state.recognizedList)
         
         if(isNew && macroActionList.length>0 && macroDeviceList.length>0){
-          console.log("macroActionList is New : ", macroActionList)
           let timer = 0
           if(macroParameterList.includes("Time")){
             timer = macroParameterList[macroParameterList.indexOf("Time") + 1]*1000
@@ -651,7 +648,6 @@ class App extends React.Component {
 
   // setTimeout(() => {
     for(const macro_action of macroActionList){
-      console.log("macro_action : ", macro_action)
       if(macro_action==="Turn On"){
         this.setState({
           turn_on: "1"
@@ -890,9 +886,7 @@ class App extends React.Component {
         })
       }
       else {
-        console.log("macroDeviceList[i] : ", macroDeviceList[i])
         let image = document.getElementById(macroDeviceList[i]);
-        console.log("image : ", image)
         image.style.opacity = this.state.turn_on;
       }
     }
@@ -970,8 +964,6 @@ class App extends React.Component {
             brightness_office : intensity_brightness,
             brightness_parent_bedroom : intensity_brightness,
             brightness_laundry_room : intensity_brightness
-          }, function (){
-            console.log("Brightness of every environment : ", this.state.brightness_bathroom, this.state.brightness_children_bedroom, this.state.brightness_dining_room, this.state.brightness_kitchen, this.state.brightness_living_room, this.state.brightness_office, this.state.brightness_parent_bedroom, this.state.brightness_laundry_room)
           })
         }
       }
@@ -1684,7 +1676,6 @@ class App extends React.Component {
   }
 
   recognizeProgram(number_program){
-    console.log("In recognizeProgram")
     if(macroDeviceList.includes("Washing machine")){
       let number_washing = 1
       if(number_program>3){
@@ -1766,7 +1757,6 @@ class App extends React.Component {
 
   draw1(){
     const drawGesture = this.drawGesture.value.trim().toLowerCase();
-    console.log("drawGesture : ", drawGesture)
     if(drawGesture === ''){
         console.log('Name cannot be blank');
     }
@@ -1789,7 +1779,6 @@ class App extends React.Component {
   }
 
   recognize_canvas(){
-    console.log(nameListOfGesture)
     this.gestureHandler.registerGestures("dynamic", nameListOfGesture);
     if(tabFinal.length!==0) {
       gestureList.push(tabFinal)
@@ -1940,7 +1929,6 @@ class App extends React.Component {
                 }
               }
               tab=array
-              console.log("tab 000 ",tab)
               var check=false
               if(!i1[0] && !check && typeof this.state.instructions[0]!== 'undefined'){
                 i1=this.state.instructions[0].value
@@ -2009,8 +1997,6 @@ class App extends React.Component {
               }
             }
             var isCorrect=true
-            console.log(typeof i1 === "string" )
-            console.log(i1 )
             if(typeof i1 === "string" && checkList.includes(i1.toUpperCase())){
               var recognizedMacro= checkListAssign[i1.toUpperCase()]
               if(recognizedMacro[0]==='-' || recognizedMacro[1]==='-'){
@@ -2159,7 +2145,6 @@ class App extends React.Component {
     ListgestureDeleted=ListgestureDeleted.split(',')
     for(let i in ListgestureDeleted){
       var gestureDeleted =ListgestureDeleted[i]
-      console.log(gestureDeleted)
       this.gestureHandler.deleteGesture(gestureDeleted.toLowerCase());
 
       delete checkListAssign[gestureDeleted.toUpperCase()];
@@ -2174,7 +2159,6 @@ class App extends React.Component {
   }
 
   deleteGesture2(gestureDeleted){
-    console.log(gestureDeleted)
     this.gestureHandler.deleteGesture(gestureDeleted.toLowerCase());
 
     delete checkListAssign[gestureDeleted.toUpperCase()];
@@ -2842,7 +2826,6 @@ class App extends React.Component {
       var dev = []
       var macrosI =this.composedMacrosInstructions()
       for(const i in macrosI){
-        console.log("macrosI[i] ",macrosI[i])
         if(checkList.includes(macrosI[i])){
           console.log("checkList in macroCommand : ", checkList)
           var instruct = checkListAssign[macrosI[i]]
@@ -2946,7 +2929,6 @@ class App extends React.Component {
     for (const i in this.state.macros){
       macro = macro.concat(this.state.macros[i].label)
     }
-    console.log("macro ",macro)
     return macro;
   }
 
@@ -3130,12 +3112,6 @@ class App extends React.Component {
             </form>
 
             <form className={"container"}>
-              {/* <div className={"box"}>
-                <label className="custom-field one">
-                  <input className={"textArea"} type="text" placeholder=" " id="macro"/>
-                  <span className="placeholder">Name of the composed instruction</span>
-                </label>
-              </div> */}
               <div className={"list"}>
                 <MultiSelect options={MacrosList}
                   value={this.state.macros}
@@ -3145,7 +3121,6 @@ class App extends React.Component {
                   valueRenderer={MacroRenderer}
                   hasSelectAll={false}/>
               </div>
-              {/* <button  type="button" className={"button"} onClick={this.macroCommand}>Create Macro-Command</button> */}
             </form>
           </div>
         </div>

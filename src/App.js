@@ -3171,7 +3171,7 @@ class App extends React.Component {
           <div className="container">
             <div className="box2">
               <button id="buttonDisplay" type="button" className={"arrow down"} onClick={this.toggleCanvasgesture}></button>
-              <h1>Draw a gesture</h1>
+              <h1>Display of the gesture</h1>
               <div id="Canvasgesture">
                 <canvas id="myCanvas1" ref={this.canvasRef1}
                   style={{

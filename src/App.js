@@ -479,7 +479,6 @@ class App extends React.Component {
             })
           }
         }
-        
         if(isNew && macroActionList.length>0 && macroDeviceList.length>0){
           let timer = 0
           if(macroParameterList.includes("Time")){
@@ -585,25 +584,94 @@ class App extends React.Component {
                 this.setState({
                   turn_on: "1"
                 }, function (){
-                  console.log("macro Turn On")
+                  this.recognizeDevice();
                 })
               }
               else if(macro_action==="Turn Off"){
                 this.setState({
                   turn_on: "0"
                 }, function (){
-                  console.log("macro Turn Off");
+                  this.recognizeDevice();
                 })
               }
-              if(macroParameterList.includes("Brightness")){
+              ////////////////////////////////////////////////////////////////
+              else if(macro_action==="Mute"){
+                this.recognizeMute()
+              }
+              else if(macro_action==="Unmute"){
+                this.recognizeUnmute()
+              }
+              else if(macro_action==="Next"){
+                this.recognizeNext()
+              }
+              else if(macro_action==="Pause"){
+                this.recognizePause(true);
+              }
+              else if(macro_action==="Play"){
+                this.recognizePause(false);
+              }
+              else if(macro_action==="Increase"){
+                if(macroParameterList.includes("Volume")){
+                  let intensity_volume = macroParameterList[macroParameterList.indexOf("Volume") + 1]
+                  this.recognizeIncreaseVolume(parseInt(intensity_volume))
+                }
+                else if(macroParameterList.includes("Brightness")){
+                  let intensity_brightness = macroParameterList[macroParameterList.indexOf("Brightness") + 1]
+                  let decimal_brightness = ((intensity_brightness / 10).toFixed(1))
+                  console.log("decimal_brightness : ", decimal_brightness)
+                  this.recognizeIncreaseBrightness(decimal_brightness)
+                }
+                else{
+                  console.log("No parameter to increase !")
+                }
+              }
+              else if(macro_action==="Decrease"){
+                if(macroParameterList.includes("Volume")){
+                  let intensity_volume = macroParameterList[macroParameterList.indexOf("Volume") + 1]
+                  this.recognizeDecreaseVolume(parseInt(intensity_volume))
+                }
+                else if(macroParameterList.includes("Brightness")){
+                  let intensity_brightness = macroParameterList[macroParameterList.indexOf("Brightness") + 1]
+                  let decimal_brightness = ((intensity_brightness / 10).toFixed(1))
+                  console.log("decimal_brightness : ", decimal_brightness)
+                  this.recognizeIncreaseBrightness(-decimal_brightness)
+                }
+                else{
+                  console.log("No parameter to decrease !")
+                }
+              }
+              // else if(macro_action==="Turn On" || macro_action==="Turn Off"){
+              //   this.recognizeDevice()
+              // }
+              if(macroParameterList.includes("Brightness") && (macro_action==="Turn On" || macro_action==="Turn Off")){
                 let intensity_brightness = macroParameterList[macroParameterList.indexOf("Brightness") + 1]
-                let decimal_intensity = (intensity_brightness/10).toFixed(1).toString()
-                intensity_brightness = decimal_intensity
-                this.recognizeBrightness(intensity_brightness)
+                if(intensity_brightness>10){
+                  console.log("Intensity of brightness too high ! Should be between 0 and 10")
+                }
+                else {
+                  let decimal_brightness = (1 - (intensity_brightness / 10).toFixed(1)).toString()
+                  console.log("decimal_brightness TESTING :", decimal_brightness)
+                  this.recognizeBrightness(decimal_brightness)
+                }
               }
-              else{
-                this.recognizeDevice()
+              if(macroParameterList.includes("Volume") && (macro_action==="Turn On" || macro_action==="Turn Off")){
+                let intensity_volume = macroParameterList[macroParameterList.indexOf("Volume") + 1]
+                if(intensity_volume>3){
+                  console.log("Volume too high ! Should be between 0 and 3")
+                }
+                else {
+                  this.recognizeVolume(intensity_volume)
+                }
               }
+              if(macroParameterList.includes("Program")){
+                let number_program = macroParameterList[macroParameterList.indexOf("Program") + 1]
+                this.recognizeProgram(number_program)
+              }
+              if(macroParameterList.includes("Channel")){
+                let number_channel = macroParameterList[macroParameterList.indexOf("Channel") + 1]
+                this.recognizeChannel(number_channel)
+              }
+              //////////////////////////////////////////////////////////////////////////
             }
           }
           else{
@@ -684,7 +752,6 @@ class App extends React.Component {
         }
         else if(macroParameterList.includes("Brightness")){
           let intensity_brightness = macroParameterList[macroParameterList.indexOf("Brightness") + 1]
-          console.log("intensity_brightness : ", intensity_brightness)
           let decimal_brightness = ((intensity_brightness / 10).toFixed(1))
           console.log("decimal_brightness : ", decimal_brightness)
           this.recognizeIncreaseBrightness(decimal_brightness)
@@ -700,7 +767,6 @@ class App extends React.Component {
         }
         else if(macroParameterList.includes("Brightness")){
           let intensity_brightness = macroParameterList[macroParameterList.indexOf("Brightness") + 1]
-          console.log("intensity_brightness : ", intensity_brightness)
           let decimal_brightness = ((intensity_brightness / 10).toFixed(1))
           console.log("decimal_brightness : ", decimal_brightness)
           this.recognizeIncreaseBrightness(-decimal_brightness)
@@ -893,49 +959,48 @@ class App extends React.Component {
   }
 
   recognizeBrightness(intensity_brightness){
-    console.log("this.state.brightness_children_bedroom1 : ", this.state.brightness_children_bedroom)
     for(let i = 0; i<macroDeviceList.length; i++){
       if(macroDeviceList[i]==="Light"){
         if(macroEnvironmentList.length !== 0){
           for(let environment of macroEnvironmentList){
             if(environment==="Bathroom"){
               this.setState({
-                Brightness_bathroom : intensity_brightness
+                brightness_bathroom : intensity_brightness
               })
             }
             else if(environment==="Children bedroom"){
               this.setState({
-                Brightness_children_bedroom : intensity_brightness
+                brightness_children_bedroom : intensity_brightness
               })
             }
             else if(environment==="Dining room"){
               this.setState({
-                Brightness_dining_room : intensity_brightness
+                brightness_dining_room : intensity_brightness
               })
             }
             else if(environment==="Kitchen"){
               this.setState({
-                Brightness_kitchen : intensity_brightness
+                brightness_kitchen : intensity_brightness
               })
             }
             else if(environment==="Living room"){
               this.setState({
-                Brightness_living_room : intensity_brightness
+                brightness_living_room : intensity_brightness
               })
             }
             else if(environment==="Office"){
               this.setState({
-                Brightness_office : intensity_brightness
+                brightness_office : intensity_brightness
               })
             }
             else if(environment==="Parent bedroom"){
               this.setState({
-                Brightness_parent_bedroom : intensity_brightness
+                brightness_parent_bedroom : intensity_brightness
               })
             }
             else if(environment==="Washing room"){
               this.setState({
-                Brightness_laundry_room : intensity_brightness
+                brightness_laundry_room : intensity_brightness
               })
             }
             let image_brightness = document.getElementById("Brightness_"+environment.toLowerCase())
@@ -1305,7 +1370,7 @@ class App extends React.Component {
         for(let environment of macroEnvironmentList){
           console.log("environment : ", environment)
           if(environment==="Bathroom"){
-            let updated_brightness = this.state.brightness_bathroom-value_to_increase
+            let updated_brightness = this.state.brightness_bathroom - value_to_increase
             if(updated_brightness<0){
               updated_brightness=0
             }
